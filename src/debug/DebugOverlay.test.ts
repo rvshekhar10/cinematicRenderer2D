@@ -107,8 +107,8 @@ describe('DebugOverlay', () => {
   it('should position overlay correctly', () => {
     const overlayElement = container.querySelector('.cinematic-debug-overlay') as HTMLElement;
     
-    // Check that position is absolute and positioning properties are set
-    expect(overlayElement.style.position).toBe('absolute');
+    // Check that position is fixed and positioning properties are set
+    expect(overlayElement.style.position).toBe('fixed');
     // Note: styles are applied via Object.assign, so we check computed styles or class
     expect(overlayElement.className).toContain('cinematic-debug-overlay');
   });
@@ -122,7 +122,7 @@ describe('DebugOverlay', () => {
     });
     
     const overlayElement = container.querySelector('.cinematic-debug-overlay') as HTMLElement;
-    expect(overlayElement.style.position).toBe('absolute');
+    expect(overlayElement.style.position).toBe('fixed');
     expect(overlayElement.className).toContain('cinematic-debug-overlay');
   });
 

@@ -23,6 +23,9 @@
       "require": "./dist/angular.cjs"
     }
   },
+  "bin": {
+    "cinematic-cli": "./dist/cli/index.js"
+  },
   "files": [
     "dist",
     "README.md",
@@ -31,18 +34,26 @@
   "scripts": {
     "dev": "vite",
     "build": "tsup",
+    "build:analyze": "tsup --metafile && npx esbuild-visualizer dist/metafile-*.json --metadata --open",
+    "build:check": "npm run build && npm run validate-build",
+    "validate-build": "node scripts/validate-build.js",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
+    "test:run": "vitest --run",
     "lint": "eslint src --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "typecheck": "tsc --noEmit",
+    "typecheck:watch": "tsc --noEmit --watch",
     "preview": "vite preview",
     "release": "changeset publish",
     "changeset": "changeset",
     "version": "changeset version",
     "clean": "rimraf dist",
-    "prepublishOnly": "npm run clean && npm run build"
+    "size-check": "size-limit",
+    "prepublishOnly": "npm run clean && npm run typecheck && npm run test:run && npm run build",
+    "postbuild": "npm run validate-build",
+    "pre-publish-check": "node scripts/pre-publish-check.js"
   },
   "keywords": [
     "cinematic",
@@ -56,20 +67,21 @@
     "framework-agnostic",
     "json-spec"
   ],
-  "author": "Your Name",
+  "author": "Ravi Shekhar",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/cinematic-renderer2d.git"
+    "url": "https://github.com/rvshekhar10/cinematic-renderer2d.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/cinematic-renderer2d/issues"
+    "url": "https://github.com/rvshekhar10/cinematic-renderer2d/issues"
   },
-  "homepage": "https://github.com/yourusername/cinematic-renderer2d#readme",
+  "homepage": "https://github.com/rvshekhar10/cinematic-renderer2d#readme",
   "devDependencies": {
     "@angular/common": "^21.1.2",
     "@angular/core": "^21.1.2",
     "@changesets/cli": "^2.27.1",
+    "@size-limit/preset-small-lib": "^11.0.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/node": "^20.10.5",
@@ -78,11 +90,13 @@
     "@typescript-eslint/parser": "^6.16.0",
     "@vitest/coverage-v8": "^1.1.0",
     "@vitest/ui": "^1.1.0",
+    "esbuild-visualizer": "^0.4.1",
     "eslint": "^8.56.0",
     "fast-check": "^3.15.1",
     "jsdom": "^23.0.1",
     "rimraf": "^5.0.5",
     "rxjs": "^7.8.2",
+    "size-limit": "^11.0.1",
     "tsup": "^8.0.1",
     "typescript": "^5.3.3",
     "vite": "^5.0.10",
@@ -107,5 +121,31 @@
   "engines": {
     "node": ">=16.0.0"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "size-limit": [
+    {
+      "name": "Core Library (ESM)",
+      "path": "dist/index.js",
+      "limit": "100 KB",
+      "gzip": true
+    },
+    {
+      "name": "Core Library (CJS)",
+      "path": "dist/index.cjs",
+      "limit": "100 KB",
+      "gzip": true
+    },
+    {
+      "name": "React Adapter (ESM)",
+      "path": "dist/react.js",
+      "limit": "80 KB",
+      "gzip": true
+    },
+    {
+      "name": "Angular Adapter (ESM)",
+      "path": "dist/angular.js",
+      "limit": "85 KB",
+      "gzip": true
+    }
+  ]
 }

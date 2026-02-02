@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Get Started - cinematicRenderer2D</title>
+  <style>
+    :root {
+      --primary-color: #007AFF;
+      --primary-hover: #0056CC;
+      --bg-dark: #1a1a2e;
+      --bg-darker: #16213e;
+      --text-primary: rgba(255, 255, 255, 0.95);
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-darker) 100%);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    header {
+      text-align: center;
+      padding: 40px 20px;
+      margin-bottom: 40px;
+    }
+
+    h1 {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      font-size: 20px;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary-color);
+      text-decoration: none;
+      margin-bottom: 20px;
+      transition: all 0.2s ease;
+    }
+
+    .back-link:hover {
+      transform: translateX(-4px);
+    }
+
+    .content-section {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+
+    h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: var(--text-primary);
+    }
+
+    h3 {
+      font-size: 24px;
+      margin: 24px 0 16px;
+      color: var(--text-primary);
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: var(--text-secondary);
+    }
+
+    .code-block {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 16px 0;
+      overflow-x: auto;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .code-block pre {
+      margin: 0;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #e0e0e0;
+    }
+
+    .code-block code {
+      font-family: inherit;
+    }
+
+    .install-command {
+      background: rgba(0, 122, 255, 0.1);
+      border: 1px solid rgba(0, 122, 255, 0.3);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 16px 0;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 16px;
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .copy-btn {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .feature-item {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .feature-item h4 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    .feature-item p {
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0, 122, 255, 0.4);
+    }
+
+    .btn-secondary {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      box-shadow: none;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 16px;
+      margin: 32px 0;
+      flex-wrap: wrap;
+    }
+
+    ul {
+      margin: 16px 0;
+      padding-left: 24px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+    }
+
+    .highlight {
+      background: rgba(102, 126, 234, 0.2);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 36px;
+      }
+
+      .content-section {
+        padding: 20px;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="back-link">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      Back to Playground
+    </a>
+
+    <header>
+      <h1>🎬 Use cinematicRenderer2D in Your Project</h1>
+      <p class="tagline">Get started in minutes with our high-performance cinematic rendering library</p>
+    </header>
+
+    <div class="content-section">
+      <h2>📦 Installation</h2>
+      <p>Install cinematicRenderer2D using your preferred package manager:</p>
+      
+      <div class="install-command">
+        <code id="npm-install">npm install cinematic-renderer2d</code>
+        <button class="copy-btn" onclick="copyToClipboard('npm-install')">Copy</button>
+      </div>
+
+      <div class="install-command">
+        <code id="yarn-install">yarn add cinematic-renderer2d</code>
+        <button class="copy-btn" onclick="copyToClipboard('yarn-install')">Copy</button>
+      </div>
+
+      <div class="install-command">
+        <code id="pnpm-install">pnpm add cinematic-renderer2d</code>
+        <button class="copy-btn" onclick="copyToClipboard('pnpm-install')">Copy</button>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>🚀 Quick Start</h2>
+      
+      <h3>Vanilla JavaScript / TypeScript</h3>
+      <div class="code-block">
+        <pre><code>import { CinematicRenderer2D } from 'cinematic-renderer2d';
+
+const renderer = new CinematicRenderer2D({
+  container: document.getElementById('container'),
+  spec: {
+    schemaVersion: '1.0.0',
+    engine: { targetFps: 60, quality: 'auto' },
+    events: [{
+      id: 'intro',
+      name: 'Introduction',
+      scenes: ['welcome']
+    }],
+    scenes: [{
+      id: 'welcome',
+      name: 'Welcome Scene',
+      duration: 3000,
+      layers: [{
+        id: 'background',
+        type: 'gradient',
+        zIndex: 1,
+        config: {
+          colors: ['#667eea', '#764ba2'],
+          direction: 'diagonal'
+        }
+      }]
+    }]
+  }
+});
+
+// Mount and play
+await renderer.mount();
+renderer.play();</code></pre>
+      </div>
+
+      <h3>React</h3>
+      <div class="code-block">
+        <pre><code>import { CinematicPlayer } from 'cinematic-renderer2d/react';
+
+function App() {
+  return (
+    &lt;CinematicPlayer
+      spec={yourSpec}
+      autoplay={true}
+      onPlay={() => console.log('Playing')}
+      onEnd={() => console.log('Finished')}
+    /&gt;
+  );
+}</code></pre>
+      </div>
+
+      <h3>Angular</h3>
+      <div class="code-block">
+        <pre><code>import { CinematicPlayerComponent } from 'cinematic-renderer2d/angular';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    &lt;cinematic-player
+      [spec]="spec"
+      [autoplay]="true"
+      (play)="onPlay()"
+      (end)="onEnd()"&gt;
+    &lt;/cinematic-player&gt;
+  `
+})
+export class AppComponent {
+  spec = { /* your spec */ };
+}</code></pre>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>✨ Key Features</h2>
+      <div class="feature-grid">
+        <div class="feature-item">
+          <h4>🚀 High Performance</h4>
+          <p>60-120fps with optimized rendering backends</p>
+        </div>
+        <div class="feature-item">
+          <h4>🎯 Framework Agnostic</h4>
+          <p>Works with React, Angular, Vue, or vanilla JS</p>
+        </div>
+        <div class="feature-item">
+          <h4>🎨 Multiple Backends</h4>
+          <p>DOM and Canvas2D rendering support</p>
+        </div>
+        <div class="feature-item">
+          <h4>📱 Adaptive Quality</h4>
+          <p>Automatic performance optimization</p>
+        </div>
+        <div class="feature-item">
+          <h4>🎵 Audio Integration</h4>
+          <p>Synchronized audio tracks with fade effects</p>
+        </div>
+        <div class="feature-item">
+          <h4>🔧 TypeScript</h4>
+          <p>Full type safety and auto-completion</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>📚 Next Steps</h2>
+      <ul>
+        <li>Check out the <span class="highlight">examples/</span> directory for complete working examples</li>
+        <li>Read the <span class="highlight">README.md</span> for comprehensive API documentation</li>
+        <li>Explore <span class="highlight">docs/API.md</span> for detailed interface documentation</li>
+        <li>See <span class="highlight">docs/REACT_INTEGRATION.md</span> for React-specific guides</li>
+        <li>See <span class="highlight">docs/ANGULAR_INTEGRATION.md</span> for Angular-specific guides</li>
+        <li>Review <span class="highlight">docs/PERFORMANCE.md</span> for optimization tips</li>
+      </ul>
+
+      <div class="action-buttons">
+        <a href="/" class="btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <polygon points="10,8 16,12 10,16"/>
+          </svg>
+          Try in Playground
+        </a>
+        <a href="https://github.com/rvshekhar10/cinematic-renderer2d" class="btn btn-secondary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+          </svg>
+          View on GitHub
+        </a>
+        <a href="https://www.npmjs.com/package/cinematic-renderer2d" class="btn btn-secondary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <path d="M7 7h10v10H7z"/>
+          </svg>
+          View on NPM
+        </a>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>💡 Example Specifications</h2>
+      <p>The playground includes several example specifications you can use as starting points:</p>
+      <ul>
+        <li><strong>Simple Demo</strong> - Basic gradient and text animations</li>
+        <li><strong>Story Narration</strong> - Multi-scene storytelling with transitions</li>
+        <li><strong>Day & Night Story</strong> - Complex environmental effects</li>
+      </ul>
+      <p>Load these examples in the playground to see how they work, then customize them for your needs!</p>
+    </div>
+
+    <div class="content-section">
+      <h2>🆘 Need Help?</h2>
+      <ul>
+        <li>🐛 <a href="https://github.com/rvshekhar10/cinematic-renderer2d/issues" style="color: var(--primary-color);">Report issues on GitHub</a></li>
+        <li>💬 <a href="https://github.com/rvshekhar10/cinematic-renderer2d/discussions" style="color: var(--primary-color);">Join discussions</a></li>
+        <li>📧 Email: support@cinematicrenderer2d.com</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function copyToClipboard(elementId) {
+      const element = document.getElementById(elementId);
+      const text = element.textContent;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = element.nextElementSibling;
+        const originalText = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.style.background = '#30D158';
+        
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style.background = '';
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>

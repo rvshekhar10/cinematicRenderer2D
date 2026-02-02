@@ -33,7 +33,17 @@ describe('CinematicRenderer2D', () => {
           id: 'test-scene',
           name: 'Test Scene',
           duration: 1000,
-          layers: [],
+          layers: [
+            {
+              id: 'test-layer',
+              type: 'gradient',
+              zIndex: 1,
+              config: {
+                colors: ['#000000', '#ffffff'],
+                direction: 'to bottom'
+              }
+            }
+          ],
         },
       ],
     };

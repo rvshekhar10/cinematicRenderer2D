@@ -3,6 +3,7 @@ import { resolve } from 'path';
 
 export default defineConfig({
   root: 'playground',
+  publicDir: resolve(__dirname, 'public'),
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
@@ -12,6 +13,10 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true,
+    fs: {
+      // Allow serving files from the docs directory
+      allow: ['..'],
+    },
   },
   build: {
     outDir: '../dist-playground',

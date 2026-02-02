@@ -288,7 +288,10 @@ export class AudioSystem {
     this.stop();
     
     if (this._audioContext) {
-      this._audioContext.close();
+      // Check if close method exists (not available in all test environments)
+      if (typeof this._audioContext.close === 'function') {
+        this._audioContext.close();
+      }
       this._audioContext = null;
       this._masterGainNode = null;
     }

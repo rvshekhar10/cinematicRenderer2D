@@ -7,7 +7,9 @@
 
 import type { ICinematicRenderer2D } from './interfaces/ICinematicRenderer2D';
 import type { CinematicSpec } from '../types/CinematicSpec';
+import type { CompiledSpec } from '../types/CompiledSpec';
 import type { QualityLevel } from '../types/QualityTypes';
+import { SpecParser } from '../parsing/SpecParser';
 import { Scheduler, type FrameContext } from './Scheduler';
 import { QualitySystem } from '../performance/QualitySystem';
 import { AudioSystem } from '../audio/AudioSystem';
@@ -31,6 +33,7 @@ export type PlaybackState = 'idle' | 'loading' | 'ready' | 'playing' | 'paused' 
 export class CinematicRenderer2D implements ICinematicRenderer2D {
   private _container: HTMLElement;
   private _spec: CinematicSpec;
+  private _compiledSpec: CompiledSpec;
   private _options: CinematicRenderer2DOptions;
   private eventListeners: Map<string, Function[]> = new Map();
   
@@ -41,6 +44,7 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
   private _currentEventId: string | null = null;
   private _currentSceneId: string | null = null;
   private _quality: QualityLevel;
+  private _resizeListener: (() => void) | null = null;
   
   // Core subsystems
   private _scheduler: Scheduler;
@@ -68,8 +72,13 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
       throw new Error('CinematicRenderer2D: spec is required');
     }
     
+    // Validate and compile the specification
+    const validatedSpec = SpecParser.validate(options.spec);
+    const compiledSpec = SpecParser.parse(validatedSpec);
+    
     this._container = options.container;
-    this._spec = options.spec;
+    this._spec = validatedSpec;
+    this._compiledSpec = compiledSpec;
     this._options = options;
     this._quality = options.quality || this._spec.engine.quality || 'auto';
     
@@ -178,6 +187,9 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
       
       // Initialize audio system
       await this._audioSystem.initialize();
+      
+      // Set up automatic resize detection
+      this._setupResizeListener();
       
       // Show debug overlay if enabled
       if (this._debugOverlay) {
@@ -316,10 +328,18 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
     
     // Clear container
     this._container.innerHTML = '';
-    this._container.removeAttribute('style');
+    if (typeof this._container.removeAttribute === 'function') {
+      this._container.removeAttribute('style');
+    }
     
     // Clear all event listeners
     this.eventListeners.clear();
+    
+    // Remove resize listener
+    if (this._resizeListener) {
+      window.removeEventListener('resize', this._resizeListener);
+      this._resizeListener = null;
+    }
     
     this._mounted = false;
     this._setState('destroyed');
@@ -352,12 +372,7 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
     // Seek audio system
     this._audioSystem.seek(clampedTime);
     
-    this.emit('seek', { 
-      previousTime, 
-      currentTime: this._currentTime,
-      currentEvent: this._currentEventId,
-      currentScene: this._currentSceneId
-    });
+    this.emit('seek', this._currentTime);
   }
   
   goToEvent(eventId: string): void {
@@ -372,7 +387,9 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
     // Find the event in the spec
     const event = this._spec.events.find(e => e.id === eventId);
     if (!event) {
-      throw new Error(`Event with id "${eventId}" not found`);
+      // Handle gracefully - emit error event but don't throw
+      this.emit('error', new Error(`Event with id "${eventId}" not found`));
+      return;
     }
     
     // Calculate the start time of this event
@@ -381,11 +398,7 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
     // Seek to the event start time
     this.seek(eventStartTime);
     
-    this.emit('eventChange', { 
-      eventId, 
-      eventName: event.name,
-      currentTime: this._currentTime 
-    });
+    this.emit('eventChange', eventId);
   }
   
   goToScene(sceneId: string): void {
@@ -400,7 +413,9 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
     // Find the scene in the spec
     const scene = this._spec.scenes.find(s => s.id === sceneId);
     if (!scene) {
-      throw new Error(`Scene with id "${sceneId}" not found`);
+      // Handle gracefully - emit error event but don't throw
+      this.emit('error', new Error(`Scene with id "${sceneId}" not found`));
+      return;
     }
     
     // Calculate the start time of this scene
@@ -409,11 +424,7 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
     // Seek to the scene start time
     this.seek(sceneStartTime);
     
-    this.emit('sceneChange', { 
-      sceneId, 
-      sceneName: scene.name,
-      currentTime: this._currentTime 
-    });
+    this.emit('sceneChange', sceneId);
   }
   
   setQuality(level: QualityLevel): void {
@@ -430,7 +441,7 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
     // TODO: In future tasks:
     // - Update rendering backend quality settings
     
-    this.emit('qualityChange', { previousQuality, currentQuality: level });
+    this.emit('qualityChange', level);
   }
   
   resize(width: number, height: number): void {
@@ -777,6 +788,16 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
       
       this._resizeObserver.observe(this._container);
     }
+  }
+  
+  private _setupResizeListener(): void {
+    // Set up window resize listener for automatic resize detection
+    this._resizeListener = () => {
+      const rect = this._container.getBoundingClientRect();
+      this.resize(rect.width, rect.height);
+    };
+    
+    window.addEventListener('resize', this._resizeListener);
   }
   
   // Layer management methods
