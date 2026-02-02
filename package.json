@@ -1,0 +1,111 @@
+{
+  "name": "cinematic-renderer2d",
+  "version": "0.1.0",
+  "description": "High-performance, framework-agnostic NPM library that renders cinematic experiences from JSON specifications targeting 60-120fps performance",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js",
+      "require": "./dist/react.cjs"
+    },
+    "./angular": {
+      "types": "./dist/angular.d.ts",
+      "import": "./dist/angular.js",
+      "require": "./dist/angular.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsup",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint src --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview",
+    "release": "changeset publish",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "clean": "rimraf dist",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "keywords": [
+    "cinematic",
+    "animation",
+    "renderer",
+    "2d",
+    "canvas",
+    "dom",
+    "performance",
+    "typescript",
+    "framework-agnostic",
+    "json-spec"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/cinematic-renderer2d.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/cinematic-renderer2d/issues"
+  },
+  "homepage": "https://github.com/yourusername/cinematic-renderer2d#readme",
+  "devDependencies": {
+    "@angular/common": "^21.1.2",
+    "@angular/core": "^21.1.2",
+    "@changesets/cli": "^2.27.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "^20.10.5",
+    "@types/react": "^19.2.10",
+    "@typescript-eslint/eslint-plugin": "^6.16.0",
+    "@typescript-eslint/parser": "^6.16.0",
+    "@vitest/coverage-v8": "^1.1.0",
+    "@vitest/ui": "^1.1.0",
+    "eslint": "^8.56.0",
+    "fast-check": "^3.15.1",
+    "jsdom": "^23.0.1",
+    "rimraf": "^5.0.5",
+    "rxjs": "^7.8.2",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10",
+    "vitest": "^1.1.0",
+    "zone.js": "^0.16.0"
+  },
+  "dependencies": {
+    "zod": "^3.22.4"
+  },
+  "peerDependencies": {
+    "@angular/core": ">=12.0.0",
+    "react": ">=16.8.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "@angular/core": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "sideEffects": false
+}

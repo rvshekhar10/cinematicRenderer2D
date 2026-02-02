@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas2D Renderer Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        #container {
+            width: 800px;
+            height: 600px;
+            border: 1px solid #333;
+            position: relative;
+            background: #111;
+        }
+        .controls {
+            margin-bottom: 20px;
+        }
+        button {
+            margin-right: 10px;
+            padding: 8px 16px;
+            background: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Canvas2D Renderer Test</h1>
+    <div class="controls">
+        <button onclick="testParticles()">Test Particles</button>
+        <button onclick="testStarfield()">Test Starfield</button>
+        <button onclick="testDust()">Test Dust</button>
+        <button onclick="testNebula()">Test Nebula Noise</button>
+        <button onclick="clearCanvas()">Clear</button>
+    </div>
+    <div id="container"></div>
+
+    <script type="module">
+        import { Canvas2DRenderer } from './src/rendering/canvas2d/Canvas2DRenderer.js';
+        import { ParticlesLayer, StarfieldLayer, DustLayer, NebulaNoiseLayer } from './src/core/layers/BuiltInLayers.js';
+
+        const container = document.getElementById('container');
+        let renderer;
+        let currentLayer;
+
+        // Initialize renderer
+        try {
+            renderer = new Canvas2DRenderer(container);
+            renderer.initialize();
+            console.log('Canvas2D Renderer initialized successfully');
+        } catch (error) {
+            console.error('Failed to initialize Canvas2D Renderer:', error);
+        }
+
+        // Mock context objects
+        const mockMountContext = {
+            container: container,
+            renderer: renderer,
+            assetManager: {},
+            layerConfig: {}
+        };
+
+        const mockFrameContext = {
+            timeMs: 0,
+            deltaMs: 16.67,
+            quality: 'medium',
+            viewport: { width: 800, height: 600 },
+            devicePixelRatio: window.devicePixelRatio || 1
+        };
+
+        let animationId;
+        let startTime = Date.now();
+
+        function animate() {
+            if (currentLayer) {
+                mockFrameContext.timeMs = Date.now() - startTime;
+                mockFrameContext.deltaMs = 16.67;
+                
+                currentLayer.update(mockFrameContext);
+            }
+            animationId = requestAnimationFrame(animate);
+        }
+
+        window.testParticles = function() {
+            clearCanvas();
+            currentLayer = new ParticlesLayer('test-particles', {
+                count: 200,
+                color: '#00ffff',
+                size: 3,
+                speed: 2,
+                opacity: 0.8,
+                type: 'circle'
+            });
+            currentLayer.mount(mockMountContext);
+            startTime = Date.now();
+            animate();
+        };
+
+        window.testStarfield = function() {
+            clearCanvas();
+            currentLayer = new StarfieldLayer('test-starfield', {
+                count: 300,
+                color: '#ffffff',
+                minSize: 0.5,
+                maxSize: 3,
+                speed: 1,
+                opacity: 0.9,
+                twinkle: true
+            });
+            currentLayer.mount(mockMountContext);
+            startTime = Date.now();
+            animate();
+        };
+
+        window.testDust = function() {
+            clearCanvas();
+            currentLayer = new DustLayer('test-dust', {
+                count: 80,
+                color: '#cccccc',
+                minSize: 1,
+                maxSize: 4,
+                speed: 0.5,
+                opacity: 0.6,
+                drift: true
+            });
+            currentLayer.mount(mockMountContext);
+            startTime = Date.now();
+            animate();
+        };
+
+        window.testNebula = function() {
+            clearCanvas();
+            currentLayer = new NebulaNoiseLayer('test-nebula', {
+                colors: ['#ff0080', '#0080ff', '#8000ff'],
+                intensity: 0.4,
+                scale: 0.02,
+                opacity: 0.7,
+                animated: true,
+                speed: 0.002,
+                octaves: 3
+            });
+            currentLayer.mount(mockMountContext);
+            startTime = Date.now();
+            animate();
+        };
+
+        window.clearCanvas = function() {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+            if (currentLayer) {
+                currentLayer.destroy();
+                currentLayer = null;
+            }
+            // Clear container
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+            // Re-initialize renderer
+            if (renderer) {
+                renderer.destroy();
+            }
+            renderer = new Canvas2DRenderer(container);
+            renderer.initialize();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,678 @@
+{
+  "schemaVersion": "1.0.0",
+  "engine": {
+    "targetFps": 60,
+    "quality": "high",
+    "debug": true
+  },
+  "events": [
+    {
+      "id": "demo",
+      "name": "cinematicRenderer2D Showcase",
+      "scenes": ["welcome", "features", "performance", "finale"]
+    }
+  ],
+  "scenes": [
+    {
+      "id": "welcome",
+      "name": "Welcome Scene",
+      "duration": 6000,
+      "layers": [
+        {
+          "id": "bg-gradient",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#0f0c29", "#302b63", "#24243e"],
+            "direction": "diagonal"
+          }
+        },
+        {
+          "id": "ambient-stars",
+          "type": "starfield",
+          "zIndex": 1,
+          "config": {
+            "count": 150,
+            "speed": 0.1,
+            "opacity": 0.4,
+            "twinkle": true,
+            "minSize": 0.5,
+            "maxSize": 1.5
+          }
+        },
+        {
+          "id": "hero-glow",
+          "type": "glowOrb",
+          "zIndex": 2,
+          "config": {
+            "x": "50%",
+            "y": "35%",
+            "radius": 120,
+            "color": "#667eea",
+            "intensity": 0.3,
+            "blur": 40
+          },
+          "animations": [
+            {
+              "property": "intensity",
+              "from": 0,
+              "to": 0.5,
+              "startMs": 0,
+              "endMs": 2000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "radius",
+              "from": 80,
+              "to": 140,
+              "startMs": 2000,
+              "endMs": 6000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "main-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "cinematicRenderer2D",
+            "fontSize": 48,
+            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, sans-serif",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "35%",
+            "textShadow": "0 4px 20px rgba(102, 126, 234, 0.6), 0 2px 4px rgba(0, 0, 0, 0.8)",
+            "fontWeight": "700",
+            "letterSpacing": "2px"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 800,
+              "endMs": 2200,
+              "easing": "ease-out"
+            },
+            {
+              "property": "transform.translateY",
+              "from": 30,
+              "to": 0,
+              "startMs": 800,
+              "endMs": 2200,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "subtitle",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "High-Performance Cinematic Rendering",
+            "fontSize": 20,
+            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, sans-serif",
+            "color": "#a0a0a0",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "45%",
+            "textShadow": "0 2px 8px rgba(0, 0, 0, 0.6)",
+            "fontWeight": "400",
+            "letterSpacing": "1px"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 2500,
+              "endMs": 3800,
+              "easing": "ease-in"
+            },
+            {
+              "property": "transform.translateY",
+              "from": 20,
+              "to": 0,
+              "startMs": 2500,
+              "endMs": 3800,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "version-badge",
+          "type": "textBlock",
+          "zIndex": 8,
+          "config": {
+            "text": "v1.0.0",
+            "fontSize": 14,
+            "fontFamily": "SF Mono, Monaco, monospace",
+            "color": "#667eea",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "52%",
+            "textShadow": "0 1px 4px rgba(0, 0, 0, 0.5)",
+            "fontWeight": "500"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 0.8,
+              "startMs": 4000,
+              "endMs": 5000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "bottom-accent",
+          "type": "gradient",
+          "zIndex": 3,
+          "config": {
+            "colors": ["transparent", "rgba(102, 126, 234, 0.1)", "transparent"],
+            "direction": "horizontal",
+            "x": "0%",
+            "y": "85%",
+            "width": "100%",
+            "height": "2px"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 4500,
+              "endMs": 5500,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "features",
+      "name": "Feature Highlights",
+      "duration": 10000,
+      "layers": [
+        {
+          "id": "features-bg",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#1a1a2e", "#16213e", "#0f3460"],
+            "direction": "vertical"
+          }
+        },
+        {
+          "id": "floating-particles",
+          "type": "particles",
+          "zIndex": 1,
+          "config": {
+            "count": 60,
+            "size": 2,
+            "speed": 0.3,
+            "color": "#667eea",
+            "opacity": 0.6,
+            "type": "circle"
+          }
+        },
+        {
+          "id": "feature-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "Powerful Features",
+            "fontSize": 36,
+            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, sans-serif",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "15%",
+            "textShadow": "0 2px 12px rgba(0, 0, 0, 0.8)",
+            "fontWeight": "600"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 500,
+              "endMs": 1500,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "feature-1",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "🚀 60-120 FPS Performance",
+            "fontSize": 22,
+            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, sans-serif",
+            "color": "#30d158",
+            "textAlign": "left",
+            "x": "20%",
+            "y": "35%",
+            "textShadow": "0 2px 8px rgba(0, 0, 0, 0.6)",
+            "fontWeight": "500"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 2000,
+              "endMs": 3000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "transform.translateX",
+              "from": -50,
+              "to": 0,
+              "startMs": 2000,
+              "endMs": 3000,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "feature-2",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "🎨 Rich Animation System",
+            "fontSize": 22,
+            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, sans-serif",
+            "color": "#ff9f0a",
+            "textAlign": "right",
+            "x": "80%",
+            "y": "45%",
+            "textShadow": "0 2px 8px rgba(0, 0, 0, 0.6)",
+            "fontWeight": "500"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 3500,
+              "endMs": 4500,
+              "easing": "ease-out"
+            },
+            {
+              "property": "transform.translateX",
+              "from": 50,
+              "to": 0,
+              "startMs": 3500,
+              "endMs": 4500,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "feature-3",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "⚡ Multiple Render Backends",
+            "fontSize": 22,
+            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, sans-serif",
+            "color": "#007aff",
+            "textAlign": "left",
+            "x": "20%",
+            "y": "55%",
+            "textShadow": "0 2px 8px rgba(0, 0, 0, 0.6)",
+            "fontWeight": "500"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 5000,
+              "endMs": 6000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "transform.translateX",
+              "from": -50,
+              "to": 0,
+              "startMs": 5000,
+              "endMs": 6000,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "feature-4",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "🔧 Framework Agnostic",
+            "fontSize": 22,
+            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, sans-serif",
+            "color": "#ff453a",
+            "textAlign": "right",
+            "x": "80%",
+            "y": "65%",
+            "textShadow": "0 2px 8px rgba(0, 0, 0, 0.6)",
+            "fontWeight": "500"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 6500,
+              "endMs": 7500,
+              "easing": "ease-out"
+            },
+            {
+              "property": "transform.translateX",
+              "from": 50,
+              "to": 0,
+              "startMs": 6500,
+              "endMs": 7500,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "center-orb",
+          "type": "glowOrb",
+          "zIndex": 5,
+          "config": {
+            "x": "50%",
+            "y": "50%",
+            "radius": 40,
+            "color": "#667eea",
+            "intensity": 0.8,
+            "blur": 30
+          },
+          "animations": [
+            {
+              "property": "radius",
+              "from": 20,
+              "to": 60,
+              "startMs": 0,
+              "endMs": 10000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            },
+            {
+              "property": "opacity",
+              "from": 0.3,
+              "to": 0.8,
+              "startMs": 0,
+              "endMs": 5000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "performance",
+      "name": "Performance Demo",
+      "duration": 8000,
+      "layers": [
+        {
+          "id": "perf-bg",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#000428", "#004e92"],
+            "direction": "diagonal"
+          }
+        },
+        {
+          "id": "performance-particles",
+          "type": "particles",
+          "zIndex": 2,
+          "config": {
+            "count": 120,
+            "size": 1.5,
+            "speed": 1.2,
+            "color": "#00d4ff",
+            "opacity": 0.7,
+            "type": "circle"
+          }
+        },
+        {
+          "id": "perf-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "Blazing Fast Performance",
+            "fontSize": 32,
+            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, sans-serif",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "25%",
+            "textShadow": "0 2px 12px rgba(0, 212, 255, 0.5)",
+            "fontWeight": "600"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 500,
+              "endMs": 1500,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "fps-counter",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "60 FPS",
+            "fontSize": 64,
+            "fontFamily": "SF Mono, Monaco, monospace",
+            "color": "#30d158",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "50%",
+            "textShadow": "0 4px 20px rgba(48, 209, 88, 0.6)",
+            "fontWeight": "700"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 2000,
+              "endMs": 3000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "transform.scale",
+              "from": 0.5,
+              "to": 1,
+              "startMs": 2000,
+              "endMs": 3000,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "perf-desc",
+          "type": "textBlock",
+          "zIndex": 8,
+          "config": {
+            "text": "Smooth animations • GPU acceleration • Optimized rendering",
+            "fontSize": 16,
+            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, sans-serif",
+            "color": "#a0a0a0",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "65%",
+            "textShadow": "0 1px 4px rgba(0, 0, 0, 0.8)",
+            "fontWeight": "400"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 4000,
+              "endMs": 5000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "energy-ring",
+          "type": "glowOrb",
+          "zIndex": 3,
+          "config": {
+            "x": "50%",
+            "y": "50%",
+            "radius": 100,
+            "color": "#00d4ff",
+            "intensity": 0.4,
+            "blur": 50
+          },
+          "animations": [
+            {
+              "property": "radius",
+              "from": 80,
+              "to": 120,
+              "startMs": 0,
+              "endMs": 4000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "finale",
+      "name": "Thank You",
+      "duration": 6000,
+      "layers": [
+        {
+          "id": "finale-bg",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#2c3e50", "#3498db", "#9b59b6"],
+            "direction": "radial",
+            "centerX": 0.5,
+            "centerY": 0.3
+          }
+        },
+        {
+          "id": "finale-stars",
+          "type": "starfield",
+          "zIndex": 1,
+          "config": {
+            "count": 200,
+            "speed": 0.2,
+            "opacity": 0.8,
+            "twinkle": true,
+            "minSize": 0.5,
+            "maxSize": 2
+          }
+        },
+        {
+          "id": "thank-you",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "Thank You!",
+            "fontSize": 48,
+            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, sans-serif",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "40%",
+            "textShadow": "0 4px 20px rgba(255, 255, 255, 0.3)",
+            "fontWeight": "700"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 1000,
+              "endMs": 2500,
+              "easing": "ease-out"
+            },
+            {
+              "property": "transform.translateY",
+              "from": 30,
+              "to": 0,
+              "startMs": 1000,
+              "endMs": 2500,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "explore-text",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "Explore the possibilities with cinematicRenderer2D",
+            "fontSize": 18,
+            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, sans-serif",
+            "color": "#e0e0e0",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "55%",
+            "textShadow": "0 2px 8px rgba(0, 0, 0, 0.6)",
+            "fontWeight": "400"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 3000,
+              "endMs": 4000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "final-glow",
+          "type": "glowOrb",
+          "zIndex": 5,
+          "config": {
+            "x": "50%",
+            "y": "40%",
+            "radius": 150,
+            "color": "#ffffff",
+            "intensity": 0.2,
+            "blur": 80
+          },
+          "animations": [
+            {
+              "property": "intensity",
+              "from": 0,
+              "to": 0.4,
+              "startMs": 1000,
+              "endMs": 6000,
+              "easing": "ease-in-out"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

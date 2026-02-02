@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>cinematicRenderer2D Playground</title>
+  <style>
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --accent-blue: #007AFF;
+      --accent-blue-hover: #0056CC;
+      --accent-green: #30D158;
+      --accent-red: #FF453A;
+      --accent-orange: #FF9F0A;
+      --text-primary: rgba(255, 255, 255, 0.95);
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-tertiary: rgba(255, 255, 255, 0.5);
+      --surface-primary: rgba(28, 28, 30, 0.95);
+      --surface-secondary: rgba(44, 44, 46, 0.8);
+      --surface-tertiary: rgba(58, 58, 60, 0.6);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: var(--text-primary);
+      overflow: hidden;
+      height: 100vh;
+      position: relative;
+    }
+
+    /* Animated background particles */
+    .bg-particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: float 20s infinite linear;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+    }
+
+    /* Main layout */
+    .app-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      z-index: 1;
+    }
+
+    /* Renderer viewport - full screen */
+    .renderer-viewport {
+      flex: 1;
+      position: relative;
+      background: #000;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .renderer-viewport.fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1000;
+    }
+
+    .renderer-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .renderer-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      flex-direction: column;
+      gap: 20px;
+      color: var(--text-tertiary);
+      text-align: center;
+    }
+
+    .renderer-placeholder .icon {
+      font-size: 64px;
+      opacity: 0.3;
+      margin-bottom: 10px;
+    }
+
+    .renderer-placeholder h2 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .renderer-placeholder p {
+      margin: 0;
+      font-size: 16px;
+      color: var(--text-tertiary);
+    }
+
+    /* Floating control panel */
+    .control-panel {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 380px;
+      max-height: calc(100vh - 40px);
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      box-shadow: var(--glass-shadow);
+      z-index: 2000;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transform: translateX(0);
+    }
+
+    .control-panel.collapsed {
+      transform: translateX(calc(-100% + 60px));
+    }
+
+    .control-panel.hidden {
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Compact mode for fullscreen */
+    .renderer-viewport.fullscreen ~ .control-panel {
+      width: 320px;
+      opacity: 0.9;
+    }
+
+    /* Panel header */
+    .panel-header {
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .panel-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    /* Panel content */
+    .panel-content {
+      padding: 20px;
+      overflow-y: auto;
+      max-height: calc(100vh - 120px);
+    }
+
+    .panel-section {
+      margin-bottom: 24px;
+    }
+
+    .panel-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin: 0 0 12px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Examples dropdown */
+    .examples-select {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--surface-secondary);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 12px center;
+      background-repeat: no-repeat;
+      background-size: 16px;
+      padding-right: 40px;
+    }
+
+    .examples-select:hover {
+      background: var(--surface-tertiary);
+      border-color: var(--accent-blue);
+    }
+
+    .examples-select:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
+    }
+
+    /* Code editor */
+    .code-editor {
+      width: 100%;
+      height: 200px;
+      padding: 16px;
+      background: var(--surface-primary);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      resize: vertical;
+      min-height: 120px;
+      max-height: 400px;
+      transition: all 0.2s ease;
+    }
+
+    .code-editor:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
+    }
+
+    .code-editor::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    /* Button styles - Enhanced Apple Tahoe Design */
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 
+        0 1px 3px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+        0 1px 0 rgba(255, 255, 255, 0.2) inset;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      letter-spacing: 0.3px;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    /* Shimmer effect */
+    .btn:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.15), 
+        transparent
+      );
+      transition: left 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .btn:hover:before {
+      left: 100%;
+    }
+
+    /* Hover and active states */
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.15) inset,
+        0 1px 0 rgba(255, 255, 255, 0.3) inset;
+    }
+
+    .btn:active:not(:disabled) {
+      transform: translateY(-1px) scale(1.01);
+      transition: all 0.1s ease;
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: 
+        0 1px 2px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    }
+
+    .btn:disabled:hover {
+      transform: none;
+      box-shadow: 
+        0 1px 2px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    }
+
+    /* Primary button - Blue */
+    .btn-primary {
+      background: linear-gradient(135deg, #007AFF 0%, #0056CC 100%);
+      color: white;
+      border: 1px solid rgba(0, 122, 255, 0.3);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: linear-gradient(135deg, #0056CC 0%, #003D99 100%);
+      box-shadow: 
+        0 4px 20px rgba(0, 122, 255, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.2) inset,
+        0 1px 0 rgba(255, 255, 255, 0.3) inset;
+    }
+
+    /* Secondary button - Gray */
+    .btn-secondary {
+      background: linear-gradient(135deg, rgba(58, 58, 60, 0.8) 0%, rgba(44, 44, 46, 0.9) 100%);
+      color: var(--text-primary);
+      border: 1px solid var(--glass-border);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: linear-gradient(135deg, rgba(72, 72, 74, 0.9) 0%, rgba(58, 58, 60, 1) 100%);
+    }
+
+    /* Success button - Green */
+    .btn-success {
+      background: linear-gradient(135deg, #30D158 0%, #28A745 100%);
+      color: white;
+      border: 1px solid rgba(48, 209, 88, 0.3);
+    }
+
+    .btn-success:hover:not(:disabled) {
+      background: linear-gradient(135deg, #28A745 0%, #1E7E34 100%);
+      box-shadow: 
+        0 4px 20px rgba(48, 209, 88, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.2) inset,
+        0 1px 0 rgba(255, 255, 255, 0.3) inset;
+    }
+
+    /* Danger button - Red */
+    .btn-danger {
+      background: linear-gradient(135deg, #FF453A 0%, #DC3545 100%);
+      color: white;
+      border: 1px solid rgba(255, 69, 58, 0.3);
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: linear-gradient(135deg, #DC3545 0%, #C82333 100%);
+      box-shadow: 
+        0 4px 20px rgba(255, 69, 58, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.2) inset,
+        0 1px 0 rgba(255, 255, 255, 0.3) inset;
+    }
+
+    /* Small button variant */
+    .btn-small {
+      padding: 8px 16px;
+      font-size: 12px;
+      border-radius: 8px;
+      min-width: 60px;
+    }
+
+    /* Button icons */
+    .btn-icon {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-icon svg {
+      width: 16px;
+      height: 16px;
+      opacity: 0.9;
+    }
+
+    /* Special play button with pulsing effect when playing */
+    .btn-playing {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 4px 20px rgba(48, 209, 88, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) inset; }
+      50% { box-shadow: 0 4px 25px rgba(48, 209, 88, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.3) inset; }
+      100% { box-shadow: 0 4px 20px rgba(48, 209, 88, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) inset; }
+    }
+
+    /* Button group layouts */
+    .btn-group-primary {
+      gap: 12px;
+    }
+
+    .btn-group-secondary {
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    /* Status messages */
+    .status-message {
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.4;
+      margin-top: 12px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .status-message.success {
+      background: rgba(48, 209, 88, 0.15);
+      border: 1px solid rgba(48, 209, 88, 0.3);
+      color: var(--accent-green);
+    }
+
+    .status-message.error {
+      background: rgba(255, 69, 58, 0.15);
+      border: 1px solid rgba(255, 69, 58, 0.3);
+      color: var(--accent-red);
+    }
+
+    .status-message.info {
+      background: rgba(0, 122, 255, 0.15);
+      border: 1px solid rgba(0, 122, 255, 0.3);
+      color: var(--accent-blue);
+    }
+
+    /* Floating action button style for fullscreen toggle */
+    .fullscreen-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 3000;
+      background: linear-gradient(135deg, rgba(58, 58, 60, 0.9) 0%, rgba(44, 44, 46, 0.95) 100%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 12px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+        0 1px 0 rgba(255, 255, 255, 0.2) inset;
+    }
+
+    .fullscreen-toggle:hover {
+      background: linear-gradient(135deg, rgba(72, 72, 74, 0.95) 0%, rgba(58, 58, 60, 1) 100%);
+      transform: scale(1.05) translateY(-1px);
+      box-shadow: 
+        0 6px 25px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.15) inset,
+        0 1px 0 rgba(255, 255, 255, 0.3) inset;
+    }
+
+    .fullscreen-toggle:active {
+      transform: scale(1.02);
+      transition: all 0.1s ease;
+    }
+
+    .fullscreen-toggle svg {
+      width: 20px;
+      height: 20px;
+      color: var(--text-primary);
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+    }
+
+    /* Performance info */
+    .performance-info {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 11px;
+      color: var(--text-secondary);
+      z-index: 2001;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .performance-info.visible {
+      opacity: 1;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .control-panel {
+        width: calc(100vw - 40px);
+        left: 20px;
+        right: 20px;
+      }
+
+      .control-panel.collapsed {
+        transform: translateY(calc(-100% + 60px));
+      }
+
+      .control-panel.hidden {
+        transform: translateY(-100%);
+      }
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--surface-tertiary);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-tertiary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated background -->
+  <div class="bg-particles" id="bgParticles"></div>
+
+  <!-- Main app container -->
+  <div class="app-container">
+    <!-- Renderer viewport -->
+    <div class="renderer-viewport" id="rendererViewport">
+      <div class="renderer-container" id="rendererContainer">
+        <div class="renderer-placeholder">
+          <div class="icon">🎬</div>
+          <h2>cinematicRenderer2D</h2>
+          <p>Load a specification and create a renderer to begin</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fullscreen toggle -->
+  <button class="fullscreen-toggle" id="fullscreenToggle" title="Toggle Fullscreen">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+    </svg>
+  </button>
+
+  <!-- Floating control panel -->
+  <div class="control-panel" id="controlPanel">
+    <div class="panel-header">
+      <h3 class="panel-title">Control Panel</h3>
+    </div>
+
+    <div class="panel-content">
+      <!-- Examples section -->
+      <div class="panel-section">
+        <h4 class="section-title">Examples</h4>
+        <select id="examplesDropdown" class="examples-select">
+          <option value="">Choose an example...</option>
+          <option value="simple">Simple Demo</option>
+          <option value="story">Story Narration</option>
+          <option value="daynight">Day & Night Story</option>
+          <option value="custom">Custom Specification</option>
+        </select>
+      </div>
+
+      <!-- JSON Editor section -->
+      <div class="panel-section">
+        <h4 class="section-title">JSON Specification</h4>
+        <textarea id="specEditor" class="code-editor" placeholder="Enter your cinematic specification here...">
+{
+  "schemaVersion": "1.0.0",
+  "engine": {
+    "targetFps": 60,
+    "quality": "auto",
+    "debug": true
+  },
+  "events": [
+    {
+      "id": "intro",
+      "name": "Introduction",
+      "scenes": ["scene1"]
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene1",
+      "name": "Welcome Scene",
+      "duration": 5000,
+      "layers": [
+        {
+          "id": "background",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#667eea", "#764ba2"],
+            "direction": "diagonal"
+          }
+        },
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "Welcome to cinematicRenderer2D!",
+            "fontSize": 28,
+            "fontFamily": "SF Pro Display, -apple-system, sans-serif",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "50%",
+            "textShadow": "0 2px 20px rgba(0,0,0,0.5)"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 500,
+              "endMs": 2000,
+              "easing": "ease-out"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+        </textarea>
+      </div>
+
+      <!-- Controls section -->
+      <div class="panel-section">
+        <h4 class="section-title">Controls</h4>
+        <div class="btn-group btn-group-primary">
+          <button id="validateBtn" class="btn btn-secondary btn-small btn-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 12l2 2 4-4"/>
+              <circle cx="12" cy="12" r="10"/>
+            </svg>
+            Validate
+          </button>
+          <button id="renderBtn" class="btn btn-primary" disabled>
+            <span class="btn-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+              Create Renderer
+            </span>
+          </button>
+        </div>
+        <div class="btn-group btn-group-secondary">
+          <button id="playBtn" class="btn btn-success btn-icon" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="5,3 19,12 5,21"/>
+            </svg>
+            Play
+          </button>
+          <button id="pauseBtn" class="btn btn-secondary btn-icon" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="6" y="4" width="4" height="16"/>
+              <rect x="14" y="4" width="4" height="16"/>
+            </svg>
+            Pause
+          </button>
+          <button id="stopBtn" class="btn btn-secondary btn-icon" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="6" y="6" width="12" height="12"/>
+            </svg>
+            Stop
+          </button>
+        </div>
+        <div class="btn-group btn-group-secondary">
+          <button id="debugBtn" class="btn btn-secondary btn-small btn-icon" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v6m0 8v6M4.93 4.93l4.24 4.24m5.66 5.66l4.24 4.24M2 12h6m8 0h6M4.93 19.07l4.24-4.24m5.66-5.66l4.24-4.24"/>
+            </svg>
+            Debug
+          </button>
+          <button id="destroyBtn" class="btn btn-danger btn-small btn-icon" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3,6 5,6 21,6"/>
+              <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"/>
+            </svg>
+            Destroy
+          </button>
+        </div>
+      </div>
+
+      <!-- Status section -->
+      <div id="statusDisplay"></div>
+    </div>
+  </div>
+
+  <!-- Performance info -->
+  <div class="performance-info" id="performanceInfo"></div>
+
+  <script type="module" src="/main.ts"></script>
+</body>
+</html>
