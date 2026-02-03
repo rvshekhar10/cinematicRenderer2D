@@ -1,6 +1,6 @@
 {
   "name": "cinematic-renderer2d",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "High-performance, framework-agnostic NPM library that renders cinematic experiences from JSON specifications targeting 60-120fps performance",
   "type": "module",
   "main": "./dist/index.cjs",
