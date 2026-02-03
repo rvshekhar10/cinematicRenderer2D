@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 /**
+ * Hostinger Entry Point - CommonJS version
  * Simple Express server for serving the cinematicRenderer2D playground
- * Optimized for GoDaddy Node.js hosting
  */
 
 const express = require('express');
@@ -13,9 +13,12 @@ const app = express();
 const PORT = process.env.PORT || process.env.NODE_PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || 'production';
 
-console.log('Starting cinematicRenderer2D server...');
-console.log('PORT:', PORT);
-console.log('NODE_ENV:', NODE_ENV);
+console.log('='.repeat(50));
+console.log('🎬 cinematicRenderer2D Playground Server');
+console.log('='.repeat(50));
+console.log('Environment:', NODE_ENV);
+console.log('Port:', PORT);
+console.log('Starting server...');
 
 // Enable gzip compression
 app.use(compression());
@@ -40,19 +43,19 @@ if (NODE_ENV === 'production') {
 
 // Serve static files from dist-playground
 app.use(express.static(path.join(__dirname, 'dist-playground'), {
-  maxAge: '1d', // Cache static assets for 1 day
+  maxAge: '1d',
   etag: true,
   lastModified: true,
 }));
 
 // Cache control for specific file types
 app.use('/assets', express.static(path.join(__dirname, 'dist-playground/assets'), {
-  maxAge: '1y', // Cache assets for 1 year (they have hashed names)
+  maxAge: '1y',
   immutable: true,
 }));
 
 app.use('/examples', express.static(path.join(__dirname, 'dist-playground/examples'), {
-  maxAge: '1h', // Cache examples for 1 hour
+  maxAge: '1h',
 }));
 
 // Health check endpoint
@@ -62,6 +65,7 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     environment: NODE_ENV,
+    port: PORT,
   });
 });
 
@@ -111,14 +115,9 @@ app.use((err, req, res, next) => {
 // Start server
 const server = app.listen(PORT, () => {
   console.log('='.repeat(50));
-  console.log('🎬 cinematicRenderer2D Playground Server');
-  console.log('='.repeat(50));
-  console.log(`Environment: ${NODE_ENV}`);
-  console.log(`Port: ${PORT}`);
+  console.log('✅ Server is running!');
   console.log(`URL: http://localhost:${PORT}`);
   console.log(`Health Check: http://localhost:${PORT}/health`);
-  console.log('='.repeat(50));
-  console.log('Server is running! Press Ctrl+C to stop.');
   console.log('='.repeat(50));
 });
 
