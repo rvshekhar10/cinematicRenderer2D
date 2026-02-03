@@ -15,6 +15,21 @@ This ensures assets load correctly regardless of the deployment directory struct
 
 ## Deployment Options
 
+### Important Note About Build Warnings ⚠️
+
+When Hostinger builds the playground, you may see warnings like:
+```
+❌ Missing required file: dist/index.js
+❌ Missing required file: dist/react.js
+...
+```
+
+**These warnings are SAFE TO IGNORE.** They appear because:
+- The build script only builds the playground (`dist-playground/`)
+- The validation script checks for library files (`dist/`)
+- The playground doesn't need library files to work
+- The build still succeeds (look for `✓ built in XXXms`)
+
 ### Option 1: Upload via File Manager (Recommended)
 
 1. **Download the deployment package:**
