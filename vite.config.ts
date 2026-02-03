@@ -42,13 +42,21 @@ export default defineConfig({
           mkdirSync(examplesDir, { recursive: true });
         }
         
-        // Copy example files
+        // Copy all example JSON files
         const examples = [
+          'animation-features.json',
+          'audio-showcase.json',
+          'camera-showcase.json',
+          'cinematic-masterpiece.json',
+          'day-night-story-spec.json',
           'enhanced-story.json',
+          'light-effects-demo.json',
+          'night-sky-demo.json',
+          'scene-templates-demo.json',
           'simple-demo-spec.json',
           'story-narration-spec.json',
-          'day-night-story-spec.json',
-          'night-sky-demo.json',
+          'template-demo.json',
+          'transition-types.json',
         ];
         
         examples.forEach(file => {
