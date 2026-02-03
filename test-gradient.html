@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gradient Test</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+    .test-container {
+      width: 400px;
+      height: 300px;
+      border: 2px solid #333;
+      margin: 20px 0;
+      position: relative;
+    }
+    h2 {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gradient Layer Test</h1>
+  
+  <h2>1. Vertical Gradient (Deep Blue)</h2>
+  <div class="test-container">
+    <div style="
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, #1a1a2e, #2d3561, #4a5899);
+    "></div>
+  </div>
+  
+  <h2>2. Diagonal Gradient (Purple/Pink)</h2>
+  <div class="test-container">
+    <div style="
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom right, #667eea, #764ba2, #f093fb);
+    "></div>
+  </div>
+  
+  <h2>3. Radial Gradient (Golden/Blue)</h2>
+  <div class="test-container">
+    <div style="
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 50% 50%, #ffd89b, #19547b, #667eea);
+    "></div>
+  </div>
+  
+  <h2>4. Horizontal Gradient (Cyan/Turquoise)</h2>
+  <div class="test-container">
+    <div style="
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to right, #4facfe, #00f2fe, #43e97b, #38f9d7);
+    "></div>
+  </div>
+  
+  <p><strong>If you see colored gradients above, the CSS is working correctly!</strong></p>
+</body>
+</html>

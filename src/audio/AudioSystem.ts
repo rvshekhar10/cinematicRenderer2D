@@ -233,6 +233,104 @@ export class AudioSystem {
   }
   
   /**
+   * Crossfade from current tracks to new tracks
+   * 
+   * @param newTracks - New audio tracks to fade in
+   * @param duration - Crossfade duration in milliseconds
+   */
+  async crossfade(newTracks: CompiledAudioTrack[], duration: number = 1000): Promise<void> {
+    if (!this._isInitialized) {
+      await this.initialize();
+    }
+    
+    // Get currently playing tracks
+    const oldTracks = Array.from(this._activeTracks.values()).filter(t => t.isPlaying);
+    
+    // Load new tracks
+    await this.loadTracks(newTracks);
+    
+    // Start fading out old tracks
+    const fadeOutPromises = oldTracks.map(track => this._fadeOutTrack(track, duration));
+    
+    // Start fading in new tracks
+    const fadeInPromises = newTracks.map(async (compiledTrack) => {
+      // Start the track at current time with volume 0
+      const track: ActiveTrack = {
+        id: compiledTrack.id,
+        type: compiledTrack.type,
+        startTime: compiledTrack.startMs,
+        endTime: compiledTrack.endMs,
+        volume: compiledTrack.volume,
+        fadeIn: duration, // Use crossfade duration as fadeIn
+        fadeOut: compiledTrack.fadeOut,
+        loop: compiledTrack.loop,
+        audioNode: compiledTrack.audioNode,
+        audioElement: compiledTrack.audioElement,
+        isPlaying: false,
+        isPaused: false,
+        currentTime: 0,
+      };
+      
+      this._activeTracks.set(track.id, track);
+      
+      try {
+        if (this._audioContext && track.audioNode) {
+          await this._startWebAudioTrackWithFade(track, compiledTrack, 0, track.volume, duration);
+        } else if (track.audioElement) {
+          await this._startHTMLAudioTrackWithFade(track, 0, track.volume, duration);
+        }
+        
+        track.isPlaying = true;
+        this._emit('track-started', track.id);
+      } catch (error) {
+        console.error(`AudioSystem: Failed to start track ${track.id} during crossfade:`, error);
+        this._emit('track-error', track.id, error as Error);
+        this._activeTracks.delete(track.id);
+      }
+    });
+    
+    // Wait for all fades to complete
+    await Promise.all([...fadeOutPromises, ...fadeInPromises]);
+    
+    // Clean up old tracks
+    oldTracks.forEach(track => {
+      this._forceStopTrack(track);
+    });
+  }
+  
+  /**
+   * Stop all tracks for a specific scene
+   * 
+   * @param _sceneId - Scene ID to stop tracks for
+   */
+  stopSceneTracks(_sceneId: string): void {
+    // Stop all tracks (in a real implementation, tracks would be tagged with sceneId)
+    // For now, we'll stop all active tracks
+    for (const track of this._activeTracks.values()) {
+      if (track.isPlaying) {
+        this._stopTrack(track);
+      }
+    }
+  }
+  
+  /**
+   * Clean up audio resources for a scene
+   * 
+   * @param sceneId - Scene ID to clean up
+   */
+  cleanupScene(sceneId: string): void {
+    // Remove compiled tracks for this scene
+    // In a real implementation, tracks would be tagged with sceneId
+    // For now, we'll clear all compiled tracks
+    this.stopSceneTracks(sceneId);
+    
+    // Note: In a production implementation, we would:
+    // 1. Tag each CompiledAudioTrack with its sceneId
+    // 2. Only remove tracks belonging to the specified scene
+    // 3. Keep tracks that might be shared across scenes
+  }
+  
+  /**
    * Set master volume
    */
   setMasterVolume(volume: number): void {
@@ -454,6 +552,50 @@ export class AudioSystem {
     track.source = source;
   }
   
+  private async _startWebAudioTrackWithFade(
+    track: ActiveTrack,
+    _compiledTrack: CompiledAudioTrack,
+    startVolume: number,
+    endVolume: number,
+    fadeDuration: number
+  ): Promise<void> {
+    if (!this._audioContext || !this._masterGainNode) {
+      throw new Error('WebAudio context not available');
+    }
+    
+    // Create source node
+    const source = this._audioContext.createBufferSource();
+    source.buffer = track.audioNode as unknown as AudioBuffer;
+    source.loop = track.loop;
+    
+    // Create gain node for this track
+    const gainNode = this._audioContext.createGain();
+    track.gainNode = gainNode;
+    
+    // Connect audio graph
+    source.connect(gainNode);
+    gainNode.connect(this._masterGainNode);
+    
+    // Set initial volume and fade to target
+    const now = this._audioContext.currentTime;
+    gainNode.gain.setValueAtTime(startVolume, now);
+    gainNode.gain.linearRampToValueAtTime(endVolume, now + fadeDuration / 1000);
+    
+    // Handle track end
+    source.onended = () => {
+      if (track.isPlaying) {
+        track.isPlaying = false;
+        this._emit('track-ended', track.id);
+        this._activeTracks.delete(track.id);
+      }
+    };
+    
+    // Start playback
+    const offset = Math.max(0, track.currentTime / 1000);
+    source.start(0, offset);
+    track.source = source;
+  }
+  
   private _startHTMLAudioTrack(track: ActiveTrack): void {
     if (!track.audioElement) {
       throw new Error('HTMLAudio element not available');
@@ -499,6 +641,71 @@ export class AudioSystem {
           this._emit('track-error', track.id, error);
         }
       });
+    }
+  }
+  
+  private async _startHTMLAudioTrackWithFade(
+    track: ActiveTrack,
+    startVolume: number,
+    endVolume: number,
+    fadeDuration: number
+  ): Promise<void> {
+    if (!track.audioElement) {
+      throw new Error('HTMLAudio element not available');
+    }
+    
+    const audio = track.audioElement;
+    
+    // Set initial volume
+    audio.volume = this._config.masterVolume * startVolume;
+    
+    // Set current time if seeking
+    if (track.currentTime > 0) {
+      audio.currentTime = track.currentTime / 1000;
+    }
+    
+    // Handle track end
+    audio.onended = () => {
+      if (track.isPlaying) {
+        track.isPlaying = false;
+        this._emit('track-ended', track.id);
+        this._activeTracks.delete(track.id);
+      }
+    };
+    
+    // Handle errors
+    audio.onerror = () => {
+      this._emit('track-error', track.id, new Error('HTMLAudio playback error'));
+    };
+    
+    // Start playback
+    const playPromise = audio.play();
+    if (playPromise) {
+      await playPromise.catch(error => {
+        if (error.name === 'NotAllowedError') {
+          this._emit('autoplay-blocked', track.id);
+        } else {
+          this._emit('track-error', track.id, error);
+        }
+        throw error;
+      });
+    }
+    
+    // Fade to target volume
+    await this._fadeHTMLAudio(audio, this._config.masterVolume * endVolume, fadeDuration);
+  }
+  
+  private async _fadeOutTrack(track: ActiveTrack, duration: number): Promise<void> {
+    if (track.gainNode && this._audioContext) {
+      const now = this._audioContext.currentTime;
+      const currentVolume = track.gainNode.gain.value;
+      track.gainNode.gain.setValueAtTime(currentVolume, now);
+      track.gainNode.gain.linearRampToValueAtTime(0, now + duration / 1000);
+      
+      // Wait for fade to complete
+      await new Promise(resolve => setTimeout(resolve, duration));
+    } else if (track.audioElement) {
+      await this._fadeHTMLAudio(track.audioElement, 0, duration);
     }
   }
   

@@ -18,7 +18,11 @@ import { LayerRegistry } from './LayerRegistry';
 import { DOMRenderer } from '../rendering/dom/DOMRenderer';
 import { Canvas2DRenderer } from '../rendering/canvas2d/Canvas2DRenderer';
 import type { ICinematicLayer } from './interfaces/ICinematicLayer';
+import { StateMachine, RendererState, SceneState } from './StateMachine';
 import type { LayerMountContext } from './interfaces/LayerContext';
+import { SceneLifecycleManager } from './SceneLifecycleManager';
+import { AssetManager } from '../assets/AssetManager';
+import { CameraSystem } from './CameraSystem';
 
 export interface CinematicRenderer2DOptions {
   container: HTMLElement;
@@ -38,6 +42,7 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
   private eventListeners: Map<string, Function[]> = new Map();
   
   // State management
+  private _stateMachine: StateMachine;
   private _state: PlaybackState = 'idle';
   private _currentTime: number = 0;
   private _duration: number = 0;
@@ -54,10 +59,14 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
   private _layerRegistry: LayerRegistry;
   private _domRenderer: DOMRenderer | null = null;
   private _canvas2DRenderer: Canvas2DRenderer | null = null;
+  private _assetManager: AssetManager;
+  private _sceneLifecycleManager: SceneLifecycleManager | null = null;
+  private _cameraSystem: CameraSystem | null = null;
   
   // Layer management
   private _layers: ICinematicLayer[] = [];
   private _currentSceneLayers: ICinematicLayer[] = [];
+  private _layerStates: Map<string, 'created' | 'mounted' | 'active' | 'destroyed'> = new Map();
   
   // Resize observer for automatic container resizing
   private _resizeObserver: ResizeObserver | null = null;
@@ -82,6 +91,14 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
     this._options = options;
     this._quality = options.quality || this._spec.engine.quality || 'auto';
     
+    // Initialize state machine
+    this._stateMachine = new StateMachine(RendererState.IDLE);
+    
+    // Listen for state changes and emit events
+    this._stateMachine.addListener((from, to) => {
+      this.emit('state-change', { from, to });
+    });
+    
     // Initialize core subsystems
     this._scheduler = new Scheduler({
       targetFps: this._spec.engine.targetFps || 60,
@@ -95,6 +112,14 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
     
     // Initialize layer registry
     this._layerRegistry = LayerRegistry.getInstance();
+    
+    // Initialize asset manager
+    this._assetManager = new AssetManager({
+      maxConcurrentLoads: 6,
+      defaultTimeout: 30000,
+      defaultRetries: 3,
+      baseUrl: '',
+    });
     
     // Initialize audio system
     this._audioSystem = new AudioSystem({
@@ -159,7 +184,8 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
   
   
   async mount(): Promise<void> {
-    if (this._state === 'destroyed') {
+    // Check if already destroyed
+    if (this._stateMachine.getState() === RendererState.DESTROYED) {
       throw new Error('Cannot mount destroyed renderer');
     }
     
@@ -182,6 +208,16 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
       // Initialize rendering backends
       this._initializeRenderers();
       
+      // Initialize camera system
+      this._cameraSystem = new CameraSystem(this._container);
+      
+      // Initialize scene lifecycle manager
+      this._sceneLifecycleManager = new SceneLifecycleManager({
+        assetManager: this._assetManager,
+        layerRegistry: this._layerRegistry,
+        container: this._container,
+      });
+      
       // Create and mount layers for the initial scene
       this._initializeLayers();
       
@@ -197,6 +233,9 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
       }
       
       this._mounted = true;
+      
+      // Transition to READY state
+      await this._stateMachine.transition(RendererState.READY);
       this._setState('ready');
       this.emit('ready');
       
@@ -207,13 +246,15 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
       
     } catch (error) {
       this._setState('idle');
+      await this._stateMachine.transition(RendererState.IDLE).catch(() => {});
       this.emit('error', error);
       throw error;
     }
   }
   
   play(): void {
-    if (this._state === 'destroyed') {
+    // Check if destroyed
+    if (this._stateMachine.getState() === RendererState.DESTROYED) {
       throw new Error('Cannot play destroyed renderer');
     }
     
@@ -221,11 +262,24 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
       throw new Error('Must mount renderer before playing');
     }
     
-    if (this._state === 'playing') {
+    // Check if already playing
+    const currentState = this._stateMachine.getState();
+    if (currentState === RendererState.PLAYING) {
       return; // Already playing
     }
     
+    // Validate transition
+    if (!this._stateMachine.canTransition(RendererState.PLAYING)) {
+      throw new Error(`Cannot play from state: ${currentState}`);
+    }
+    
     const previousState = this._state;
+    
+    // Transition to PLAYING state
+    this._stateMachine.transition(RendererState.PLAYING).catch((error) => {
+      console.error('State transition error:', error);
+    });
+    
     this._setState('playing');
     
     // Start the scheduler frame loop
@@ -241,11 +295,18 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
   }
   
   pause(): void {
-    if (this._state !== 'playing') {
+    const currentState = this._stateMachine.getState();
+    if (currentState !== RendererState.PLAYING) {
       return; // Not playing, nothing to pause
     }
     
     const previousState = this._state;
+    
+    // Transition to PAUSED state
+    this._stateMachine.transition(RendererState.PAUSED).catch((error) => {
+      console.error('State transition error:', error);
+    });
+    
     this._setState('paused');
     
     // Pause the scheduler frame loop
@@ -258,11 +319,23 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
   }
   
   stop(): void {
-    if (this._state === 'destroyed' || this._state === 'idle') {
+    const currentState = this._stateMachine.getState();
+    if (currentState === RendererState.DESTROYED || currentState === RendererState.IDLE) {
       return; // Already stopped or destroyed
     }
     
+    // Don't transition if already stopped
+    if (currentState === RendererState.STOPPED) {
+      return;
+    }
+    
     const previousState = this._state;
+    
+    // Transition to STOPPED state
+    this._stateMachine.transition(RendererState.STOPPED).catch((error) => {
+      console.error('State transition error:', error);
+    });
+    
     this._setState('stopped');
     
     // Stop the scheduler frame loop
@@ -283,7 +356,8 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
   }
   
   destroy(): void {
-    if (this._state === 'destroyed') {
+    const currentState = this._stateMachine.getState();
+    if (currentState === RendererState.DESTROYED) {
       return; // Already destroyed
     }
     
@@ -291,6 +365,11 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
     
     // Stop playback first
     this.stop();
+    
+    // Transition to DESTROYED state
+    this._stateMachine.transition(RendererState.DESTROYED).catch((error) => {
+      console.error('State transition error:', error);
+    });
     
     // Clean up resize observer
     if (this._resizeObserver) {
@@ -319,6 +398,23 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
     
     // Destroy audio system
     this._audioSystem.destroy();
+    
+    // Destroy scene lifecycle manager
+    if (this._sceneLifecycleManager) {
+      const activeScene = this._sceneLifecycleManager.getActiveScene();
+      if (activeScene) {
+        this._sceneLifecycleManager.deactivateScene(activeScene).catch((error) => {
+          console.error('Error deactivating scene during destroy:', error);
+        });
+      }
+      this._sceneLifecycleManager = null;
+    }
+    
+    // Destroy camera system
+    if (this._cameraSystem) {
+      this._cameraSystem.reset();
+      this._cameraSystem = null;
+    }
     
     // Destroy debug overlay
     if (this._debugOverlay) {
@@ -349,7 +445,7 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
   
   
   seek(timeMs: number): void {
-    if (this._state === 'destroyed') {
+    if (this._stateMachine.getState() === RendererState.DESTROYED) {
       throw new Error('Cannot seek on destroyed renderer');
     }
     
@@ -376,7 +472,7 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
   }
   
   goToEvent(eventId: string): void {
-    if (this._state === 'destroyed') {
+    if (this._stateMachine.getState() === RendererState.DESTROYED) {
       throw new Error('Cannot navigate on destroyed renderer');
     }
     
@@ -402,7 +498,7 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
   }
   
   goToScene(sceneId: string): void {
-    if (this._state === 'destroyed') {
+    if (this._stateMachine.getState() === RendererState.DESTROYED) {
       throw new Error('Cannot navigate on destroyed renderer');
     }
     
@@ -445,7 +541,7 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
   }
   
   resize(width: number, height: number): void {
-    if (this._state === 'destroyed') {
+    if (this._stateMachine.getState() === RendererState.DESTROYED) {
       return; // Cannot resize destroyed renderer
     }
     
@@ -553,6 +649,42 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
     return this._audioSystem.getActiveTrackCount();
   }
   
+  // Camera system methods
+  getCameraState() {
+    if (!this._cameraSystem) {
+      throw new Error('Camera system not initialized. Call mount() first.');
+    }
+    return this._cameraSystem.getState();
+  }
+  
+  setCameraState(state: Partial<import('./CameraSystem').CameraState>): void {
+    if (!this._cameraSystem) {
+      throw new Error('Camera system not initialized. Call mount() first.');
+    }
+    this._cameraSystem.setState(state);
+  }
+  
+  addCameraAnimation(animation: import('./CameraSystem').CameraAnimation): void {
+    if (!this._cameraSystem) {
+      throw new Error('Camera system not initialized. Call mount() first.');
+    }
+    this._cameraSystem.addAnimation(animation);
+  }
+  
+  resetCamera(): void {
+    if (!this._cameraSystem) {
+      throw new Error('Camera system not initialized. Call mount() first.');
+    }
+    this._cameraSystem.reset();
+  }
+  
+  getCameraTransformMatrix(): DOMMatrix {
+    if (!this._cameraSystem) {
+      throw new Error('Camera system not initialized. Call mount() first.');
+    }
+    return this._cameraSystem.getTransformMatrix();
+  }
+  
   // Debug system methods
   isDebugEnabled(): boolean {
     return this._debugOverlay !== null;
@@ -576,6 +708,11 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
     }
   }
   
+  // Scene lifecycle methods
+  getSceneLifecycleManager(): SceneLifecycleManager | null {
+    return this._sceneLifecycleManager;
+  }
+  
   protected emit(event: string, ...args: any[]): void {
     const listeners = this.eventListeners.get(event);
     if (listeners) {
@@ -591,7 +728,7 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
   
   // Frame callback for animation updates
   private _onFrame(context: FrameContext): void {
-    if (this._state !== 'playing') {
+    if (this._stateMachine.getState() !== RendererState.PLAYING) {
       return;
     }
     
@@ -608,6 +745,11 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
     
     // Update current event and scene
     this._updateCurrentEventAndScene();
+    
+    // Update camera system
+    if (this._cameraSystem) {
+      this._cameraSystem.update(this._currentTime);
+    }
     
     // Update layers for current scene if scene changed
     this._updateCurrentSceneLayers();
@@ -819,6 +961,8 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
         try {
           const layer = this._layerRegistry.createLayer(layerSpec.type, layerSpec.id, layerSpec.config);
           this._layers.push(layer);
+          // Initialize layer state as 'created'
+          this._layerStates.set(layer.id, 'created');
         } catch (error) {
           console.error(`Failed to create layer ${layerSpec.id} of type ${layerSpec.type}:`, error);
         }
@@ -833,6 +977,14 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
     const currentScene = this._getCurrentScene();
     if (!currentScene) return;
     
+    // TODO: Once we have CompiledScene objects from SpecParser, we can use SceneLifecycleManager
+    // For now, continue with the existing layer management approach
+    // Future integration:
+    // if (this._sceneLifecycleManager && compiledScene) {
+    //   await this._sceneLifecycleManager.activateScene(compiledScene);
+    //   return;
+    // }
+    
     // Get layers for current scene
     const newSceneLayers = this._layers.filter(layer => 
       currentScene.layers.some(layerSpec => layerSpec.id === layer.id)
@@ -843,14 +995,14 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
       newSceneLayers.some(layer => !this._currentSceneLayers.includes(layer));
     
     if (layersChanged) {
-      // Unmount old layers
-      for (const layer of this._currentSceneLayers) {
-        if (!newSceneLayers.includes(layer)) {
-          layer.destroy();
-        }
+      // CRITICAL: Destroy old scene layers BEFORE mounting new ones (Requirement 1.1)
+      const layersToDestroy = this._currentSceneLayers.filter(layer => !newSceneLayers.includes(layer));
+      
+      for (const layer of layersToDestroy) {
+        this._destroyLayer(layer);
       }
       
-      // Mount new layers
+      // Mount new layers only after old ones are fully destroyed
       for (const layer of newSceneLayers) {
         if (!this._currentSceneLayers.includes(layer)) {
           this._mountLayer(layer);
@@ -858,11 +1010,29 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
       }
       
       this._currentSceneLayers = newSceneLayers;
+      
+      // Emit scene change event with layer counts for debugging
+      this.emit('sceneLayersChanged', {
+        destroyed: layersToDestroy.length,
+        mounted: newSceneLayers.filter(l => !this._currentSceneLayers.includes(l)).length,
+        active: this._currentSceneLayers.length
+      });
     }
   }
   
   private _mountLayer(layer: ICinematicLayer): void {
     try {
+      // Check if layer is already mounted or destroyed
+      const layerState = this._layerStates.get(layer.id);
+      if (layerState === 'mounted' || layerState === 'active') {
+        console.warn(`Layer ${layer.id} is already mounted, skipping mount`);
+        return;
+      }
+      if (layerState === 'destroyed') {
+        console.error(`Cannot mount destroyed layer ${layer.id}`);
+        return;
+      }
+      
       // Determine which renderer to use based on layer type
       const builtInTypes = this._layerRegistry.getBuiltInTypes();
       let renderer: any = this._domRenderer; // Use any type to allow both renderer types
@@ -886,8 +1056,35 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
       
       // Mount the layer
       layer.mount(mountContext);
+      
+      // Update layer state
+      this._layerStates.set(layer.id, 'mounted');
     } catch (error) {
       console.error(`Failed to mount layer ${layer.id}:`, error);
+    }
+  }
+  
+  private _destroyLayer(layer: ICinematicLayer): void {
+    try {
+      const layerState = this._layerStates.get(layer.id);
+      
+      // Skip if already destroyed
+      if (layerState === 'destroyed') {
+        return;
+      }
+      
+      // Destroy the layer (this should cancel animations and remove DOM nodes)
+      layer.destroy();
+      
+      // Update layer state
+      this._layerStates.set(layer.id, 'destroyed');
+      
+      // Log for debugging
+      if (this._options.debug) {
+        console.log(`Layer ${layer.id} destroyed`);
+      }
+    } catch (error) {
+      console.error(`Error destroying layer ${layer.id}:`, error);
     }
   }
   
@@ -947,9 +1144,10 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
   private _resetLayersToInitialState(): void {
     // Reset all layers to their initial state
     for (const layer of this._currentSceneLayers) {
-      // TODO: Implement layer state reset
-      // For now, just remount the layer
-      layer.destroy();
+      // Destroy and remount the layer to reset state
+      this._destroyLayer(layer);
+      // Reset state to 'created' so it can be mounted again
+      this._layerStates.set(layer.id, 'created');
       this._mountLayer(layer);
     }
   }
@@ -957,14 +1155,11 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
   private _destroyAllLayers(): void {
     // Destroy all layers
     for (const layer of this._layers) {
-      try {
-        layer.destroy();
-      } catch (error) {
-        console.error(`Error destroying layer ${layer.id}:`, error);
-      }
+      this._destroyLayer(layer);
     }
     
     this._layers = [];
     this._currentSceneLayers = [];
+    this._layerStates.clear();
   }
 }

@@ -15,7 +15,10 @@ import {
   StarfieldLayer,
   DustLayer,
   NebulaNoiseLayer,
+  FogLayer,
+  ParallaxGroupLayer,
 } from './layers/BuiltInLayers';
+import { LightLayer } from './layers/LightLayer';
 
 export type LayerFactory = (id: string, config: Record<string, any>) => ICinematicLayer;
 
@@ -39,12 +42,66 @@ export class LayerRegistry {
   
   /**
    * Register a custom layer type with a factory function
+   * Validates that the layer implements ICinematicLayer interface
    */
   registerLayerType(type: string, factory: LayerFactory): void {
     if (this.layerTypes.has(type)) {
       console.warn(`Layer type '${type}' is already registered. Overriding existing registration.`);
     }
+    
+    // Validate that the factory produces a valid layer
+    try {
+      const testLayer = factory('__validation_test__', {});
+      this.validateLayerInterface(testLayer, type);
+    } catch (error) {
+      throw new Error(
+        `Failed to register layer type '${type}': ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
+    }
+    
     this.layerTypes.set(type, factory);
+  }
+  
+  /**
+   * Validate that a layer implements the ICinematicLayer interface
+   * Requirement 11.7: Layer interface validation
+   */
+  private validateLayerInterface(layer: any, type: string): void {
+    const requiredProperties = ['id', 'type', 'zIndex'];
+    const requiredMethods = ['mount', 'update', 'destroy'];
+    
+    // Check required properties
+    for (const prop of requiredProperties) {
+      if (!(prop in layer)) {
+        throw new Error(
+          `Layer type '${type}' does not implement required property '${prop}'. ` +
+          `All layers must implement the ICinematicLayer interface with properties: ${requiredProperties.join(', ')}`
+        );
+      }
+    }
+    
+    // Check required methods
+    for (const method of requiredMethods) {
+      if (typeof layer[method] !== 'function') {
+        throw new Error(
+          `Layer type '${type}' does not implement required method '${method}()'. ` +
+          `All layers must implement the ICinematicLayer interface with methods: ${requiredMethods.join(', ')}`
+        );
+      }
+    }
+    
+    // Validate property types
+    if (typeof layer.id !== 'string') {
+      throw new Error(`Layer type '${type}' has invalid 'id' property. Expected string, got ${typeof layer.id}`);
+    }
+    
+    if (typeof layer.type !== 'string') {
+      throw new Error(`Layer type '${type}' has invalid 'type' property. Expected string, got ${typeof layer.type}`);
+    }
+    
+    if (typeof layer.zIndex !== 'number') {
+      throw new Error(`Layer type '${type}' has invalid 'zIndex' property. Expected number, got ${typeof layer.zIndex}`);
+    }
   }
   
   /**
@@ -77,8 +134,8 @@ export class LayerRegistry {
    */
   getBuiltInTypes(): { dom: string[]; canvas2d: string[] } {
     return {
-      dom: ['gradient', 'image', 'textBlock', 'vignette', 'glowOrb', 'noiseOverlay'],
-      canvas2d: ['particles', 'starfield', 'dust', 'nebulaNoise'],
+      dom: ['gradient', 'image', 'textBlock', 'vignette', 'glowOrb', 'noiseOverlay', 'light', 'parallaxGroup'],
+      canvas2d: ['particles', 'starfield', 'dust', 'nebulaNoise', 'fog'],
     };
   }
   
@@ -127,11 +184,14 @@ export class LayerRegistry {
     this.layerTypes.set('vignette', (id, config) => new VignetteLayer(id, config));
     this.layerTypes.set('glowOrb', (id, config) => new GlowOrbLayer(id, config));
     this.layerTypes.set('noiseOverlay', (id, config) => new NoiseOverlayLayer(id, config));
+    this.layerTypes.set('light', (id, config) => new LightLayer(id, config as any));
+    this.layerTypes.set('parallaxGroup', (id, config) => new ParallaxGroupLayer(id, config));
     
     // Canvas2D layer types
     this.layerTypes.set('particles', (id, config) => new ParticlesLayer(id, config));
     this.layerTypes.set('starfield', (id, config) => new StarfieldLayer(id, config));
     this.layerTypes.set('dust', (id, config) => new DustLayer(id, config));
     this.layerTypes.set('nebulaNoise', (id, config) => new NebulaNoiseLayer(id, config));
+    this.layerTypes.set('fog', (id, config) => new FogLayer(id, config));
   }
 }

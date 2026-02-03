@@ -1,0 +1,86 @@
+{
+  "version": "1.0.0",
+  "description": "Default assets for cinematic-renderer2d library",
+  "assets": {
+    "audio": [
+      {
+        "id": "waves-crashing",
+        "filename": "waves-crashing-397977.mp3",
+        "path": "/assets/audio/waves-crashing-397977.mp3",
+        "type": "audio/mpeg",
+        "size": 158000,
+        "duration": 5,
+        "sampleRate": 44100,
+        "bitrate": 256,
+        "channels": 2,
+        "tags": ["ocean", "waves", "nature", "ambience", "relaxation"],
+        "description": "Ocean waves crashing on shore - perfect for beach or water scenes",
+        "license": "Free to use",
+        "usageExamples": [
+          "Background ambience for ocean scenes",
+          "Relaxation and meditation sequences",
+          "Nature documentary backgrounds"
+        ]
+      }
+    ],
+    "images": [
+      {
+        "id": "full-moon",
+        "filename": "full-moon-image-in-center-screen.jpg",
+        "path": "/assets/images/full-moon-image-in-center-screen.jpg",
+        "type": "image/jpeg",
+        "size": 20000,
+        "width": 1536,
+        "height": 1024,
+        "aspectRatio": "3:2",
+        "tags": ["moon", "night", "celestial", "space", "astronomy"],
+        "description": "High-quality full moon image centered on dark background",
+        "license": "Free to use",
+        "usageExamples": [
+          "Night sky scenes",
+          "Celestial backgrounds",
+          "Astronomy presentations",
+          "Romantic or mystical atmospheres"
+        ]
+      }
+    ],
+    "videos": [
+      {
+        "id": "milky-way-timelapse",
+        "filename": "free_milky_way_galaxy_from_ground_with_treeline.mp4",
+        "path": "/assets/video/free_milky_way_galaxy_from_ground_with_treeline.mp4",
+        "type": "video/mp4",
+        "size": 8600000,
+        "width": 1920,
+        "height": 1080,
+        "duration": 10,
+        "fps": 30,
+        "codec": "h264",
+        "tags": ["milky-way", "galaxy", "stars", "night-sky", "timelapse", "nature"],
+        "description": "Stunning Milky Way galaxy time-lapse with treeline silhouette",
+        "license": "Free to use",
+        "usageExamples": [
+          "Cinematic backgrounds for space themes",
+          "Night sky time-lapse sequences",
+          "Astronomy and science content",
+          "Meditation and relaxation videos"
+        ],
+        "notes": "Large file (8.6 MB) - consider optimizing for production use"
+      }
+    ]
+  },
+  "collections": {
+    "night-sky": {
+      "name": "Night Sky Collection",
+      "description": "Assets for creating peaceful night sky scenes",
+      "assets": ["full-moon", "milky-way-timelapse", "waves-crashing"],
+      "exampleSpec": "/playground/examples/night-sky-demo.json"
+    }
+  },
+  "metadata": {
+    "totalAssets": 3,
+    "totalSize": 8778000,
+    "lastUpdated": "2026-02-03",
+    "categories": ["nature", "celestial", "ambience"]
+  }
+}

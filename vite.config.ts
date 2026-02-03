@@ -43,9 +43,11 @@ export default defineConfig({
         
         // Copy example files
         const examples = [
+          'enhanced-story.json',
           'simple-demo-spec.json',
           'story-narration-spec.json',
           'day-night-story-spec.json',
+          'night-sky-demo.json',
         ];
         
         examples.forEach(file => {

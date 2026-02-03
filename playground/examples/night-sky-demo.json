@@ -1,0 +1,1243 @@
+{
+  "schemaVersion": "1.0.0",
+  "engine": {
+    "targetFps": 120,
+    "quality": "ultra",
+    "debug": false
+  },
+  "events": [
+    {
+      "id": "night-sky-journey",
+      "name": "Night Sky Journey",
+      "scenes": [
+        "act1-dusk",
+        "act2-moonrise",
+        "act3-galaxy",
+        "act4-meditation",
+        "act5-dawn"
+      ]
+    }
+  ],
+  "transitions": {
+    "dusk-to-moonrise": {
+      "type": "fade",
+      "duration": 3000,
+      "easing": "ease-in-out"
+    },
+    "moonrise-to-galaxy": {
+      "type": "dissolve",
+      "duration": 3500,
+      "easing": "ease-in-out"
+    },
+    "galaxy-to-meditation": {
+      "type": "blur",
+      "duration": 3000,
+      "easing": "ease-in-out",
+      "config": {
+        "blurAmount": 20
+      }
+    },
+    "meditation-to-dawn": {
+      "type": "slide",
+      "duration": 3500,
+      "easing": "ease-in-out",
+      "config": {
+        "direction": "up"
+      }
+    }
+  },
+  "scenes": [
+    {
+      "id": "act1-dusk",
+      "name": "Act I: Dusk Approaches",
+      "duration": 10000,
+      "transition": "dusk-to-moonrise",
+      "camera": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1.2,
+        "rotate": 0
+      },
+      "cameraAnimations": [
+        {
+          "property": "zoom",
+          "from": 1.2,
+          "to": 1,
+          "startMs": 0,
+          "endMs": 5000,
+          "easing": "ease-out"
+        }
+      ],
+      "layers": [
+        {
+          "id": "dusk-bg",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#ff6b6b", "#4ecdc4", "#1a535c"],
+            "direction": "vertical"
+          }
+        },
+        {
+          "id": "dusk-stars",
+          "type": "starfield",
+          "zIndex": 1,
+          "config": {
+            "count": 10,
+            "speed": 0.005,
+            "opacity": 0,
+            "twinkle": true,
+            "minSize": 0.5,
+            "maxSize": 1.5
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 0.6,
+              "startMs": 5000,
+              "endMs": 10000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "dusk-fog",
+          "type": "fog",
+          "zIndex": 2,
+          "config": {
+            "density": 0.08,
+            "color": "#4ecdc4",
+            "speed": 0.3,
+            "direction": 90,
+            "opacity": 0.3
+          }
+        },
+        {
+          "id": "dusk-light",
+          "type": "light",
+          "zIndex": 3,
+          "config": {
+            "mode": "radial",
+            "x": "50%",
+            "y": "20%",
+            "radius": 400,
+            "color": "#ff6b6b",
+            "intensity": 0.5,
+            "blendMode": "screen"
+          },
+          "animations": [
+            {
+              "property": "intensity",
+              "from": 0.5,
+              "to": 0.2,
+              "startMs": 0,
+              "endMs": 10000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "dusk-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "ACT I\nDusk Approaches",
+            "fontSize": 52,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "45%",
+            "textShadow": "0 4px 30px rgba(0,0,0,0.8)",
+            "fontWeight": "700",
+            "lineHeight": 1.3
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 2000,
+              "endMs": 3500,
+              "easing": "ease-out"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 8500,
+              "endMs": 10000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "dusk-subtitle",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "As day surrenders to night",
+            "fontSize": 22,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#e6f7ff",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "58%",
+            "textShadow": "0 2px 15px rgba(0,0,0,0.9)",
+            "fontWeight": "300",
+            "letterSpacing": "1px"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 4500,
+              "endMs": 6000,
+              "easing": "ease-in"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 8500,
+              "endMs": 10000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ],
+      "audio": [
+        {
+          "id": "ocean-waves",
+          "type": "ambience",
+          "src": "/assets/audio/waves-crashing-397977.mp3",
+          "startMs": 0,
+          "loop": true,
+          "volume": 0.5,
+          "fadeIn": 3000
+        }
+      ]
+    },
+    {
+      "id": "act2-moonrise",
+      "name": "Act II: Moonrise",
+      "duration": 12000,
+      "transition": "moonrise-to-galaxy",
+      "camera": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1,
+        "rotate": 0
+      },
+      "cameraAnimations": [
+        {
+          "property": "y",
+          "from": 20,
+          "to": -10,
+          "startMs": 0,
+          "endMs": 12000,
+          "easing": "ease-in-out"
+        },
+        {
+          "property": "rotate",
+          "from": 0,
+          "to": 3,
+          "startMs": 6000,
+          "endMs": 12000,
+          "easing": "ease-in-out"
+        }
+      ],
+      "layers": [
+        {
+          "id": "moonrise-bg",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#0a1128", "#1e3a5f", "#2c5f8d"],
+            "direction": "vertical"
+          }
+        },
+        {
+          "id": "moonrise-stars",
+          "type": "starfield",
+          "zIndex": 1,
+          "config": {
+            "count": 25,
+            "speed": 0.008,
+            "opacity": 0.8,
+            "twinkle": true,
+            "minSize": 0.5,
+            "maxSize": 2.5
+          }
+        },
+        {
+          "id": "moonrise-moon",
+          "type": "image",
+          "zIndex": 5,
+          "config": {
+            "src": "/assets/images/full-moon-image-in-center-screen.jpg",
+            "x": "50%",
+            "y": "30%",
+            "width": "350px",
+            "height": "350px",
+            "opacity": 0
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 0.95,
+              "startMs": 2000,
+              "endMs": 5000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "y",
+              "from": "35%",
+              "to": "28%",
+              "startMs": 0,
+              "endMs": 12000,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "moonrise-glow",
+          "type": "glowOrb",
+          "zIndex": 4,
+          "config": {
+            "x": "50%",
+            "y": "30%",
+            "radius": 180,
+            "color": "#e6f7ff",
+            "intensity": 0,
+            "blur": 40
+          },
+          "animations": [
+            {
+              "property": "intensity",
+              "from": 0,
+              "to": 1.5,
+              "startMs": 2000,
+              "endMs": 5000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "radius",
+              "from": 150,
+              "to": 200,
+              "startMs": 5000,
+              "endMs": 12000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "moonrise-light",
+          "type": "light",
+          "zIndex": 3,
+          "config": {
+            "mode": "radial",
+            "x": "50%",
+            "y": "30%",
+            "radius": 500,
+            "color": "#e6f7ff",
+            "intensity": 0,
+            "blendMode": "screen"
+          },
+          "animations": [
+            {
+              "property": "intensity",
+              "from": 0,
+              "to": 0.4,
+              "startMs": 2000,
+              "endMs": 5000,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "moonrise-particles",
+          "type": "particles",
+          "zIndex": 6,
+          "config": {
+            "count": 8,
+            "size": 2,
+            "speed": 0.4,
+            "color": "#e6f7ff",
+            "opacity": 0.7,
+            "type": "circle",
+            "x": "50%",
+            "y": "30%"
+          }
+        },
+        {
+          "id": "moonrise-fog",
+          "type": "fog",
+          "zIndex": 2,
+          "config": {
+            "density": 0.12,
+            "color": "#1e3a5f",
+            "speed": 0.4,
+            "direction": 45,
+            "opacity": 0.4
+          }
+        },
+        {
+          "id": "moonrise-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "ACT II\nMoonrise",
+            "fontSize": 56,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "65%",
+            "textShadow": "0 4px 30px rgba(0,0,0,0.8)",
+            "fontWeight": "700",
+            "lineHeight": 1.3
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 3000,
+              "endMs": 4500,
+              "easing": "ease-out"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 10500,
+              "endMs": 12000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "moonrise-subtitle",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "The celestial guardian awakens",
+            "fontSize": 24,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#b8d4e8",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "78%",
+            "textShadow": "0 2px 15px rgba(0,0,0,0.9)",
+            "fontWeight": "300",
+            "letterSpacing": "1px"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 5500,
+              "endMs": 7000,
+              "easing": "ease-in"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 10500,
+              "endMs": 12000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ],
+      "audio": [
+        {
+          "id": "ocean-waves",
+          "type": "ambience",
+          "src": "/assets/audio/waves-crashing-397977.mp3",
+          "startMs": 0,
+          "loop": true,
+          "volume": 0.6,
+          "fadeIn": 0
+        }
+      ]
+    },
+    {
+      "id": "act3-galaxy",
+      "name": "Act III: The Galaxy Unveiled",
+      "duration": 14000,
+      "transition": "galaxy-to-meditation",
+      "camera": {
+        "x": 0,
+        "y": -10,
+        "zoom": 1,
+        "rotate": 3
+      },
+      "cameraAnimations": [
+        {
+          "property": "zoom",
+          "from": 1,
+          "to": 1.15,
+          "startMs": 0,
+          "endMs": 7000,
+          "easing": "ease-in-out"
+        },
+        {
+          "property": "zoom",
+          "from": 1.15,
+          "to": 1,
+          "startMs": 7000,
+          "endMs": 14000,
+          "easing": "ease-in-out"
+        },
+        {
+          "property": "rotate",
+          "from": 3,
+          "to": -2,
+          "startMs": 0,
+          "endMs": 14000,
+          "easing": "ease-in-out"
+        }
+      ],
+      "layers": [
+        {
+          "id": "galaxy-bg",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#0a1128", "#1a1a3e", "#2d1b4e", "#4a2c5f"],
+            "direction": "diagonal"
+          }
+        },
+        {
+          "id": "galaxy-stars",
+          "type": "starfield",
+          "zIndex": 2,
+          "config": {
+            "count": 40,
+            "speed": 0.01,
+            "opacity": 0.9,
+            "twinkle": true,
+            "minSize": 0.5,
+            "maxSize": 3
+          }
+        },
+        {
+          "id": "galaxy-nebula",
+          "type": "nebulaNoise",
+          "zIndex": 1,
+          "config": {
+            "scale": 2,
+            "opacity": 0.3,
+            "color": "#9d7bd8",
+            "speed": 0.02
+          }
+        },
+        {
+          "id": "galaxy-light1",
+          "type": "light",
+          "zIndex": 3,
+          "config": {
+            "mode": "radial",
+            "x": "30%",
+            "y": "40%",
+            "radius": 350,
+            "color": "#9d7bd8",
+            "intensity": 0.3,
+            "blendMode": "screen"
+          },
+          "animations": [
+            {
+              "property": "intensity",
+              "from": 0.2,
+              "to": 0.4,
+              "startMs": 0,
+              "endMs": 3500,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "galaxy-light2",
+          "type": "light",
+          "zIndex": 3,
+          "config": {
+            "mode": "radial",
+            "x": "70%",
+            "y": "30%",
+            "radius": 300,
+            "color": "#4a90e2",
+            "intensity": 0.25,
+            "blendMode": "screen"
+          },
+          "animations": [
+            {
+              "property": "intensity",
+              "from": 0.15,
+              "to": 0.35,
+              "startMs": 0,
+              "endMs": 4000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "galaxy-particles",
+          "type": "particles",
+          "zIndex": 4,
+          "config": {
+            "count": 12,
+            "size": 2.5,
+            "speed": 0.6,
+            "color": "#ffffff",
+            "opacity": 0.8,
+            "type": "circle",
+            "x": "50%",
+            "y": "50%"
+          }
+        },
+        {
+          "id": "galaxy-fog",
+          "type": "fog",
+          "zIndex": 5,
+          "config": {
+            "density": 0.15,
+            "color": "#2c3e50",
+            "speed": 0.5,
+            "direction": 135,
+            "opacity": 0.35
+          }
+        },
+        {
+          "id": "galaxy-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "ACT III\nThe Galaxy Unveiled",
+            "fontSize": 58,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "45%",
+            "textShadow": "0 4px 30px rgba(0,0,0,0.9)",
+            "fontWeight": "700",
+            "lineHeight": 1.3
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 3000,
+              "endMs": 4500,
+              "easing": "ease-out"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 12000,
+              "endMs": 14000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "galaxy-subtitle",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "Infinite beauty stretches across the cosmos",
+            "fontSize": 24,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#d4e6f1",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "58%",
+            "textShadow": "0 2px 15px rgba(0,0,0,0.9)",
+            "fontWeight": "300",
+            "letterSpacing": "1px"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 6000,
+              "endMs": 7500,
+              "easing": "ease-in"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 12000,
+              "endMs": 14000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ],
+      "audio": [
+        {
+          "id": "ocean-waves",
+          "type": "ambience",
+          "src": "/assets/audio/waves-crashing-397977.mp3",
+          "startMs": 0,
+          "loop": true,
+          "volume": 0.7,
+          "fadeIn": 0
+        }
+      ]
+    },
+    {
+      "id": "act4-meditation",
+      "name": "Act IV: Cosmic Meditation",
+      "duration": 13000,
+      "transition": "meditation-to-dawn",
+      "camera": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1,
+        "rotate": -2
+      },
+      "cameraAnimations": [
+        {
+          "property": "x",
+          "from": -20,
+          "to": 20,
+          "startMs": 0,
+          "endMs": 13000,
+          "easing": "ease-in-out"
+        },
+        {
+          "property": "rotate",
+          "from": -2,
+          "to": 2,
+          "startMs": 0,
+          "endMs": 6500,
+          "easing": "ease-in-out",
+          "loop": true,
+          "yoyo": true
+        }
+      ],
+      "layers": [
+        {
+          "id": "meditation-bg",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#0f2027", "#203a43", "#2c5364"],
+            "direction": "vertical"
+          }
+        },
+        {
+          "id": "meditation-stars",
+          "type": "starfield",
+          "zIndex": 1,
+          "config": {
+            "count": 35,
+            "speed": 0.006,
+            "opacity": 0.85,
+            "twinkle": true,
+            "minSize": 0.5,
+            "maxSize": 2.5
+          }
+        },
+        {
+          "id": "meditation-moon",
+          "type": "image",
+          "zIndex": 5,
+          "config": {
+            "src": "/assets/images/full-moon-image-in-center-screen.jpg",
+            "x": "50%",
+            "y": "35%",
+            "width": "280px",
+            "height": "280px",
+            "opacity": 0.85
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0.75,
+              "to": 0.95,
+              "startMs": 0,
+              "endMs": 6500,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "meditation-glow",
+          "type": "glowOrb",
+          "zIndex": 4,
+          "config": {
+            "x": "50%",
+            "y": "35%",
+            "radius": 150,
+            "color": "#e6f7ff",
+            "intensity": 1.3,
+            "blur": 35
+          },
+          "animations": [
+            {
+              "property": "radius",
+              "from": 140,
+              "to": 170,
+              "startMs": 0,
+              "endMs": 5000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            },
+            {
+              "property": "intensity",
+              "from": 1.1,
+              "to": 1.5,
+              "startMs": 0,
+              "endMs": 4000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "meditation-light",
+          "type": "light",
+          "zIndex": 3,
+          "config": {
+            "mode": "radial",
+            "x": "50%",
+            "y": "35%",
+            "radius": 500,
+            "color": "#e6f7ff",
+            "intensity": 0.35,
+            "blendMode": "screen"
+          }
+        },
+        {
+          "id": "meditation-fog",
+          "type": "fog",
+          "zIndex": 2,
+          "config": {
+            "density": 0.18,
+            "color": "#203a43",
+            "speed": 0.35,
+            "direction": 90,
+            "opacity": 0.45
+          }
+        },
+        {
+          "id": "meditation-particles",
+          "type": "particles",
+          "zIndex": 6,
+          "config": {
+            "count": 10,
+            "size": 2,
+            "speed": 0.3,
+            "color": "#d4e6f1",
+            "opacity": 0.75,
+            "type": "circle",
+            "x": "50%",
+            "y": "50%"
+          }
+        },
+        {
+          "id": "meditation-vignette",
+          "type": "vignette",
+          "zIndex": 8,
+          "config": {
+            "intensity": 0.5,
+            "radius": 0.6,
+            "color": "#000000"
+          }
+        },
+        {
+          "id": "meditation-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "ACT IV\nCosmic Meditation",
+            "fontSize": 56,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "70%",
+            "textShadow": "0 4px 30px rgba(0,0,0,0.8)",
+            "fontWeight": "700",
+            "lineHeight": 1.3
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 2000,
+              "endMs": 3500,
+              "easing": "ease-out"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 11000,
+              "endMs": 13000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "meditation-subtitle",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "In stillness, we find the universe within",
+            "fontSize": 22,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#b8d4e8",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "82%",
+            "textShadow": "0 2px 15px rgba(0,0,0,0.9)",
+            "fontWeight": "300",
+            "letterSpacing": "1px"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 5000,
+              "endMs": 6500,
+              "easing": "ease-in"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 11000,
+              "endMs": 13000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ],
+      "audio": [
+        {
+          "id": "ocean-waves",
+          "type": "ambience",
+          "src": "/assets/audio/waves-crashing-397977.mp3",
+          "startMs": 0,
+          "loop": true,
+          "volume": 0.8,
+          "fadeIn": 0
+        }
+      ]
+    },
+    {
+      "id": "act5-dawn",
+      "name": "Act V: Dawn's Promise",
+      "duration": 11000,
+      "camera": {
+        "x": 20,
+        "y": 0,
+        "zoom": 1,
+        "rotate": 2
+      },
+      "cameraAnimations": [
+        {
+          "property": "x",
+          "from": 20,
+          "to": 0,
+          "startMs": 0,
+          "endMs": 6000,
+          "easing": "ease-out"
+        },
+        {
+          "property": "rotate",
+          "from": 2,
+          "to": 0,
+          "startMs": 0,
+          "endMs": 6000,
+          "easing": "ease-out"
+        },
+        {
+          "property": "zoom",
+          "from": 1,
+          "to": 1.1,
+          "startMs": 6000,
+          "endMs": 11000,
+          "easing": "ease-in-out"
+        }
+      ],
+      "layers": [
+        {
+          "id": "dawn-bg",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#ffeaa7", "#fdcb6e", "#e17055", "#6c5ce7"],
+            "direction": "vertical"
+          }
+        },
+        {
+          "id": "dawn-stars",
+          "type": "starfield",
+          "zIndex": 1,
+          "config": {
+            "count": 20,
+            "speed": 0.005,
+            "opacity": 0.8,
+            "twinkle": true,
+            "minSize": 0.5,
+            "maxSize": 2
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0.8,
+              "to": 0,
+              "startMs": 5000,
+              "endMs": 11000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "dawn-sun",
+          "type": "glowOrb",
+          "zIndex": 5,
+          "config": {
+            "x": "50%",
+            "y": "25%",
+            "radius": 0,
+            "color": "#ffeaa7",
+            "intensity": 0,
+            "blur": 35
+          },
+          "animations": [
+            {
+              "property": "radius",
+              "from": 0,
+              "to": 100,
+              "startMs": 3000,
+              "endMs": 8000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "intensity",
+              "from": 0,
+              "to": 2.0,
+              "startMs": 3000,
+              "endMs": 8000,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "dawn-light",
+          "type": "light",
+          "zIndex": 4,
+          "config": {
+            "mode": "radial",
+            "x": "50%",
+            "y": "25%",
+            "radius": 0,
+            "color": "#ffeaa7",
+            "intensity": 0,
+            "blendMode": "screen"
+          },
+          "animations": [
+            {
+              "property": "radius",
+              "from": 0,
+              "to": 600,
+              "startMs": 3000,
+              "endMs": 8000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "intensity",
+              "from": 0,
+              "to": 0.6,
+              "startMs": 3000,
+              "endMs": 8000,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "dawn-rays",
+          "type": "particles",
+          "zIndex": 6,
+          "config": {
+            "count": 12,
+            "size": 3,
+            "speed": 1.2,
+            "color": "#fff9e6",
+            "opacity": 0,
+            "type": "circle",
+            "x": "50%",
+            "y": "25%"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 0.9,
+              "startMs": 4000,
+              "endMs": 7000,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "dawn-fog",
+          "type": "fog",
+          "zIndex": 2,
+          "config": {
+            "density": 0.1,
+            "color": "#fdcb6e",
+            "speed": 0.4,
+            "direction": 45,
+            "opacity": 0.3
+          }
+        },
+        {
+          "id": "dawn-moon",
+          "type": "image",
+          "zIndex": 3,
+          "config": {
+            "src": "/assets/images/full-moon-image-in-center-screen.jpg",
+            "x": "15%",
+            "y": "20%",
+            "width": "180px",
+            "height": "180px",
+            "opacity": 0.6
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0.6,
+              "to": 0.2,
+              "startMs": 5000,
+              "endMs": 11000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "dawn-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "ACT V\nDawn's Promise",
+            "fontSize": 60,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#2d3436",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "60%",
+            "textShadow": "0 4px 30px rgba(255,255,255,0.9)",
+            "fontWeight": "700",
+            "lineHeight": 1.3
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 2000,
+              "endMs": 3500,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "dawn-subtitle",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "A new day begins, filled with wonder",
+            "fontSize": 24,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#2d3436",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "73%",
+            "textShadow": "0 2px 15px rgba(255,255,255,0.8)",
+            "fontWeight": "300",
+            "letterSpacing": "1px"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 5000,
+              "endMs": 6500,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "dawn-message",
+          "type": "textBlock",
+          "zIndex": 8,
+          "config": {
+            "text": "The night sky reminds us:\nWe are part of something infinite\nConnected to the cosmos\nForever reaching for the stars",
+            "fontSize": 18,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#2d3436",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "85%",
+            "textShadow": "0 2px 10px rgba(255,255,255,0.7)",
+            "fontWeight": "300",
+            "lineHeight": 1.8,
+            "letterSpacing": "0.5px"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 7500,
+              "endMs": 9000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ],
+      "audio": [
+        {
+          "id": "ocean-waves",
+          "type": "ambience",
+          "src": "/assets/audio/waves-crashing-397977.mp3",
+          "startMs": 0,
+          "loop": true,
+          "volume": 0.6,
+          "fadeIn": 0,
+          "fadeOut": 3000
+        }
+      ]
+    }
+  ]
+}

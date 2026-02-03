@@ -74,6 +74,7 @@ export class CinematicPlayerComponent implements OnInit, OnDestroy, OnChanges {
   @Input() autoplay: boolean = false;
   @Input() quality?: QualityLevel;
   @Input() debug: boolean = false;
+  @Input() editorMode: boolean = false;
   @Input() containerClass?: string;
   @Input() containerStyle?: { [key: string]: any };
 

@@ -27,6 +27,7 @@ abstract class BaseLayer implements ICinematicLayer {
   public readonly zIndex: number;
   protected config: Record<string, any>;
   protected mounted: boolean = false;
+  protected element: HTMLElement | null = null;
 
   constructor(id: string, type: string, config: Record<string, any>) {
     this.id = id;
@@ -39,20 +40,25 @@ abstract class BaseLayer implements ICinematicLayer {
   abstract update(ctx: FrameContext): void;
   
   destroy(): void {
+    // Remove DOM element if it exists (Requirement 1.3)
+    if (this.element && this.element.parentNode) {
+      this.element.parentNode.removeChild(this.element);
+    }
+    this.element = null;
     this.mounted = false;
   }
 
   setVisible(_visible: boolean): void {
     // Default implementation - can be overridden
-    if (this.mounted) {
-      // Will be implemented in specific renderers
+    if (this.mounted && this.element) {
+      this.element.style.display = _visible ? 'block' : 'none';
     }
   }
 
   setOpacity(_opacity: number): void {
     // Default implementation - can be overridden
-    if (this.mounted) {
-      // Will be implemented in specific renderers
+    if (this.mounted && this.element) {
+      this.element.style.opacity = _opacity.toString();
     }
   }
 
@@ -67,10 +73,26 @@ abstract class BaseLayer implements ICinematicLayer {
 // DOM Layer Types (fully implemented for Task 7.1)
 
 export class GradientLayer extends BaseLayer {
-  private element?: HTMLElement;
-
   constructor(id: string, config: Record<string, any>) {
     super(id, 'gradient', config);
+  }
+
+  private convertDirection(direction: string): string {
+    // Convert friendly direction names to CSS gradient directions
+    const directionMap: Record<string, string> = {
+      'vertical': 'to bottom',
+      'horizontal': 'to right',
+      'diagonal': 'to bottom right',
+      'radial': 'radial-gradient'
+    };
+    
+    // If it's already a CSS direction (starts with 'to'), return as-is
+    if (direction.startsWith('to ') || direction.startsWith('radial')) {
+      return direction;
+    }
+    
+    // Otherwise, convert from friendly name
+    return directionMap[direction] || 'to bottom';
   }
 
   mount(ctx: LayerMountContext): void {
@@ -84,20 +106,38 @@ export class GradientLayer extends BaseLayer {
       // Apply gradient styles
       const { 
         colors = ['#000000', '#ffffff'], 
-        direction = 'to bottom', 
+        direction = 'vertical', 
         opacity = 1,
         width = '100%',
-        height = '100%'
+        height = '100%',
+        centerX = 0.5,
+        centerY = 0.5
       } = this.config;
+      
+      const cssDirection = this.convertDirection(direction);
       const gradientColors = colors.join(', ');
       
       if (this.element) {
+        let backgroundValue: string;
+        
+        if (cssDirection === 'radial-gradient' || direction === 'radial') {
+          // For radial gradients, use centerX and centerY
+          const centerXPercent = (centerX * 100).toFixed(0);
+          const centerYPercent = (centerY * 100).toFixed(0);
+          backgroundValue = `radial-gradient(circle at ${centerXPercent}% ${centerYPercent}%, ${gradientColors})`;
+        } else {
+          // For linear gradients
+          backgroundValue = `linear-gradient(${cssDirection}, ${gradientColors})`;
+        }
+        
         this.element.style.cssText += `
-          background: linear-gradient(${direction}, ${gradientColors});
+          background: ${backgroundValue};
           opacity: ${opacity};
           width: ${typeof width === 'number' ? width + 'px' : width};
           height: ${typeof height === 'number' ? height + 'px' : height};
           position: absolute;
+          top: 0;
+          left: 0;
         `;
       }
     }
@@ -116,20 +156,9 @@ export class GradientLayer extends BaseLayer {
     this.element.style.transform = `translate3d(${resolvedX}px, ${resolvedY}px, 0) scale(${scale}) rotate(${rotation}deg)`;
     this.element.style.opacity = opacity.toString();
   }
-
-  override destroy(): void {
-    if (this.element) {
-      const domRenderer = this.element.parentElement?.parentElement as any;
-      if (domRenderer && domRenderer.removeLayerElement) {
-        domRenderer.removeLayerElement(this.id);
-      }
-    }
-    super.destroy();
-  }
 }
 
 export class ImageLayer extends BaseLayer {
-  private element?: HTMLElement;
   private img?: HTMLImageElement;
 
   constructor(id: string, config: Record<string, any>) {
@@ -146,17 +175,25 @@ export class ImageLayer extends BaseLayer {
       
       // Create image element
       this.img = document.createElement('img');
-      const { src, alt = '', objectFit = 'cover', opacity = 1 } = this.config;
+      const { src, alt = '', objectFit = 'cover', opacity = 1, width, height } = this.config;
       
       if (this.img && this.element) {
         this.img.src = src;
         this.img.alt = alt;
+        
+        // Set image dimensions if provided
+        const imgWidth = width || '100%';
+        const imgHeight = height || '100%';
+        
         this.img.style.cssText = `
-          width: 100%;
-          height: 100%;
+          width: ${typeof imgWidth === 'number' ? imgWidth + 'px' : imgWidth};
+          height: ${typeof imgHeight === 'number' ? imgHeight + 'px' : imgHeight};
           object-fit: ${objectFit};
           opacity: ${opacity};
           display: block;
+          position: absolute;
+          top: 0;
+          left: 0;
         `;
         
         this.element.appendChild(this.img);
@@ -170,28 +207,43 @@ export class ImageLayer extends BaseLayer {
     if (!this.mounted || !this.element) return;
 
     // Resolve position values to pixels
-    const { x = 0, y = 0, scale = 1, rotation = 0, opacity = 1 } = this.config;
+    const { x = 0, y = 0, scale = 1, rotation = 0, opacity = 1, width, height } = this.config;
     const resolvedX = resolvePosition(x, ctx.viewport.width);
     const resolvedY = resolvePosition(y, ctx.viewport.height);
     
-    this.element.style.transform = `translate3d(${resolvedX}px, ${resolvedY}px, 0) scale(${scale}) rotate(${rotation}deg)`;
+    // Calculate centering offset if width/height are provided
+    let offsetX = 0;
+    let offsetY = 0;
+    
+    if (width) {
+      const imgWidth = typeof width === 'string' && width.endsWith('px') 
+        ? parseFloat(width) 
+        : (typeof width === 'number' ? width : 0);
+      offsetX = -imgWidth / 2;
+    }
+    
+    if (height) {
+      const imgHeight = typeof height === 'string' && height.endsWith('px') 
+        ? parseFloat(height) 
+        : (typeof height === 'number' ? height : 0);
+      offsetY = -imgHeight / 2;
+    }
+    
+    this.element.style.transform = `translate3d(${resolvedX + offsetX}px, ${resolvedY + offsetY}px, 0) scale(${scale}) rotate(${rotation}deg)`;
     this.element.style.opacity = opacity.toString();
   }
 
   override destroy(): void {
-    if (this.element) {
-      const domRenderer = this.element.parentElement?.parentElement as any;
-      if (domRenderer && domRenderer.removeLayerElement) {
-        domRenderer.removeLayerElement(this.id);
-      }
+    // Clean up image element
+    if (this.img) {
+      this.img.src = ''; // Clear image source to stop loading
+      this.img = undefined;
     }
     super.destroy();
   }
 }
 
 export class TextBlockLayer extends BaseLayer {
-  private element?: HTMLElement;
-
   constructor(id: string, config: Record<string, any>) {
     super(id, 'textBlock', config);
   }
@@ -268,21 +320,9 @@ export class TextBlockLayer extends BaseLayer {
     this.element.style.transform = `translate3d(${resolvedX}px, ${resolvedY}px, 0) translate(${translateX}, ${translateY}) scale(${scale}) rotate(${rotation}deg)`;
     this.element.style.opacity = opacity.toString();
   }
-
-  override destroy(): void {
-    if (this.element) {
-      const domRenderer = this.element.parentElement?.parentElement as any;
-      if (domRenderer && domRenderer.removeLayerElement) {
-        domRenderer.removeLayerElement(this.id);
-      }
-    }
-    super.destroy();
-  }
 }
 
 export class VignetteLayer extends BaseLayer {
-  private element?: HTMLElement;
-
   constructor(id: string, config: Record<string, any>) {
     super(id, 'vignette', config);
   }
@@ -326,21 +366,9 @@ export class VignetteLayer extends BaseLayer {
     this.element.style.transform = `translate3d(${resolvedX}px, ${resolvedY}px, 0) scale(${scale}) rotate(${rotation}deg)`;
     this.element.style.opacity = opacity.toString();
   }
-
-  override destroy(): void {
-    if (this.element) {
-      const domRenderer = this.element.parentElement?.parentElement as any;
-      if (domRenderer && domRenderer.removeLayerElement) {
-        domRenderer.removeLayerElement(this.id);
-      }
-    }
-    super.destroy();
-  }
 }
 
 export class GlowOrbLayer extends BaseLayer {
-  private element?: HTMLElement;
-
   constructor(id: string, config: Record<string, any>) {
     super(id, 'glowOrb', config);
   }
@@ -389,20 +417,9 @@ export class GlowOrbLayer extends BaseLayer {
     this.element.style.transform = `translate3d(${resolvedX}px, ${resolvedY}px, 0) scale(${scale}) rotate(${rotation}deg)`;
     this.element.style.opacity = intensity.toString();
   }
-
-  override destroy(): void {
-    if (this.element) {
-      const domRenderer = this.element.parentElement?.parentElement as any;
-      if (domRenderer && domRenderer.removeLayerElement) {
-        domRenderer.removeLayerElement(this.id);
-      }
-    }
-    super.destroy();
-  }
 }
 
 export class NoiseOverlayLayer extends BaseLayer {
-  private element?: HTMLElement;
   private canvas?: HTMLCanvasElement;
   private ctx?: CanvasRenderingContext2D;
 
@@ -492,11 +509,14 @@ export class NoiseOverlayLayer extends BaseLayer {
   }
 
   override destroy(): void {
-    if (this.element) {
-      const domRenderer = this.element.parentElement?.parentElement as any;
-      if (domRenderer && domRenderer.removeLayerElement) {
-        domRenderer.removeLayerElement(this.id);
-      }
+    // Clean up canvas context
+    if (this.ctx) {
+      this.ctx = undefined;
+    }
+    if (this.canvas) {
+      this.canvas.width = 0;
+      this.canvas.height = 0;
+      this.canvas = undefined;
     }
     super.destroy();
   }
@@ -927,6 +947,133 @@ export class DustLayer extends BaseLayer {
   }
 }
 
+export class FogLayer extends BaseLayer {
+  private canvas?: HTMLCanvasElement;
+  private ctx?: CanvasRenderingContext2D;
+  private fogOffset: number = 0;
+  private canvas2DRenderer?: any;
+
+  constructor(id: string, config: Record<string, any>) {
+    super(id, 'fog', config);
+  }
+
+  mount(ctx: LayerMountContext): void {
+    if (this.mounted) return;
+
+    // Get Canvas2D renderer
+    this.canvas2DRenderer = ctx.renderer;
+    
+    // Create dedicated canvas for this layer
+    if (this.canvas2DRenderer && this.canvas2DRenderer.createLayerCanvas) {
+      const { width = ctx.container.clientWidth, height = ctx.container.clientHeight } = this.config;
+      this.canvas = this.canvas2DRenderer.createLayerCanvas(width, height);
+      if (this.canvas) {
+        const context = this.canvas.getContext('2d');
+        this.ctx = context || undefined;
+        
+        // Style the canvas
+        this.canvas.style.cssText += `
+          position: absolute;
+          top: 0;
+          left: 0;
+          pointer-events: none;
+          z-index: ${this.zIndex};
+        `;
+        
+        // Add to container
+        ctx.container.appendChild(this.canvas);
+      }
+    }
+
+    this.mounted = true;
+  }
+
+  update(ctx: FrameContext): void {
+    if (!this.mounted || !this.canvas || !this.ctx) return;
+
+    // Clear canvas
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    
+    // Get configuration
+    const {
+      density = 0.5,
+      color = '#ffffff',
+      speed = 1,
+      direction = 0, // degrees
+      opacity = 0.3,
+      scale = 1,
+      x = 0,
+      y = 0,
+      rotation = 0
+    } = this.config;
+    
+    // Apply layer transforms
+    this.ctx.save();
+    this.ctx.translate(x, y);
+    this.ctx.scale(scale, scale);
+    this.ctx.rotate(rotation * Math.PI / 180);
+    this.ctx.globalAlpha = opacity;
+    
+    // Update fog offset based on direction and speed
+    const directionRad = direction * Math.PI / 180;
+    this.fogOffset += speed * ctx.deltaMs / 16.67;
+    
+    // Calculate movement vector
+    const moveX = Math.cos(directionRad) * this.fogOffset;
+    const moveY = Math.sin(directionRad) * this.fogOffset;
+    
+    // Render fog using multiple overlapping gradients for atmospheric effect
+    const numLayers = Math.ceil(density * 5) + 1;
+    const layerSpacing = ctx.viewport.width / numLayers;
+    
+    for (let i = 0; i < numLayers; i++) {
+      const offsetX = ((moveX + i * layerSpacing) % (ctx.viewport.width + layerSpacing)) - layerSpacing;
+      const offsetY = moveY % ctx.viewport.height;
+      
+      // Create radial gradient for each fog layer
+      const gradient = this.ctx.createRadialGradient(
+        offsetX + ctx.viewport.width / 2,
+        offsetY + ctx.viewport.height / 2,
+        0,
+        offsetX + ctx.viewport.width / 2,
+        offsetY + ctx.viewport.height / 2,
+        ctx.viewport.width * 0.8
+      );
+      
+      // Parse color and add alpha
+      const fogColor = this.parseColor(color);
+      gradient.addColorStop(0, `rgba(${fogColor.r}, ${fogColor.g}, ${fogColor.b}, ${density * 0.3})`);
+      gradient.addColorStop(0.5, `rgba(${fogColor.r}, ${fogColor.g}, ${fogColor.b}, ${density * 0.15})`);
+      gradient.addColorStop(1, `rgba(${fogColor.r}, ${fogColor.g}, ${fogColor.b}, 0)`);
+      
+      this.ctx.fillStyle = gradient;
+      this.ctx.fillRect(0, 0, ctx.viewport.width, ctx.viewport.height);
+    }
+    
+    this.ctx.restore();
+  }
+
+  private parseColor(color: string): { r: number; g: number; b: number } {
+    // Simple hex color parser
+    const hex = color.replace('#', '');
+    if (hex.length === 6) {
+      return {
+        r: parseInt(hex.substring(0, 2), 16),
+        g: parseInt(hex.substring(2, 4), 16),
+        b: parseInt(hex.substring(4, 6), 16)
+      };
+    }
+    return { r: 255, g: 255, b: 255 };
+  }
+
+  override destroy(): void {
+    if (this.canvas && this.canvas.parentNode) {
+      this.canvas.parentNode.removeChild(this.canvas);
+    }
+    super.destroy();
+  }
+}
+
 export class NebulaNoiseLayer extends BaseLayer {
   private canvas?: HTMLCanvasElement;
   private ctx?: CanvasRenderingContext2D;
@@ -1099,6 +1246,86 @@ export class NebulaNoiseLayer extends BaseLayer {
       this.canvas.parentNode.removeChild(this.canvas);
     }
     this.noiseData = undefined;
+    super.destroy();
+  }
+}
+
+export class ParallaxGroupLayer extends BaseLayer {
+  private childLayers: ICinematicLayer[] = [];
+
+  constructor(id: string, config: Record<string, any>) {
+    super(id, 'parallaxGroup', config);
+  }
+
+  mount(ctx: LayerMountContext): void {
+    if (this.mounted) return;
+
+    // Create container element for parallax group
+    const domRenderer = ctx.renderer as any;
+    if (domRenderer.createLayerElement) {
+      this.element = domRenderer.createLayerElement(this.id, this.zIndex);
+      
+      if (this.element) {
+        this.element.style.cssText += `
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          pointer-events: none;
+        `;
+      }
+    }
+
+    // TODO: Implement child layer creation when layerRegistry is available in context
+    // For now, this layer acts as a simple container
+    const { layers = [] } = this.config;
+    // Child layers would be created here if we had access to the registry
+
+    this.mounted = true;
+  }
+
+  update(ctx: FrameContext): void {
+    if (!this.mounted || !this.element) return;
+
+    // Get configuration
+    const { scrollSpeed = 1, x = 0, y = 0, scale = 1, rotation = 0, opacity = 1 } = this.config;
+    
+    // Resolve position values to pixels
+    const resolvedX = resolvePosition(x, ctx.viewport.width);
+    const resolvedY = resolvePosition(y, ctx.viewport.height);
+    
+    // Apply base transform to container
+    this.element.style.transform = `translate3d(${resolvedX}px, ${resolvedY}px, 0) scale(${scale}) rotate(${rotation}deg)`;
+    this.element.style.opacity = opacity.toString();
+    
+    // Update child layers with parallax effect
+    for (const childLayer of this.childLayers) {
+      const childConfig = (childLayer as any).config;
+      const depth = childConfig.depth || 0.5;
+      const speed = childConfig.speed || 1;
+      
+      // Calculate parallax offset based on depth and scroll speed
+      // Depth 0 = background (moves slower), Depth 1 = foreground (moves faster)
+      const parallaxFactor = depth * speed * scrollSpeed;
+      const parallaxX = resolvedX * parallaxFactor;
+      const parallaxY = resolvedY * parallaxFactor;
+      
+      // Update child layer config with parallax offset
+      childConfig.x = parallaxX;
+      childConfig.y = parallaxY;
+      
+      // Update child layer
+      childLayer.update(ctx);
+    }
+  }
+
+  override destroy(): void {
+    // Destroy all child layers
+    for (const childLayer of this.childLayers) {
+      childLayer.destroy();
+    }
+    this.childLayers = [];
+    
     super.destroy();
   }
 }

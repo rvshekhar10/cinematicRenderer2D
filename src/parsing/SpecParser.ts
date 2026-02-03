@@ -46,7 +46,8 @@ const SUPPORTED_SCHEMA_VERSIONS = ['1.0.0', '1.1.0'] as const;
 const QualityLevelSchema = z.enum(['low', 'medium', 'high', 'ultra', 'auto']);
 const LayerTypeSchema = z.enum([
   'gradient', 'image', 'textBlock', 'vignette', 'glowOrb', 'noiseOverlay',
-  'particles', 'starfield', 'dust', 'nebulaNoise', 'webgl-custom'
+  'particles', 'starfield', 'dust', 'nebulaNoise', 'webgl-custom',
+  'light', 'fog', 'parallaxGroup'
 ]);
 const EasingTypeSchema = z.enum([
   'linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out',
@@ -62,7 +63,7 @@ const EasingTypeSchema = z.enum([
   'ease-in-bounce', 'ease-out-bounce', 'ease-in-out-bounce'
 ]).or(z.string().regex(/^cubic-bezier\(\d*\.?\d+,\d*\.?\d+,\d*\.?\d+,\d*\.?\d+\)$/));
 const AudioTrackTypeSchema = z.enum(['voiceover', 'ambience', 'transition', 'music', 'sfx']);
-const TransitionTypeSchema = z.enum(['fade', 'slide', 'zoom', 'wipe', 'dissolve', 'blur']);
+const TransitionTypeSchema = z.enum(['fade', 'crossfade', 'slide', 'zoom', 'wipe', 'dissolve', 'blur']);
 const AssetTypeSchema = z.enum(['image', 'video', 'audio', 'font', 'json', 'binary']);
 
 // Transform configuration schema
@@ -86,8 +87,34 @@ const AnimationValueSchema = z.union([
   z.number(),
   z.string(),
   z.boolean(),
+  z.array(z.union([z.number(), z.string(), z.boolean()])),
   z.record(z.union([z.number(), z.string(), z.boolean()]))
 ]);
+
+// Animation keyframe schema
+const AnimationKeyframeSchema = z.object({
+  time: z.number().min(0).max(1),
+  value: AnimationValueSchema,
+  easing: EasingTypeSchema.optional()
+});
+
+// Stagger configuration schema
+const StaggerConfigSchema = z.object({
+  amount: z.number(),
+  from: z.enum(['start', 'center', 'end']).optional().default('start'),
+  grid: z.tuple([z.number().int().positive(), z.number().int().positive()]).optional()
+});
+
+// Randomization configuration schema
+const RandomizeConfigSchema = z.object({
+  property: z.string().min(1),
+  min: z.number(),
+  max: z.number(),
+  seed: z.number().optional()
+}).refine(data => data.max >= data.min, {
+  message: "max must be greater than or equal to min",
+  path: ["max"]
+});
 
 // Animation track schema
 const AnimationTrackSpecSchema = z.object({
@@ -98,7 +125,10 @@ const AnimationTrackSpecSchema = z.object({
   endMs: z.number().min(0),
   easing: EasingTypeSchema.optional().default('ease' as EasingType),
   loop: z.boolean().optional().default(false),
-  yoyo: z.boolean().optional().default(false)
+  yoyo: z.boolean().optional().default(false),
+  keyframes: z.array(AnimationKeyframeSchema).optional(),
+  stagger: StaggerConfigSchema.optional(),
+  randomize: RandomizeConfigSchema.optional()
 }).refine(data => data.endMs > data.startMs, {
   message: "endMs must be greater than startMs",
   path: ["endMs"]

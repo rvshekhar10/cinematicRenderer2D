@@ -8,8 +8,8 @@
  * Requirements: 6.1, 6.2, 6.3, 6.4, 6.5
  */
 
-import type { AnimationTrackSpec, EasingType, AnimationValue } from '../types/CinematicSpec';
-import type { CompiledAnimationTrack, EasingFunction, InterpolationFunction } from '../types/CompiledSpec';
+import type { AnimationTrackSpec, EasingType, AnimationValue, AnimationKeyframe, StaggerConfig, RandomizeConfig } from '../types/CinematicSpec';
+import type { CompiledAnimationTrack, EasingFunction, InterpolationFunction, CompiledKeyframeSegment } from '../types/CompiledSpec';
 
 /**
  * Animation compilation system with optimized easing and interpolation functions
@@ -22,6 +22,12 @@ export class AnimationCompiler {
    * @returns Compiled animation track with precompiled interpolation function
    */
   static compileTrack(track: AnimationTrackSpec): CompiledAnimationTrack {
+    // Check if keyframes are provided
+    if (track.keyframes && track.keyframes.length > 0) {
+      return this.compileKeyframeTrack(track);
+    }
+    
+    // Standard from/to animation
     const easingFunction = this.compileEasing(track.easing || 'ease');
     const interpolationFunction = this.compileInterpolation(track.from, track.to, easingFunction);
     
@@ -36,6 +42,418 @@ export class AnimationCompiler {
       currentLoop: 0,
       isReverse: false
     };
+  }
+  
+  /**
+   * Compiles a keyframe-based animation track
+   * 
+   * @param track - Animation track specification with keyframes
+   * @returns Compiled animation track with keyframe segments
+   */
+  static compileKeyframeTrack(track: AnimationTrackSpec): CompiledAnimationTrack {
+    if (!track.keyframes || track.keyframes.length === 0) {
+      throw new Error('compileKeyframeTrack called without keyframes');
+    }
+    
+    // Sort keyframes by time
+    const sortedKeyframes = [...track.keyframes].sort((a, b) => a.time - b.time);
+    
+    // Validate keyframe times are in range [0, 1]
+    for (const keyframe of sortedKeyframes) {
+      if (keyframe.time < 0 || keyframe.time > 1) {
+        throw new Error(`Keyframe time must be between 0 and 1, got ${keyframe.time}`);
+      }
+    }
+    
+    // Ensure we have keyframes at 0 and 1
+    if (sortedKeyframes[0]!.time !== 0) {
+      sortedKeyframes.unshift({
+        time: 0,
+        value: track.from,
+        easing: track.easing
+      });
+    }
+    
+    if (sortedKeyframes[sortedKeyframes.length - 1]!.time !== 1) {
+      sortedKeyframes.push({
+        time: 1,
+        value: track.to,
+        easing: track.easing
+      });
+    }
+    
+    // Compile segments between keyframes
+    const segments: CompiledKeyframeSegment[] = [];
+    
+    for (let i = 0; i < sortedKeyframes.length - 1; i++) {
+      const fromKeyframe = sortedKeyframes[i]!;
+      const toKeyframe = sortedKeyframes[i + 1]!;
+      
+      // Use the easing from the "from" keyframe, or fall back to track easing
+      const segmentEasing = fromKeyframe.easing || track.easing || 'ease';
+      const easingFunction = this.compileEasing(segmentEasing);
+      const interpolationFunction = this.compileInterpolation(
+        fromKeyframe.value,
+        toKeyframe.value,
+        easingFunction
+      );
+      
+      segments.push({
+        startTime: fromKeyframe.time,
+        endTime: toKeyframe.time,
+        interpolate: interpolationFunction
+      });
+    }
+    
+    // Create master interpolation function that delegates to segments
+    const masterInterpolate = (progress: number): any => {
+      // Clamp progress to [0, 1]
+      const clampedProgress = Math.max(0, Math.min(1, progress));
+      
+      // Find the appropriate segment
+      for (const segment of segments) {
+        if (clampedProgress >= segment.startTime && clampedProgress <= segment.endTime) {
+          // Calculate progress within this segment
+          const segmentDuration = segment.endTime - segment.startTime;
+          if (segmentDuration === 0) {
+            return segment.interpolate(0);
+          }
+          const segmentProgress = (clampedProgress - segment.startTime) / segmentDuration;
+          return segment.interpolate(segmentProgress);
+        }
+      }
+      
+      // Fallback to last segment's end value
+      return segments[segments.length - 1]!.interpolate(1);
+    };
+    
+    return {
+      property: track.property,
+      startMs: track.startMs,
+      endMs: track.endMs,
+      interpolate: masterInterpolate,
+      loop: track.loop || false,
+      yoyo: track.yoyo || false,
+      easingType: track.easing || 'ease',
+      currentLoop: 0,
+      isReverse: false,
+      keyframeSegments: segments
+    };
+  }
+  
+  /**
+   * Generates staggered animations for multiple targets
+   * 
+   * @param baseTrack - Base animation track to stagger
+   * @param targetCount - Number of targets to animate
+   * @param stagger - Stagger configuration
+   * @returns Array of compiled animation tracks with time offsets
+   */
+  static generateStaggeredAnimations(
+    baseTrack: AnimationTrackSpec,
+    targetCount: number,
+    stagger: StaggerConfig
+  ): CompiledAnimationTrack[] {
+    if (targetCount <= 0) {
+      return [];
+    }
+    
+    const tracks: CompiledAnimationTrack[] = [];
+    const staggerFrom = stagger.from || 'start';
+    
+    // Calculate stagger offsets based on pattern
+    const offsets = this.calculateStaggerOffsets(targetCount, stagger);
+    
+    // Generate a track for each target with the appropriate time offset
+    for (let i = 0; i < targetCount; i++) {
+      const offset = offsets[i]!;
+      
+      // Create a new track with adjusted timing
+      const staggeredTrack: AnimationTrackSpec = {
+        ...baseTrack,
+        startMs: baseTrack.startMs + offset,
+        endMs: baseTrack.endMs + offset
+      };
+      
+      // Compile the staggered track
+      tracks.push(this.compileTrack(staggeredTrack));
+    }
+    
+    return tracks;
+  }
+  
+  /**
+   * Calculates time offsets for stagger effect
+   * 
+   * @param targetCount - Number of targets
+   * @param stagger - Stagger configuration
+   * @returns Array of time offsets in milliseconds
+   */
+  private static calculateStaggerOffsets(
+    targetCount: number,
+    stagger: StaggerConfig
+  ): number[] {
+    const offsets: number[] = [];
+    const staggerFrom = stagger.from || 'start';
+    
+    // Handle grid-based stagger (2D)
+    if (stagger.grid) {
+      const [cols, rows] = stagger.grid;
+      const totalCells = cols * rows;
+      
+      if (targetCount > totalCells) {
+        throw new Error(`Target count (${targetCount}) exceeds grid capacity (${totalCells})`);
+      }
+      
+      // Calculate offsets based on grid position
+      for (let i = 0; i < targetCount; i++) {
+        const col = i % cols;
+        const row = Math.floor(i / cols);
+        
+        // Calculate distance from stagger origin
+        let distance: number;
+        
+        switch (staggerFrom) {
+          case 'center':
+            const centerCol = (cols - 1) / 2;
+            const centerRow = (rows - 1) / 2;
+            distance = Math.sqrt(
+              Math.pow(col - centerCol, 2) + Math.pow(row - centerRow, 2)
+            );
+            break;
+            
+          case 'end':
+            distance = (rows - 1 - row) * cols + (cols - 1 - col);
+            break;
+            
+          case 'start':
+          default:
+            distance = row * cols + col;
+            break;
+        }
+        
+        offsets.push(distance * stagger.amount);
+      }
+    } else {
+      // Handle linear stagger (1D)
+      for (let i = 0; i < targetCount; i++) {
+        let index: number;
+        
+        switch (staggerFrom) {
+          case 'center':
+            const centerIndex = (targetCount - 1) / 2;
+            index = Math.abs(i - centerIndex);
+            break;
+            
+          case 'end':
+            index = targetCount - 1 - i;
+            break;
+            
+          case 'start':
+          default:
+            index = i;
+            break;
+        }
+        
+        offsets.push(index * stagger.amount);
+      }
+    }
+    
+    return offsets;
+  }
+  
+  /**
+   * Applies randomization to an animation track
+   * 
+   * @param track - Animation track to randomize
+   * @param randomize - Randomization configuration
+   * @returns New track with randomized values
+   */
+  static applyRandomization(
+    track: AnimationTrackSpec,
+    randomize: RandomizeConfig
+  ): AnimationTrackSpec {
+    const randomValue = this.generateRandomValue(randomize);
+    const newTrack = { ...track };
+    
+    // Apply randomization based on property
+    switch (randomize.property) {
+      case 'from':
+        if (typeof track.from === 'number') {
+          newTrack.from = randomValue;
+        }
+        break;
+        
+      case 'to':
+        if (typeof track.to === 'number') {
+          newTrack.to = randomValue;
+        }
+        break;
+        
+      case 'duration':
+        const currentDuration = track.endMs - track.startMs;
+        const newDuration = Math.max(0, currentDuration + randomValue);
+        newTrack.endMs = track.startMs + newDuration;
+        break;
+        
+      case 'startMs':
+        newTrack.startMs = Math.max(0, track.startMs + randomValue);
+        newTrack.endMs = newTrack.startMs + (track.endMs - track.startMs);
+        break;
+        
+      case 'delay':
+        newTrack.startMs = track.startMs + randomValue;
+        newTrack.endMs = track.endMs + randomValue;
+        break;
+        
+      default:
+        // For custom properties, try to apply to the track
+        (newTrack as any)[randomize.property] = randomValue;
+        break;
+    }
+    
+    return newTrack;
+  }
+  
+  /**
+   * Generates a random value within the specified range
+   * 
+   * @param randomize - Randomization configuration
+   * @returns Random value between min and max
+   */
+  private static generateRandomValue(randomize: RandomizeConfig): number {
+    // Use seeded random if seed is provided
+    if (randomize.seed !== undefined) {
+      const random = this.seededRandom(randomize.seed);
+      return randomize.min + random * (randomize.max - randomize.min);
+    }
+    
+    // Use standard Math.random
+    return randomize.min + Math.random() * (randomize.max - randomize.min);
+  }
+  
+  /**
+   * Seeded random number generator for reproducible randomness
+   * 
+   * @param seed - Seed value
+   * @returns Random number between 0 and 1
+   */
+  private static seededRandom(seed: number): number {
+    // Simple seeded random using sine
+    const x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
+  }
+  
+  /**
+   * Generates multiple randomized animation tracks
+   * 
+   * @param baseTrack - Base animation track
+   * @param count - Number of randomized tracks to generate
+   * @param randomize - Randomization configuration
+   * @returns Array of randomized compiled tracks
+   */
+  static generateRandomizedAnimations(
+    baseTrack: AnimationTrackSpec,
+    count: number,
+    randomize: RandomizeConfig
+  ): CompiledAnimationTrack[] {
+    const tracks: CompiledAnimationTrack[] = [];
+    
+    for (let i = 0; i < count; i++) {
+      // Use index as seed offset if seed is provided
+      const config = randomize.seed !== undefined
+        ? { ...randomize, seed: randomize.seed + i }
+        : randomize;
+      
+      const randomizedTrack = this.applyRandomization(baseTrack, config);
+      tracks.push(this.compileTrack(randomizedTrack));
+    }
+    
+    return tracks;
+  }
+  
+  /**
+   * Calculates the effective progress for an animation considering loop and yoyo
+   * 
+   * @param track - Compiled animation track
+   * @param timeMs - Current time in milliseconds
+   * @returns Effective progress value (0-1) considering loop/yoyo state
+   */
+  static calculateProgress(track: CompiledAnimationTrack, timeMs: number): number | null {
+    // Check if animation is active
+    if (timeMs < track.startMs) {
+      return null; // Animation hasn't started yet
+    }
+    
+    const duration = track.endMs - track.startMs;
+    if (duration <= 0) {
+      return 1; // Invalid duration, return end state
+    }
+    
+    const elapsed = timeMs - track.startMs;
+    
+    // Handle non-looping animations
+    if (!track.loop) {
+      if (elapsed > duration) {
+        return null; // Animation has completed
+      }
+      const progress = elapsed / duration;
+      return Math.max(0, Math.min(1, progress));
+    }
+    
+    // Handle looping animations
+    const loopCount = Math.floor(elapsed / duration);
+    const loopProgress = (elapsed % duration) / duration;
+    
+    // Update loop counter (for tracking purposes)
+    track.currentLoop = loopCount;
+    
+    // Handle yoyo (reverse direction on odd loops)
+    if (track.yoyo) {
+      const isReverse = loopCount % 2 === 1;
+      track.isReverse = isReverse;
+      return isReverse ? 1 - loopProgress : loopProgress;
+    }
+    
+    // Regular loop (always forward)
+    return loopProgress;
+  }
+  
+  /**
+   * Applies an animation track to get the interpolated value at a specific time
+   * 
+   * @param track - Compiled animation track
+   * @param timeMs - Current time in milliseconds
+   * @returns Interpolated value or null if animation is not active
+   */
+  static applyAnimation(track: CompiledAnimationTrack, timeMs: number): any | null {
+    const progress = this.calculateProgress(track, timeMs);
+    
+    if (progress === null) {
+      return null; // Animation is not active
+    }
+    
+    return track.interpolate(progress);
+  }
+  
+  /**
+   * Checks if an animation is currently active at the given time
+   * 
+   * @param track - Compiled animation track
+   * @param timeMs - Current time in milliseconds
+   * @returns True if the animation is active
+   */
+  static isAnimationActive(track: CompiledAnimationTrack, timeMs: number): boolean {
+    if (timeMs < track.startMs) {
+      return false;
+    }
+    
+    if (!track.loop) {
+      return timeMs <= track.endMs;
+    }
+    
+    // Looping animations are always active after start
+    return true;
   }
   
   /**

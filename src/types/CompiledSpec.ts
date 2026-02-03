@@ -97,6 +97,18 @@ export interface CompiledAnimationTrack {
   currentLoop: number;
   /** Whether animation is currently in reverse (for yoyo) */
   isReverse: boolean;
+  /** Compiled keyframe segments (if using keyframes) */
+  keyframeSegments?: CompiledKeyframeSegment[];
+}
+
+/** Compiled keyframe segment for efficient interpolation */
+export interface CompiledKeyframeSegment {
+  /** Start time of this segment (0-1) */
+  startTime: number;
+  /** End time of this segment (0-1) */
+  endTime: number;
+  /** Precompiled interpolation function for this segment */
+  interpolate: (segmentProgress: number) => any;
 }
 
 export interface CompiledAudioTrack {

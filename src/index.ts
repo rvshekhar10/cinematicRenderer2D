@@ -70,6 +70,8 @@ export {
   DustLayer,
   NebulaNoiseLayer,
 } from './core/layers/BuiltInLayers';
+export { LightLayer } from './core/layers/LightLayer';
+export type { LightLayerConfig } from './core/layers/LightLayer';
 
 // Animation system exports
 export { AnimationCompiler } from './animation/AnimationCompiler';
@@ -108,6 +110,10 @@ export { QualitySystem } from './performance/QualitySystem';
 // Utilities
 export { SpecParser } from './parsing/SpecParser';
 export { Scheduler } from './core/Scheduler';
+
+// Camera system
+export { CameraSystem } from './core/CameraSystem';
+export type { CameraState, CameraAnimation } from './core/CameraSystem';
 
 // Debug system
 export { DebugOverlay } from './debug/DebugOverlay';

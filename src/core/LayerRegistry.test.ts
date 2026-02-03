@@ -71,8 +71,8 @@ describe('LayerRegistry', () => {
     test('should return correct built-in types categorization', () => {
       const builtInTypes = registry.getBuiltInTypes();
       
-      expect(builtInTypes.dom).toEqual(['gradient', 'image', 'textBlock', 'vignette', 'glowOrb', 'noiseOverlay']);
-      expect(builtInTypes.canvas2d).toEqual(['particles', 'starfield', 'dust', 'nebulaNoise']);
+      expect(builtInTypes.dom).toEqual(['gradient', 'image', 'textBlock', 'vignette', 'glowOrb', 'noiseOverlay', 'light', 'parallaxGroup']);
+      expect(builtInTypes.canvas2d).toEqual(['particles', 'starfield', 'dust', 'nebulaNoise', 'fog']);
     });
 
     test('should correctly identify built-in types', () => {
@@ -134,7 +134,7 @@ describe('LayerRegistry', () => {
     test('should throw error for unknown layer type', () => {
       expect(() => {
         registry.createLayer('unknownType', 'test-id', {});
-      }).toThrow('Unknown layer type: unknownType. Available types: dust, glowOrb, gradient, image, nebulaNoise, noiseOverlay, particles, starfield, textBlock, vignette');
+      }).toThrow('Unknown layer type: unknownType. Available types: dust, fog, glowOrb, gradient, image, light, nebulaNoise, noiseOverlay, parallaxGroup, particles, starfield, textBlock, vignette');
     });
 
     test('should create layer with correct properties', () => {
@@ -235,3 +235,69 @@ describe('LayerRegistry', () => {
     });
   });
 });
+
+  describe('Layer Interface Validation', () => {
+    let validationRegistry: LayerRegistry;
+
+    beforeEach(() => {
+      validationRegistry = new LayerRegistry();
+    });
+
+    test('should reject layer without required properties', () => {
+      const invalidFactory = () => ({
+        // Missing id, type, zIndex
+        mount: () => {},
+        update: () => {},
+        destroy: () => {},
+      });
+      
+      expect(() => {
+        validationRegistry.registerLayerType('invalid', invalidFactory as any);
+      }).toThrow(/does not implement required property/);
+    });
+
+    test('should reject layer without required methods', () => {
+      const invalidFactory = () => ({
+        id: 'test',
+        type: 'invalid',
+        zIndex: 0,
+        // Missing mount, update, destroy methods
+      });
+      
+      expect(() => {
+        validationRegistry.registerLayerType('invalid', invalidFactory as any);
+      }).toThrow(/does not implement required method/);
+    });
+
+    test('should reject layer with invalid property types', () => {
+      const invalidFactory = () => ({
+        id: 123, // Should be string
+        type: 'invalid',
+        zIndex: 0,
+        mount: () => {},
+        update: () => {},
+        destroy: () => {},
+      });
+      
+      expect(() => {
+        validationRegistry.registerLayerType('invalid', invalidFactory as any);
+      }).toThrow(/has invalid 'id' property/);
+    });
+
+    test('should accept layer with valid interface', () => {
+      const validFactory = (id: string, config: Record<string, any>) => ({
+        id,
+        type: 'valid',
+        zIndex: config.zIndex || 0,
+        mount: () => {},
+        update: () => {},
+        destroy: () => {},
+      });
+      
+      expect(() => {
+        validationRegistry.registerLayerType('valid', validFactory as any);
+      }).not.toThrow();
+      
+      expect(validationRegistry.hasLayerType('valid')).toBe(true);
+    });
+  });

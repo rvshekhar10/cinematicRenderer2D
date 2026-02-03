@@ -8,17 +8,25 @@ import type { CinematicSpec } from 'cinematic-renderer2d';
 
 // Example specifications
 const EXAMPLES = {
+  enhanced: {
+    name: 'Enhanced Story (Recommended)',
+    url: '/examples/enhanced-story.json'
+  },
   simple: {
     name: 'Simple Demo',
     url: '/examples/simple-demo-spec.json'
+  },
+  daynight: {
+    name: 'Day & Night Story',
+    url: '/examples/day-night-story-spec.json'
   },
   story: {
     name: 'Story Narration',
     url: '/examples/story-narration-spec.json'
   },
-  daynight: {
-    name: 'Day & Night Story',
-    url: '/examples/day-night-story-spec.json'
+  nightsky: {
+    name: 'Night Sky Demo',
+    url: '/examples/night-sky-demo.json'
   }
 };
 

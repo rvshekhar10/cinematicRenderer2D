@@ -1,0 +1,986 @@
+{
+  "schemaVersion": "1.0.0",
+  "engine": {
+    "targetFps": 60,
+    "quality": "high",
+    "debug": false
+  },
+  "events": [
+    {
+      "id": "hero-journey",
+      "name": "The Hero's Journey",
+      "scenes": [
+        "act1-awakening",
+        "act2-discovery",
+        "act3-challenge",
+        "act4-triumph",
+        "act5-return"
+      ]
+    }
+  ],
+  "transitions": {
+    "awakening-to-discovery": {
+      "type": "crossfade",
+      "duration": 1500
+    },
+    "discovery-to-challenge": {
+      "type": "zoom",
+      "duration": 1200
+    },
+    "challenge-to-triumph": {
+      "type": "slide",
+      "duration": 1000,
+      "config": {
+        "direction": "up"
+      }
+    },
+    "triumph-to-return": {
+      "type": "wipe",
+      "duration": 1500,
+      "config": {
+        "direction": "right"
+      }
+    }
+  },
+  "scenes": [
+    {
+      "id": "act1-awakening",
+      "name": "Act I: The Awakening",
+      "duration": 8000,
+      "transition": "awakening-to-discovery",
+      "camera": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1.3,
+        "rotate": 0
+      },
+      "cameraAnimations": [
+        {
+          "property": "zoom",
+          "from": 1.3,
+          "to": 1,
+          "startMs": 0,
+          "endMs": 3000,
+          "easing": "ease-out"
+        }
+      ],
+      "layers": [
+        {
+          "id": "awakening-bg",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#1a1a2e", "#2d3561", "#4a5899"],
+            "direction": "vertical"
+          }
+        },
+        {
+          "id": "awakening-stars",
+          "type": "starfield",
+          "zIndex": 1,
+          "config": {
+            "count": 200,
+            "speed": 0.1,
+            "opacity": 0.8,
+            "twinkle": true,
+            "minSize": 0.5,
+            "maxSize": 2
+          }
+        },
+        {
+          "id": "awakening-light",
+          "type": "light",
+          "zIndex": 3,
+          "config": {
+            "mode": "radial",
+            "x": "50%",
+            "y": "50%",
+            "radius": 100,
+            "color": "#ffffff",
+            "intensity": 0,
+            "blendMode": "screen"
+          },
+          "animations": [
+            {
+              "property": "intensity",
+              "from": 0,
+              "to": 0.8,
+              "startMs": 1000,
+              "endMs": 4000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "radius",
+              "from": 50,
+              "to": 250,
+              "startMs": 1000,
+              "endMs": 4000,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "awakening-particles",
+          "type": "particles",
+          "zIndex": 2,
+          "config": {
+            "count": 60,
+            "size": 2,
+            "speed": 0.4,
+            "color": "#e6e6fa",
+            "opacity": 0.6,
+            "type": "circle",
+            "x": "50%",
+            "y": "50%"
+          }
+        },
+        {
+          "id": "awakening-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "ACT I\nThe Awakening",
+            "fontSize": 48,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "45%",
+            "textShadow": "0 4px 30px rgba(0,0,0,0.8)",
+            "fontWeight": "700",
+            "lineHeight": 1.3
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 2000,
+              "endMs": 3500,
+              "easing": "ease-out"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 6500,
+              "endMs": 8000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "awakening-subtitle",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "In darkness, a spark ignites",
+            "fontSize": 20,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#e6e6fa",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "58%",
+            "textShadow": "0 2px 15px rgba(0,0,0,0.9)",
+            "fontWeight": "300",
+            "letterSpacing": "1px"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 4000,
+              "endMs": 5500,
+              "easing": "ease-in"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 6500,
+              "endMs": 8000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "act2-discovery",
+      "name": "Act II: The Discovery",
+      "duration": 9000,
+      "transition": "discovery-to-challenge",
+      "camera": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1,
+        "rotate": 0
+      },
+      "cameraAnimations": [
+        {
+          "property": "x",
+          "from": -30,
+          "to": 30,
+          "startMs": 0,
+          "endMs": 9000,
+          "easing": "ease-in-out"
+        },
+        {
+          "property": "rotate",
+          "from": -2,
+          "to": 2,
+          "startMs": 0,
+          "endMs": 4500,
+          "easing": "ease-in-out",
+          "loop": true,
+          "yoyo": true
+        }
+      ],
+      "layers": [
+        {
+          "id": "discovery-bg",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#667eea", "#764ba2", "#f093fb"],
+            "direction": "diagonal"
+          }
+        },
+        {
+          "id": "discovery-fog",
+          "type": "fog",
+          "zIndex": 2,
+          "config": {
+            "density": 0.15,
+            "color": "#764ba2",
+            "speed": 0.5,
+            "direction": 45,
+            "opacity": 0.4
+          }
+        },
+        {
+          "id": "discovery-orb",
+          "type": "glowOrb",
+          "zIndex": 5,
+          "config": {
+            "x": "50%",
+            "y": "40%",
+            "radius": 60,
+            "color": "#f093fb",
+            "intensity": 1.2,
+            "blur": 25
+          },
+          "animations": [
+            {
+              "property": "radius",
+              "from": 40,
+              "to": 80,
+              "startMs": 0,
+              "endMs": 4500,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            },
+            {
+              "property": "intensity",
+              "from": 1.0,
+              "to": 1.5,
+              "startMs": 0,
+              "endMs": 3000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "discovery-light",
+          "type": "light",
+          "zIndex": 4,
+          "config": {
+            "mode": "radial",
+            "x": "50%",
+            "y": "40%",
+            "radius": 300,
+            "color": "#f093fb",
+            "intensity": 0.7,
+            "blendMode": "screen"
+          }
+        },
+        {
+          "id": "discovery-particles",
+          "type": "particles",
+          "zIndex": 3,
+          "config": {
+            "count": 80,
+            "size": 2.5,
+            "speed": 0.6,
+            "color": "#ffffff",
+            "opacity": 0.7,
+            "type": "circle",
+            "x": "50%",
+            "y": "40%"
+          }
+        },
+        {
+          "id": "discovery-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "ACT II\nThe Discovery",
+            "fontSize": 52,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "70%",
+            "textShadow": "0 4px 30px rgba(0,0,0,0.8)",
+            "fontWeight": "700",
+            "lineHeight": 1.3
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 1500,
+              "endMs": 3000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 7500,
+              "endMs": 9000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "discovery-subtitle",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "A power beyond imagination awaits",
+            "fontSize": 22,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "82%",
+            "textShadow": "0 2px 15px rgba(0,0,0,0.9)",
+            "fontWeight": "300",
+            "letterSpacing": "1px"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 4000,
+              "endMs": 5500,
+              "easing": "ease-in"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 7500,
+              "endMs": 9000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "act3-challenge",
+      "name": "Act III: The Challenge",
+      "duration": 10000,
+      "transition": "challenge-to-triumph",
+      "camera": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1,
+        "rotate": 0
+      },
+      "cameraAnimations": [
+        {
+          "property": "zoom",
+          "from": 1,
+          "to": 1.2,
+          "startMs": 0,
+          "endMs": 5000,
+          "easing": "ease-in"
+        },
+        {
+          "property": "rotate",
+          "from": 0,
+          "to": -5,
+          "startMs": 5000,
+          "endMs": 10000,
+          "easing": "ease-out"
+        }
+      ],
+      "layers": [
+        {
+          "id": "challenge-bg",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#c31432", "#240b36", "#000000"],
+            "direction": "vertical"
+          }
+        },
+        {
+          "id": "challenge-vignette",
+          "type": "vignette",
+          "zIndex": 8,
+          "config": {
+            "intensity": 0.7,
+            "radius": 0.5,
+            "color": "#000000"
+          }
+        },
+        {
+          "id": "challenge-fog",
+          "type": "fog",
+          "zIndex": 2,
+          "config": {
+            "density": 0.25,
+            "color": "#240b36",
+            "speed": 0.7,
+            "direction": 180,
+            "opacity": 0.5
+          }
+        },
+        {
+          "id": "challenge-light1",
+          "type": "light",
+          "zIndex": 4,
+          "config": {
+            "mode": "spot",
+            "x": "30%",
+            "y": "30%",
+            "radius": 200,
+            "color": "#c31432",
+            "intensity": 0.8,
+            "blendMode": "screen"
+          },
+          "animations": [
+            {
+              "property": "intensity",
+              "from": 0.6,
+              "to": 1.0,
+              "startMs": 0,
+              "endMs": 2000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "challenge-light2",
+          "type": "light",
+          "zIndex": 4,
+          "config": {
+            "mode": "spot",
+            "x": "70%",
+            "y": "70%",
+            "radius": 200,
+            "color": "#ff0000",
+            "intensity": 0.6,
+            "blendMode": "screen"
+          },
+          "animations": [
+            {
+              "property": "intensity",
+              "from": 0.4,
+              "to": 0.8,
+              "startMs": 0,
+              "endMs": 2500,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "challenge-particles",
+          "type": "particles",
+          "zIndex": 3,
+          "config": {
+            "count": 100,
+            "size": 1.5,
+            "speed": 1.2,
+            "color": "#ff4444",
+            "opacity": 0.8,
+            "type": "circle",
+            "x": "50%",
+            "y": "50%"
+          }
+        },
+        {
+          "id": "challenge-noise",
+          "type": "noiseOverlay",
+          "zIndex": 7,
+          "config": {
+            "intensity": 0.12,
+            "scale": 2,
+            "animated": true,
+            "speed": 1.0
+          }
+        },
+        {
+          "id": "challenge-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "ACT III\nThe Challenge",
+            "fontSize": 56,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "45%",
+            "textShadow": "0 4px 30px rgba(195,20,50,0.9)",
+            "fontWeight": "700",
+            "lineHeight": 1.3
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 2000,
+              "endMs": 3500,
+              "easing": "ease-out"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 8500,
+              "endMs": 10000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "challenge-subtitle",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "Darkness rises to test the worthy",
+            "fontSize": 22,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#ffcccc",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "58%",
+            "textShadow": "0 2px 15px rgba(0,0,0,0.9)",
+            "fontWeight": "300",
+            "letterSpacing": "1px"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 4500,
+              "endMs": 6000,
+              "easing": "ease-in"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 8500,
+              "endMs": 10000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "act4-triumph",
+      "name": "Act IV: The Triumph",
+      "duration": 9000,
+      "transition": "triumph-to-return",
+      "camera": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1.2,
+        "rotate": -5
+      },
+      "cameraAnimations": [
+        {
+          "property": "zoom",
+          "from": 1.2,
+          "to": 1,
+          "startMs": 0,
+          "endMs": 4000,
+          "easing": "ease-out"
+        },
+        {
+          "property": "rotate",
+          "from": -5,
+          "to": 0,
+          "startMs": 0,
+          "endMs": 4000,
+          "easing": "ease-out"
+        },
+        {
+          "property": "y",
+          "from": 0,
+          "to": -20,
+          "startMs": 4000,
+          "endMs": 9000,
+          "easing": "ease-in-out"
+        }
+      ],
+      "layers": [
+        {
+          "id": "triumph-bg",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#ffd89b", "#19547b", "#667eea"],
+            "direction": "vertical"
+          }
+        },
+        {
+          "id": "triumph-sun",
+          "type": "glowOrb",
+          "zIndex": 5,
+          "config": {
+            "x": "50%",
+            "y": "35%",
+            "radius": 80,
+            "color": "#ffdd00",
+            "intensity": 2.0,
+            "blur": 30
+          },
+          "animations": [
+            {
+              "property": "intensity",
+              "from": 1.5,
+              "to": 2.5,
+              "startMs": 0,
+              "endMs": 3000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "triumph-light",
+          "type": "light",
+          "zIndex": 4,
+          "config": {
+            "mode": "radial",
+            "x": "50%",
+            "y": "35%",
+            "radius": 400,
+            "color": "#ffdd00",
+            "intensity": 1.0,
+            "blendMode": "screen"
+          }
+        },
+        {
+          "id": "triumph-rays",
+          "type": "particles",
+          "zIndex": 3,
+          "config": {
+            "count": 150,
+            "size": 3,
+            "speed": 1.5,
+            "color": "#ffff99",
+            "opacity": 0.8,
+            "type": "circle",
+            "x": "50%",
+            "y": "35%"
+          }
+        },
+        {
+          "id": "triumph-sparkles",
+          "type": "particles",
+          "zIndex": 6,
+          "config": {
+            "count": 80,
+            "size": 2,
+            "speed": 0.8,
+            "color": "#ffffff",
+            "opacity": 0.9,
+            "type": "circle",
+            "x": "50%",
+            "y": "50%"
+          }
+        },
+        {
+          "id": "triumph-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "ACT IV\nThe Triumph",
+            "fontSize": 58,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#1a1a2e",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "65%",
+            "textShadow": "0 4px 30px rgba(255,255,255,0.9)",
+            "fontWeight": "700",
+            "lineHeight": 1.3
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 2000,
+              "endMs": 3500,
+              "easing": "ease-out"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 7500,
+              "endMs": 9000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "triumph-subtitle",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "Light conquers all shadows",
+            "fontSize": 24,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#2d3561",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "78%",
+            "textShadow": "0 2px 15px rgba(255,255,255,0.8)",
+            "fontWeight": "300",
+            "letterSpacing": "1px"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 4500,
+              "endMs": 6000,
+              "easing": "ease-in"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 7500,
+              "endMs": 9000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "act5-return",
+      "name": "Act V: The Return",
+      "duration": 10000,
+      "camera": {
+        "x": 0,
+        "y": -20,
+        "zoom": 1,
+        "rotate": 0
+      },
+      "cameraAnimations": [
+        {
+          "property": "y",
+          "from": -20,
+          "to": 0,
+          "startMs": 0,
+          "endMs": 5000,
+          "easing": "ease-out"
+        },
+        {
+          "property": "zoom",
+          "from": 1,
+          "to": 1.1,
+          "startMs": 5000,
+          "endMs": 10000,
+          "easing": "ease-in-out"
+        }
+      ],
+      "layers": [
+        {
+          "id": "return-bg",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#4facfe", "#00f2fe", "#43e97b", "#38f9d7"],
+            "direction": "diagonal"
+          }
+        },
+        {
+          "id": "return-fog",
+          "type": "fog",
+          "zIndex": 2,
+          "config": {
+            "density": 0.1,
+            "color": "#00f2fe",
+            "speed": 0.3,
+            "direction": 90,
+            "opacity": 0.3
+          }
+        },
+        {
+          "id": "return-light",
+          "type": "light",
+          "zIndex": 3,
+          "config": {
+            "mode": "radial",
+            "x": "50%",
+            "y": "50%",
+            "radius": 350,
+            "color": "#ffffff",
+            "intensity": 0.6,
+            "blendMode": "screen"
+          }
+        },
+        {
+          "id": "return-particles",
+          "type": "particles",
+          "zIndex": 4,
+          "config": {
+            "count": 100,
+            "size": 2,
+            "speed": 0.5,
+            "color": "#ffffff",
+            "opacity": 0.7,
+            "type": "circle",
+            "x": "50%",
+            "y": "50%"
+          }
+        },
+        {
+          "id": "return-orb",
+          "type": "glowOrb",
+          "zIndex": 5,
+          "config": {
+            "x": "50%",
+            "y": "50%",
+            "radius": 50,
+            "color": "#ffffff",
+            "intensity": 1.0,
+            "blur": 20
+          },
+          "animations": [
+            {
+              "property": "radius",
+              "from": 30,
+              "to": 70,
+              "startMs": 0,
+              "endMs": 5000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "return-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "ACT V\nThe Return",
+            "fontSize": 60,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#1a1a2e",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "35%",
+            "textShadow": "0 4px 30px rgba(255,255,255,0.9)",
+            "fontWeight": "700",
+            "lineHeight": 1.3
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 2000,
+              "endMs": 3500,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "return-subtitle",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "The hero returns, forever changed",
+            "fontSize": 24,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#2d3561",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "48%",
+            "textShadow": "0 2px 15px rgba(255,255,255,0.8)",
+            "fontWeight": "300",
+            "letterSpacing": "1px"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 4500,
+              "endMs": 6000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "return-message",
+          "type": "textBlock",
+          "zIndex": 8,
+          "config": {
+            "text": "Every journey begins with a single step\nEvery legend starts with a choice\nEvery hero rises from within",
+            "fontSize": 18,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#1a1a2e",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "70%",
+            "textShadow": "0 2px 10px rgba(255,255,255,0.7)",
+            "fontWeight": "300",
+            "lineHeight": 1.8,
+            "letterSpacing": "0.5px"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 6500,
+              "endMs": 8000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

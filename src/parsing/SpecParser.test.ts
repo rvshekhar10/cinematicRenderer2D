@@ -196,6 +196,146 @@ describe('SpecParser', () => {
       expect(result.scenes[0].layers[0].animations[0].easing).toBe('ease-in-out');
     });
 
+    it('should validate animation tracks with keyframes', () => {
+      const specWithKeyframes = {
+        ...validSpec,
+        scenes: [
+          {
+            ...validSpec.scenes[0],
+            layers: [
+              {
+                ...validSpec.scenes[0].layers[0],
+                animations: [
+                  {
+                    property: 'opacity',
+                    from: 0,
+                    to: 1,
+                    startMs: 0,
+                    endMs: 1000,
+                    keyframes: [
+                      { time: 0, value: 0 },
+                      { time: 0.5, value: 0.8, easing: 'ease-in' as const },
+                      { time: 1, value: 1 }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      };
+
+      const result = SpecParser.validate(specWithKeyframes);
+      expect(result.scenes[0].layers[0].animations[0].keyframes).toHaveLength(3);
+      expect(result.scenes[0].layers[0].animations[0].keyframes![1].easing).toBe('ease-in');
+    });
+
+    it('should validate animation tracks with stagger configuration', () => {
+      const specWithStagger = {
+        ...validSpec,
+        scenes: [
+          {
+            ...validSpec.scenes[0],
+            layers: [
+              {
+                ...validSpec.scenes[0].layers[0],
+                animations: [
+                  {
+                    property: 'opacity',
+                    from: 0,
+                    to: 1,
+                    startMs: 0,
+                    endMs: 1000,
+                    stagger: {
+                      amount: 100,
+                      from: 'center' as const,
+                      grid: [3, 3] as [number, number]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      };
+
+      const result = SpecParser.validate(specWithStagger);
+      expect(result.scenes[0].layers[0].animations[0].stagger).toBeDefined();
+      expect(result.scenes[0].layers[0].animations[0].stagger!.amount).toBe(100);
+      expect(result.scenes[0].layers[0].animations[0].stagger!.from).toBe('center');
+      expect(result.scenes[0].layers[0].animations[0].stagger!.grid).toEqual([3, 3]);
+    });
+
+    it('should validate animation tracks with randomization', () => {
+      const specWithRandomize = {
+        ...validSpec,
+        scenes: [
+          {
+            ...validSpec.scenes[0],
+            layers: [
+              {
+                ...validSpec.scenes[0].layers[0],
+                animations: [
+                  {
+                    property: 'opacity',
+                    from: 0,
+                    to: 1,
+                    startMs: 0,
+                    endMs: 1000,
+                    randomize: {
+                      property: 'duration',
+                      min: 500,
+                      max: 1500,
+                      seed: 42
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      };
+
+      const result = SpecParser.validate(specWithRandomize);
+      expect(result.scenes[0].layers[0].animations[0].randomize).toBeDefined();
+      expect(result.scenes[0].layers[0].animations[0].randomize!.property).toBe('duration');
+      expect(result.scenes[0].layers[0].animations[0].randomize!.min).toBe(500);
+      expect(result.scenes[0].layers[0].animations[0].randomize!.max).toBe(1500);
+      expect(result.scenes[0].layers[0].animations[0].randomize!.seed).toBe(42);
+    });
+
+    it('should reject randomization with max < min', () => {
+      const invalidSpec = {
+        ...validSpec,
+        scenes: [
+          {
+            ...validSpec.scenes[0],
+            layers: [
+              {
+                ...validSpec.scenes[0].layers[0],
+                animations: [
+                  {
+                    property: 'opacity',
+                    from: 0,
+                    to: 1,
+                    startMs: 0,
+                    endMs: 1000,
+                    randomize: {
+                      property: 'duration',
+                      min: 1500,
+                      max: 500 // max < min should fail
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      };
+
+      expect(() => SpecParser.validate(invalidSpec)).toThrow(/max must be greater than or equal to min/);
+    });
+
     it('should reject animation tracks with invalid timing', () => {
       const invalidSpec = {
         ...validSpec,
@@ -335,6 +475,86 @@ describe('SpecParser', () => {
       expect(animation.interpolate(1)).toBe(1);
       expect(animation.interpolate(0.5)).toBeGreaterThan(0);
       expect(animation.interpolate(0.5)).toBeLessThan(1);
+    });
+
+    it('should compile animation tracks with keyframes', () => {
+      const specWithKeyframes = {
+        ...validSpec,
+        scenes: [
+          {
+            ...validSpec.scenes[0],
+            layers: [
+              {
+                ...validSpec.scenes[0].layers[0],
+                animations: [
+                  {
+                    property: 'opacity',
+                    from: 0,
+                    to: 1,
+                    startMs: 0,
+                    endMs: 1000,
+                    keyframes: [
+                      { time: 0, value: 0 },
+                      { time: 0.5, value: 0.8 },
+                      { time: 1, value: 1 }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      };
+
+      const result = SpecParser.parse(specWithKeyframes);
+      const scene = result.scenes.get('scene1');
+      const animation = scene!.layers[0].animations[0];
+      
+      expect(animation).toBeDefined();
+      expect(animation.keyframeSegments).toBeDefined();
+      expect(animation.keyframeSegments!.length).toBeGreaterThan(0);
+      expect(typeof animation.interpolate).toBe('function');
+      
+      // Test keyframe interpolation
+      expect(animation.interpolate(0)).toBe(0);
+      expect(animation.interpolate(0.5)).toBe(0.8);
+      expect(animation.interpolate(1)).toBe(1);
+    });
+
+    it('should compile animation tracks with loop and yoyo', () => {
+      const specWithLoopYoyo = {
+        ...validSpec,
+        scenes: [
+          {
+            ...validSpec.scenes[0],
+            layers: [
+              {
+                ...validSpec.scenes[0].layers[0],
+                animations: [
+                  {
+                    property: 'scale',
+                    from: 1,
+                    to: 2,
+                    startMs: 0,
+                    endMs: 1000,
+                    loop: true,
+                    yoyo: true
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      };
+
+      const result = SpecParser.parse(specWithLoopYoyo);
+      const scene = result.scenes.get('scene1');
+      const animation = scene!.layers[0].animations[0];
+      
+      expect(animation.loop).toBe(true);
+      expect(animation.yoyo).toBe(true);
+      expect(animation.currentLoop).toBe(0);
+      expect(animation.isReverse).toBe(false);
     });
 
     it('should compile assets with proper metadata', () => {

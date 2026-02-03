@@ -213,8 +213,8 @@ describe('Playground Integration Tests', () => {
       await renderer.mount();
 
       // Test navigation to the main event
-      renderer.goToEvent('day-night-story');
-      expect(eventCallbacks.eventChange).toHaveBeenCalledWith('day-night-story');
+      renderer.goToEvent('eternal-cycle');
+      expect(eventCallbacks.eventChange).toHaveBeenCalledWith('eternal-cycle');
     });
 
     it('should handle all scenes in the day-night story spec', async () => {
@@ -222,8 +222,10 @@ describe('Playground Integration Tests', () => {
 
       // Test navigation to each scene in the day-night cycle
       const scenes = [
-        'prologue-intro', 'prologue-setup', 'prologue-night',
-        'chapter1-morning', 'chapter2-day', 'chapter3-evening', 'chapter4-night'
+        'prologue-void', 'prologue-awakening', 'act1-deep-night',
+        'act2-pre-dawn', 'act3-sunrise', 'act4-morning-glory', 
+        'act5-high-noon', 'act6-golden-hour', 'act7-twilight',
+        'act8-dusk', 'act9-night-returns', 'epilogue-eternal'
       ];
       
       for (const sceneId of scenes) {
@@ -238,9 +240,9 @@ describe('Playground Integration Tests', () => {
       renderer.play();
       
       // Test scenes with gradient color transitions
-      renderer.goToScene('chapter1-morning'); // Has gradient color animation
-      renderer.goToScene('chapter3-evening'); // Has gradient color animation
-      renderer.goToScene('chapter4-night'); // Has gradient color animation
+      renderer.goToScene('act2-pre-dawn'); // Has gradient color animation
+      renderer.goToScene('act3-sunrise'); // Has gradient color animation
+      renderer.goToScene('act6-golden-hour'); // Has gradient color animation
       
       expect(eventCallbacks.error).not.toHaveBeenCalled();
     });
@@ -251,10 +253,10 @@ describe('Playground Integration Tests', () => {
       renderer.play();
       
       // Test scenes with multiple glowOrb layers
-      renderer.goToScene('prologue-night'); // moon + moon-surface
-      renderer.goToScene('chapter1-morning'); // sun-rise + sun-core
-      renderer.goToScene('chapter2-day'); // day-sun + day-sun-core
-      renderer.goToScene('chapter4-night'); // final-moon + final-moon-surface
+      renderer.goToScene('act1-deep-night'); // moon-surface + moon-glow
+      renderer.goToScene('act3-sunrise'); // sun-emergence + sun-radiance
+      renderer.goToScene('act5-high-noon'); // noon-sun + noon-radiance
+      renderer.goToScene('act9-night-returns'); // moon-full + moon-radiance-full
       
       expect(eventCallbacks.error).not.toHaveBeenCalled();
     });
@@ -269,9 +271,9 @@ describe('Playground Integration Tests', () => {
       renderer.play();
       
       // Test scenes with high particle counts
-      renderer.goToScene('prologue-night'); // 300 stars + 150 milky-way particles
-      renderer.goToScene('chapter2-day'); // 120 day-rays particles
-      renderer.goToScene('chapter4-night'); // 400 stars + 200 cosmic-dust particles
+      renderer.goToScene('act1-deep-night'); // 400 stars + 200 milky-way particles
+      renderer.goToScene('act3-sunrise'); // 120 sun-rays particles
+      renderer.goToScene('act9-night-returns'); // 500 stars + 250 cosmic-nebula particles
       
       expect(eventCallbacks.error).not.toHaveBeenCalled();
     });
@@ -283,13 +285,14 @@ describe('Playground Integration Tests', () => {
       
       // Simulate watching the complete day-night cycle
       const scenes = [
-        'prologue-intro',    // Night introduction
-        'prologue-setup',    // Setup
-        'prologue-night',    // Deep night
-        'chapter1-morning',  // Morning awakening
-        'chapter2-day',      // Bright day
-        'chapter3-evening',  // Golden evening
-        'chapter4-night'     // Return to night
+        'prologue-void',        // The Void Before Time
+        'prologue-awakening',   // The First Light
+        'act1-deep-night',      // The Deep Night
+        'act2-pre-dawn',        // The Hour Before Dawn
+        'act3-sunrise',         // Sunrise - The Awakening
+        'act5-high-noon',       // High Noon - The Zenith
+        'act7-twilight',        // Twilight - The Transition
+        'act9-night-returns'    // Night Returns - The Circle Closes
       ];
       
       for (const sceneId of scenes) {
@@ -337,9 +340,9 @@ describe('Playground Integration Tests', () => {
 
       await renderer.mount();
       renderer.play();
-      renderer.goToScene('prologue-intro');
+      renderer.goToScene('prologue-void');
       
-      expect(eventCallbacks.sceneChange).toHaveBeenCalledWith('prologue-intro');
+      expect(eventCallbacks.sceneChange).toHaveBeenCalledWith('prologue-void');
       expect(eventCallbacks.error).not.toHaveBeenCalled();
     });
 
@@ -493,12 +496,12 @@ describe('Playground Integration Tests', () => {
       renderer.setQuality('ultra');
       renderer.play();
       
-      // Navigate to the most complex scene (chapter4-night with 400 stars + particles)
-      renderer.goToScene('chapter4-night');
+      // Navigate to the most complex scene (act9-night-returns with 500 stars + particles + nebula)
+      renderer.goToScene('act9-night-returns');
       
       // Should handle high complexity without errors
       expect(eventCallbacks.error).not.toHaveBeenCalled();
-      expect(eventCallbacks.sceneChange).toHaveBeenCalledWith('chapter4-night');
+      expect(eventCallbacks.sceneChange).toHaveBeenCalledWith('act9-night-returns');
     });
   });
 });

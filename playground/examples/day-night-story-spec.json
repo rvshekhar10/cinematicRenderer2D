@@ -2,24 +2,171 @@
   "schemaVersion": "1.0.0",
   "engine": {
     "targetFps": 60,
-    "quality": "high",
-    "debug": true
+    "quality": "auto",
+    "debug": false
   },
   "events": [
     {
-      "id": "day-night-story",
-      "name": "The Story of Day and Night",
-      "scenes": ["prologue-intro", "prologue-setup", "prologue-night", "chapter1-morning", "chapter2-day", "chapter3-evening", "chapter4-night"]
+      "id": "eternal-cycle",
+      "name": "The Eternal Cycle: A Story of Day and Night",
+      "scenes": [
+        "prologue-void",
+        "prologue-awakening", 
+        "act1-deep-night",
+        "act2-pre-dawn",
+        "act3-sunrise",
+        "act4-morning-glory",
+        "act5-high-noon",
+        "act6-golden-hour",
+        "act7-twilight",
+        "act8-dusk",
+        "act9-night-returns",
+        "epilogue-eternal"
+      ]
     }
   ],
+  "transitions": {
+    "void-to-awakening": {
+      "type": "crossfade",
+      "duration": 2000
+    },
+    "awakening-to-night": {
+      "type": "dissolve",
+      "duration": 1500
+    },
+    "night-to-predawn": {
+      "type": "crossfade",
+      "duration": 2000
+    },
+    "predawn-to-sunrise": {
+      "type": "zoom",
+      "duration": 1800
+    },
+    "sunrise-to-morning": {
+      "type": "slide",
+      "duration": 1500,
+      "config": {
+        "direction": "up"
+      }
+    },
+    "morning-to-noon": {
+      "type": "crossfade",
+      "duration": 1200
+    },
+    "noon-to-golden": {
+      "type": "wipe",
+      "duration": 1800,
+      "config": {
+        "direction": "right"
+      }
+    },
+    "golden-to-twilight": {
+      "type": "blur",
+      "duration": 1500
+    },
+    "twilight-to-dusk": {
+      "type": "crossfade",
+      "duration": 2000
+    },
+    "dusk-to-night": {
+      "type": "dissolve",
+      "duration": 1800
+    },
+    "night-to-eternal": {
+      "type": "crossfade",
+      "duration": 2500
+    }
+  },
   "scenes": [
     {
-      "id": "prologue-intro",
-      "name": "Prologue - Introduction",
-      "duration": 6000,
+      "id": "prologue-void",
+      "name": "Prologue: The Void Before Time",
+      "duration": 4000,
+      "transition": "void-to-awakening",
+      "camera": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1.5,
+        "rotate": 0
+      },
+      "cameraAnimations": [
+        {
+          "property": "zoom",
+          "from": 1.5,
+          "to": 1,
+          "startMs": 0,
+          "endMs": 4000,
+          "easing": "ease-out"
+        }
+      ],
       "layers": [
         {
-          "id": "intro-bg",
+          "id": "void-bg",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#000000", "#0a0a0a", "#000000"],
+            "direction": "radial",
+            "centerX": 0.5,
+            "centerY": 0.5
+          }
+        },
+        {
+          "id": "void-noise",
+          "type": "noiseOverlay",
+          "zIndex": 1,
+          "config": {
+            "intensity": 0.15,
+            "scale": 2,
+            "animated": true,
+            "speed": 0.3
+          }
+        },
+        {
+          "id": "void-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "In the beginning...",
+            "fontSize": 32,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "50%",
+            "textShadow": "0 0 30px rgba(255,255,255,0.8)",
+            "fontWeight": "300",
+            "letterSpacing": "3px"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 1000,
+              "endMs": 2500,
+              "easing": "ease-in-out"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 3000,
+              "endMs": 4000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "prologue-awakening",
+      "name": "Prologue: The First Light",
+      "duration": 6000,
+      "transition": "awakening-to-night",
+      "layers": [
+        {
+          "id": "awakening-bg",
           "type": "gradient",
           "zIndex": 0,
           "config": {
@@ -30,163 +177,117 @@
           }
         },
         {
-          "id": "intro-stars",
-          "type": "starfield",
-          "zIndex": 1,
+          "id": "first-light",
+          "type": "light",
+          "zIndex": 3,
           "config": {
-            "count": 100,
-            "speed": 0.05,
-            "opacity": 0.6,
-            "twinkle": true,
-            "minSize": 0.5,
-            "maxSize": 1.2
-          }
-        },
-        {
-          "id": "story-title",
-          "type": "textBlock",
-          "zIndex": 10,
-          "config": {
-            "text": "The Story of Day and Night",
-            "fontSize": 42,
-            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, serif",
-            "color": "#ffffff",
-            "textAlign": "center",
+            "mode": "radial",
             "x": "50%",
             "y": "30%",
-            "textShadow": "0 4px 20px rgba(255, 255, 255, 0.4)",
-            "fontWeight": "700",
-            "letterSpacing": "1px"
-          },
-          "animations": [
-            {
-              "property": "opacity",
-              "from": 0,
-              "to": 1,
-              "startMs": 1000,
-              "endMs": 3000,
-              "easing": "ease-out"
-            },
-            {
-              "property": "transform.scale",
-              "from": 0.8,
-              "to": 1,
-              "startMs": 1000,
-              "endMs": 3000,
-              "easing": "ease-out"
-            }
-          ]
-        },
-        {
-          "id": "story-subtitle",
-          "type": "textBlock",
-          "zIndex": 9,
-          "config": {
-            "text": "A cinematic journey through time",
-            "fontSize": 18,
-            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, serif",
-            "color": "#cccccc",
-            "textAlign": "center",
-            "x": "50%",
-            "y": "45%",
-            "textShadow": "0 2px 8px rgba(0, 0, 0, 0.8)",
-            "fontWeight": "400",
-            "letterSpacing": "0.5px"
-          },
-          "animations": [
-            {
-              "property": "opacity",
-              "from": 0,
-              "to": 1,
-              "startMs": 3500,
-              "endMs": 5000,
-              "easing": "ease-in"
-            }
-          ]
-        },
-        {
-          "id": "intro-glow",
-          "type": "glowOrb",
-          "zIndex": 5,
-          "config": {
-            "x": "50%",
-            "y": "30%",
-            "radius": 100,
+            "radius": 150,
             "color": "#ffffff",
-            "intensity": 0.2,
-            "blur": 60
+            "intensity": 0,
+            "blendMode": "screen"
           },
           "animations": [
             {
               "property": "intensity",
               "from": 0,
-              "to": 0.4,
+              "to": 0.6,
               "startMs": 1000,
-              "endMs": 6000,
-              "easing": "ease-in-out"
+              "endMs": 5000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "radius",
+              "from": 50,
+              "to": 200,
+              "startMs": 1000,
+              "endMs": 5000,
+              "easing": "ease-out"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "prologue-setup",
-      "name": "Prologue - Setup",
-      "duration": 5000,
-      "layers": [
-        {
-          "id": "setup-bg",
-          "type": "gradient",
-          "zIndex": 0,
-          "config": {
-            "colors": ["#0f0f23", "#1a1a2e", "#2d1b69"],
-            "direction": "vertical"
-          }
         },
         {
-          "id": "setup-text",
+          "id": "cosmic-dust",
+          "type": "particles",
+          "zIndex": 2,
+          "config": {
+            "count": 80,
+            "size": 1.5,
+            "speed": 0.3,
+            "color": "#e6e6fa",
+            "opacity": 0.4,
+            "type": "circle",
+            "x": "50%",
+            "y": "30%"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 0.6,
+              "startMs": 2000,
+              "endMs": 5000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "awakening-text",
           "type": "textBlock",
           "zIndex": 10,
           "config": {
-            "text": "In the beginning, there was darkness...\n\nAnd from this darkness, a cycle was born.",
-            "fontSize": 24,
-            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, serif",
-            "color": "#e0e0e0",
+            "text": "...there was light",
+            "fontSize": 28,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#ffffff",
             "textAlign": "center",
             "x": "50%",
-            "y": "50%",
-            "textShadow": "0 2px 12px rgba(0, 0, 0, 0.8)",
-            "fontWeight": "400",
-            "letterSpacing": "0.5px"
+            "y": "65%",
+            "textShadow": "0 0 20px rgba(255,255,255,0.6)",
+            "fontWeight": "300",
+            "letterSpacing": "2px"
           },
           "animations": [
             {
               "property": "opacity",
               "from": 0,
               "to": 1,
-              "startMs": 1000,
-              "endMs": 2500,
-              "easing": "ease-out"
-            },
-            {
-              "property": "opacity",
-              "from": 1,
-              "to": 0,
-              "startMs": 4000,
+              "startMs": 3000,
               "endMs": 5000,
-              "easing": "ease-in"
+              "easing": "ease-out"
             }
           ]
         }
       ]
     },
     {
-      "id": "prologue-night",
-      "name": "Prologue - Deep Night",
-      "duration": 8000,
+      "id": "act1-deep-night",
+      "name": "Act I: The Deep Night",
+      "duration": 10000,
+      "transition": "night-to-predawn",
+      "camera": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1,
+        "rotate": 0
+      },
+      "cameraAnimations": [
+        {
+          "property": "y",
+          "from": 0,
+          "to": -20,
+          "startMs": 0,
+          "endMs": 10000,
+          "easing": "ease-in-out",
+          "loop": true,
+          "yoyo": true
+        }
+      ],
       "layers": [
         {
-          "id": "night-bg",
+          "id": "night-sky",
           "type": "gradient",
           "zIndex": 0,
           "config": {
@@ -195,401 +296,51 @@
           }
         },
         {
-          "id": "night-stars",
+          "id": "starfield-deep",
           "type": "starfield",
-          "zIndex": 2,
+          "zIndex": 1,
           "config": {
-            "count": 300,
-            "speed": 0.1,
-            "opacity": 0.8,
+            "count": 400,
+            "speed": 0.08,
+            "opacity": 0.9,
             "twinkle": true,
-            "minSize": 0.3,
-            "maxSize": 2.0
+            "minSize": 0.4,
+            "maxSize": 2.5
           }
         },
         {
           "id": "milky-way",
           "type": "particles",
-          "zIndex": 1,
+          "zIndex": 2,
           "config": {
-            "count": 150,
+            "count": 200,
             "size": 1,
             "speed": 0.05,
             "color": "#e6e6fa",
-            "opacity": 0.4,
+            "opacity": 0.5,
             "type": "circle",
-            "x": "30%",
-            "y": "20%"
-          }
-        },
-        {
-          "id": "moon",
-          "type": "glowOrb",
-          "zIndex": 8,
-          "config": {
-            "x": "75%",
-            "y": "25%",
-            "radius": 40,
-            "color": "#f5f5dc",
-            "intensity": 0.9,
-            "blur": 15
-          },
-          "animations": [
-            {
-              "property": "intensity",
-              "from": 0,
-              "to": 1.2,
-              "startMs": 0,
-              "endMs": 3000,
-              "easing": "ease-out"
-            },
-            {
-              "property": "x",
-              "from": "85%",
-              "to": "65%",
-              "startMs": 0,
-              "endMs": 8000,
-              "easing": "linear"
-            }
-          ]
-        },
-        {
-          "id": "moon-surface",
-          "type": "glowOrb",
-          "zIndex": 9,
-          "config": {
-            "x": "75%",
-            "y": "25%",
-            "radius": 25,
-            "color": "#ffffff",
-            "intensity": 0.6,
-            "blur": 5
-          },
-          "animations": [
-            {
-              "property": "x",
-              "from": "85%",
-              "to": "65%",
-              "startMs": 0,
-              "endMs": 8000,
-              "easing": "linear"
-            }
-          ]
-        },
-        {
-          "id": "night-title",
-          "type": "textBlock",
-          "zIndex": 10,
-          "config": {
-            "text": "The Night Sky",
-            "fontSize": 36,
-            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, serif",
-            "color": "#f0f0f0",
-            "textAlign": "center",
-            "x": "50%",
-            "y": "75%",
-            "textShadow": "0 3px 15px rgba(245, 245, 220, 0.3)",
-            "fontWeight": "600"
-          },
-          "animations": [
-            {
-              "property": "opacity",
-              "from": 0,
-              "to": 1,
-              "startMs": 2000,
-              "endMs": 4000,
-              "easing": "ease-out"
-            }
-          ]
-        },
-        {
-          "id": "night-desc",
-          "type": "textBlock",
-          "zIndex": 9,
-          "config": {
-            "text": "Stars dance across the cosmic canvas\nwhile the moon watches over the sleeping world",
-            "fontSize": 16,
-            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, serif",
-            "color": "#cccccc",
-            "textAlign": "center",
-            "x": "50%",
-            "y": "85%",
-            "textShadow": "0 2px 8px rgba(0, 0, 0, 0.8)",
-            "fontWeight": "400"
-          },
-          "animations": [
-            {
-              "property": "opacity",
-              "from": 0,
-              "to": 1,
-              "startMs": 4500,
-              "endMs": 6000,
-              "easing": "ease-in"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "chapter1-morning",
-      "name": "Chapter 1 - Morning Awakening",
-      "duration": 10000,
-      "layers": [
-        {
-          "id": "dawn-bg",
-          "type": "gradient",
-          "zIndex": 0,
-          "config": {
-            "colors": ["#1a1a2e", "#ff6b6b", "#ffa500", "#ffff99"],
-            "direction": "vertical"
-          },
-          "animations": [
-            {
-              "property": "colors",
-              "from": ["#0c0c1e", "#1a1a2e", "#2d1b69"],
-              "to": ["#ff6b6b", "#ffa500", "#ffff99"],
-              "startMs": 0,
-              "endMs": 5000,
-              "easing": "ease-in-out"
-            }
-          ]
-        },
-        {
-          "id": "morning-stars-fade",
-          "type": "starfield",
-          "zIndex": 1,
-          "config": {
-            "count": 200,
-            "speed": 0.1,
-            "opacity": 0.8,
-            "twinkle": false,
-            "minSize": 0.5,
-            "maxSize": 1.5
-          },
-          "animations": [
-            {
-              "property": "opacity",
-              "from": 0.8,
-              "to": 0,
-              "startMs": 2000,
-              "endMs": 6000,
-              "easing": "ease-out"
-            }
-          ]
-        },
-        {
-          "id": "sun-rise",
-          "type": "glowOrb",
-          "zIndex": 8,
-          "config": {
-            "x": "10%",
-            "y": "80%",
-            "radius": 50,
-            "color": "#ffff00",
-            "intensity": 0.3,
-            "blur": 25
-          },
-          "animations": [
-            {
-              "property": "y",
-              "from": "90%",
-              "to": "30%",
-              "startMs": 1000,
-              "endMs": 8000,
-              "easing": "ease-out"
-            },
-            {
-              "property": "x",
-              "from": "5%",
-              "to": "25%",
-              "startMs": 1000,
-              "endMs": 8000,
-              "easing": "ease-out"
-            },
-            {
-              "property": "intensity",
-              "from": 0.3,
-              "to": 1.5,
-              "startMs": 1000,
-              "endMs": 8000,
-              "easing": "ease-out"
-            },
-            {
-              "property": "radius",
-              "from": 30,
-              "to": 60,
-              "startMs": 1000,
-              "endMs": 8000,
-              "easing": "ease-out"
-            }
-          ]
-        },
-        {
-          "id": "sun-core",
-          "type": "glowOrb",
-          "zIndex": 9,
-          "config": {
-            "x": "10%",
-            "y": "80%",
-            "radius": 25,
-            "color": "#ffffff",
-            "intensity": 0.8,
-            "blur": 8
-          },
-          "animations": [
-            {
-              "property": "y",
-              "from": "90%",
-              "to": "30%",
-              "startMs": 1000,
-              "endMs": 8000,
-              "easing": "ease-out"
-            },
-            {
-              "property": "x",
-              "from": "5%",
-              "to": "25%",
-              "startMs": 1000,
-              "endMs": 8000,
-              "easing": "ease-out"
-            }
-          ]
-        },
-        {
-          "id": "morning-rays",
-          "type": "particles",
-          "zIndex": 3,
-          "config": {
-            "count": 80,
-            "size": 1.5,
-            "speed": 0.8,
-            "color": "#ffff99",
-            "opacity": 0.6,
-            "type": "circle",
-            "x": "15%",
-            "y": "50%"
-          },
-          "animations": [
-            {
-              "property": "opacity",
-              "from": 0,
-              "to": 0.8,
-              "startMs": 3000,
-              "endMs": 7000,
-              "easing": "ease-in"
-            }
-          ]
-        },
-        {
-          "id": "chapter1-title",
-          "type": "textBlock",
-          "zIndex": 10,
-          "config": {
-            "text": "Chapter 1: Morning",
-            "fontSize": 38,
-            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, serif",
-            "color": "#2c1810",
-            "textAlign": "center",
-            "x": "50%",
-            "y": "15%",
-            "textShadow": "0 2px 10px rgba(255, 255, 153, 0.4)",
-            "fontWeight": "700"
-          },
-          "animations": [
-            {
-              "property": "opacity",
-              "from": 0,
-              "to": 1,
-              "startMs": 4000,
-              "endMs": 6000,
-              "easing": "ease-out"
-            }
-          ]
-        },
-        {
-          "id": "morning-desc",
-          "type": "textBlock",
-          "zIndex": 9,
-          "config": {
-            "text": "The sun awakens from its slumber,\npainting the sky with golden hues",
-            "fontSize": 18,
-            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, serif",
-            "color": "#8b4513",
-            "textAlign": "center",
-            "x": "50%",
-            "y": "85%",
-            "textShadow": "0 1px 6px rgba(255, 255, 255, 0.3)",
-            "fontWeight": "400"
-          },
-          "animations": [
-            {
-              "property": "opacity",
-              "from": 0,
-              "to": 1,
-              "startMs": 6500,
-              "endMs": 8500,
-              "easing": "ease-in"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "chapter2-day",
-      "name": "Chapter 2 - Bright Day",
-      "duration": 10000,
-      "layers": [
-        {
-          "id": "day-bg",
-          "type": "gradient",
-          "zIndex": 0,
-          "config": {
-            "colors": ["#87ceeb", "#98fb98", "#f0e68c"],
-            "direction": "vertical"
-          }
-        },
-        {
-          "id": "day-clouds",
-          "type": "particles",
-          "zIndex": 2,
-          "config": {
-            "count": 40,
-            "size": 8,
-            "speed": 0.3,
-            "color": "#ffffff",
-            "opacity": 0.7,
-            "type": "circle",
-            "x": "20%",
+            "x": "35%",
             "y": "25%"
-          },
-          "animations": [
-            {
-              "property": "x",
-              "from": "10%",
-              "to": "90%",
-              "startMs": 0,
-              "endMs": 10000,
-              "easing": "linear"
-            }
-          ]
+          }
         },
         {
-          "id": "day-sun",
-          "type": "glowOrb",
-          "zIndex": 8,
+          "id": "moon-glow",
+          "type": "light",
+          "zIndex": 5,
           "config": {
-            "x": "50%",
-            "y": "20%",
-            "radius": 70,
-            "color": "#ffff00",
-            "intensity": 1.8,
-            "blur": 30
+            "mode": "radial",
+            "x": "75%",
+            "y": "25%",
+            "radius": 180,
+            "color": "#f5f5dc",
+            "intensity": 0.7,
+            "blendMode": "screen"
           },
           "animations": [
             {
               "property": "intensity",
-              "from": 1.5,
-              "to": 2.2,
+              "from": 0.6,
+              "to": 0.9,
               "startMs": 0,
               "endMs": 5000,
               "easing": "ease-in-out",
@@ -599,20 +350,423 @@
           ]
         },
         {
-          "id": "day-sun-core",
+          "id": "moon-surface",
           "type": "glowOrb",
-          "zIndex": 9,
+          "zIndex": 6,
           "config": {
-            "x": "50%",
-            "y": "20%",
-            "radius": 35,
+            "x": "75%",
+            "y": "25%",
+            "radius": 45,
             "color": "#ffffff",
-            "intensity": 1.2,
-            "blur": 10
+            "intensity": 0.8,
+            "blur": 8
           }
         },
         {
-          "id": "day-rays",
+          "id": "atmospheric-fog",
+          "type": "fog",
+          "zIndex": 8,
+          "config": {
+            "density": 0.2,
+            "color": "#1a1a2e",
+            "speed": 0.3,
+            "direction": 90,
+            "opacity": 0.3
+          }
+        },
+        {
+          "id": "night-vignette",
+          "type": "vignette",
+          "zIndex": 9,
+          "config": {
+            "intensity": 0.6,
+            "radius": 0.6,
+            "color": "#000000"
+          }
+        },
+        {
+          "id": "act1-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "ACT I\nThe Deep Night",
+            "fontSize": 38,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#f0f0f0",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "75%",
+            "textShadow": "0 4px 25px rgba(245,245,220,0.4)",
+            "fontWeight": "700",
+            "lineHeight": 1.4
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 1500,
+              "endMs": 3500,
+              "easing": "ease-out"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 8000,
+              "endMs": 10000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "night-subtitle",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "When stars whisper ancient secrets\nand the moon guards the sleeping world",
+            "fontSize": 16,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#cccccc",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "85%",
+            "textShadow": "0 2px 10px rgba(0,0,0,0.8)",
+            "fontWeight": "300",
+            "lineHeight": 1.6,
+            "letterSpacing": "0.5px"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 4000,
+              "endMs": 6000,
+              "easing": "ease-in"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 8000,
+              "endMs": 10000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "act2-pre-dawn",
+      "name": "Act II: The Hour Before Dawn",
+      "duration": 8000,
+      "transition": "predawn-to-sunrise",
+      "layers": [
+        {
+          "id": "predawn-sky",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#0f0f23", "#1a1a3e", "#2d1b69", "#4a2c5e"],
+            "direction": "vertical"
+          },
+          "animations": [
+            {
+              "property": "colors",
+              "from": ["#0c0c1e", "#1a1a2e", "#0f0f23"],
+              "to": ["#2d1b69", "#4a2c5e", "#6b4c7a"],
+              "startMs": 0,
+              "endMs": 8000,
+              "easing": "ease-in-out"
+            }
+          ]
+        },
+        {
+          "id": "fading-stars",
+          "type": "starfield",
+          "zIndex": 1,
+          "config": {
+            "count": 300,
+            "speed": 0.1,
+            "opacity": 0.8,
+            "twinkle": true,
+            "minSize": 0.5,
+            "maxSize": 2
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0.8,
+              "to": 0.2,
+              "startMs": 3000,
+              "endMs": 8000,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "horizon-glow",
+          "type": "light",
+          "zIndex": 3,
+          "config": {
+            "mode": "radial",
+            "x": "50%",
+            "y": "85%",
+            "radius": 300,
+            "color": "#6b4c7a",
+            "intensity": 0,
+            "blendMode": "screen"
+          },
+          "animations": [
+            {
+              "property": "intensity",
+              "from": 0,
+              "to": 0.5,
+              "startMs": 2000,
+              "endMs": 8000,
+              "easing": "ease-in"
+            },
+            {
+              "property": "color",
+              "from": "#6b4c7a",
+              "to": "#8b5a8a",
+              "startMs": 4000,
+              "endMs": 8000,
+              "easing": "ease-in-out"
+            }
+          ]
+        },
+        {
+          "id": "morning-fog",
+          "type": "fog",
+          "zIndex": 7,
+          "config": {
+            "density": 0.25,
+            "color": "#4a2c5e",
+            "speed": 0.4,
+            "direction": 45,
+            "opacity": 0.4
+          }
+        },
+        {
+          "id": "act2-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "ACT II\nThe Hour Before Dawn",
+            "fontSize": 36,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#e0d0f0",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "40%",
+            "textShadow": "0 4px 20px rgba(107,76,122,0.6)",
+            "fontWeight": "700",
+            "lineHeight": 1.4
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 1000,
+              "endMs": 3000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 6500,
+              "endMs": 8000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "predawn-quote",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "The world holds its breath\nwaiting for the sun's return",
+            "fontSize": 18,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#d0c0e0",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "55%",
+            "textShadow": "0 2px 12px rgba(0,0,0,0.8)",
+            "fontWeight": "300",
+            "lineHeight": 1.6
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 3500,
+              "endMs": 5500,
+              "easing": "ease-in"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 6500,
+              "endMs": 8000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "act3-sunrise",
+      "name": "Act III: Sunrise - The Awakening",
+      "duration": 12000,
+      "transition": "sunrise-to-morning",
+      "camera": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1,
+        "rotate": 0
+      },
+      "cameraAnimations": [
+        {
+          "property": "zoom",
+          "from": 1.2,
+          "to": 1,
+          "startMs": 0,
+          "endMs": 6000,
+          "easing": "ease-out"
+        },
+        {
+          "property": "y",
+          "from": 10,
+          "to": 0,
+          "startMs": 0,
+          "endMs": 8000,
+          "easing": "ease-out"
+        }
+      ],
+      "layers": [
+        {
+          "id": "sunrise-sky",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#1a1a3e", "#ff6b6b", "#ffa500", "#ffff99"],
+            "direction": "vertical"
+          },
+          "animations": [
+            {
+              "property": "colors",
+              "from": ["#2d1b69", "#4a2c5e", "#6b4c7a"],
+              "to": ["#ff6b6b", "#ffa500", "#ffff99", "#87ceeb"],
+              "startMs": 0,
+              "endMs": 8000,
+              "easing": "ease-in-out"
+            }
+          ]
+        },
+        {
+          "id": "sun-emergence",
+          "type": "glowOrb",
+          "zIndex": 5,
+          "config": {
+            "x": "15%",
+            "y": "90%",
+            "radius": 40,
+            "color": "#ffff00",
+            "intensity": 0.5,
+            "blur": 20
+          },
+          "animations": [
+            {
+              "property": "y",
+              "from": "95%",
+              "to": "35%",
+              "startMs": 1000,
+              "endMs": 10000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "x",
+              "from": "10%",
+              "to": "30%",
+              "startMs": 1000,
+              "endMs": 10000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "radius",
+              "from": 30,
+              "to": 65,
+              "startMs": 1000,
+              "endMs": 10000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "intensity",
+              "from": 0.3,
+              "to": 1.8,
+              "startMs": 1000,
+              "endMs": 10000,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "sun-radiance",
+          "type": "light",
+          "zIndex": 4,
+          "config": {
+            "mode": "radial",
+            "x": "15%",
+            "y": "90%",
+            "radius": 200,
+            "color": "#ffaa00",
+            "intensity": 0,
+            "blendMode": "screen"
+          },
+          "animations": [
+            {
+              "property": "y",
+              "from": "95%",
+              "to": "35%",
+              "startMs": 1000,
+              "endMs": 10000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "x",
+              "from": "10%",
+              "to": "30%",
+              "startMs": 1000,
+              "endMs": 10000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "intensity",
+              "from": 0,
+              "to": 1.2,
+              "startMs": 2000,
+              "endMs": 10000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "radius",
+              "from": 150,
+              "to": 350,
+              "startMs": 2000,
+              "endMs": 10000,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "sun-rays",
           "type": "particles",
           "zIndex": 3,
           "config": {
@@ -620,26 +774,218 @@
             "size": 2,
             "speed": 1.2,
             "color": "#ffff99",
-            "opacity": 0.8,
+            "opacity": 0.7,
             "type": "circle",
-            "x": "50%",
-            "y": "20%"
+            "x": "20%",
+            "y": "60%"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 0.9,
+              "startMs": 4000,
+              "endMs": 10000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "morning-clouds",
+          "type": "particles",
+          "zIndex": 6,
+          "config": {
+            "count": 30,
+            "size": 12,
+            "speed": 0.2,
+            "color": "#ffccaa",
+            "opacity": 0.5,
+            "type": "circle",
+            "x": "60%",
+            "y": "40%"
           }
         },
         {
-          "id": "chapter2-title",
+          "id": "act3-title",
           "type": "textBlock",
           "zIndex": 10,
           "config": {
-            "text": "Chapter 2: Day",
+            "text": "ACT III\nSunrise",
+            "fontSize": 42,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#2c1810",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "15%",
+            "textShadow": "0 3px 20px rgba(255,255,153,0.6)",
+            "fontWeight": "700",
+            "lineHeight": 1.3
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 5000,
+              "endMs": 7000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 10000,
+              "endMs": 12000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "sunrise-quote",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "The sun breaks free from night's embrace\npainting the sky with fire and gold",
+            "fontSize": 18,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#8b4513",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "85%",
+            "textShadow": "0 2px 10px rgba(255,255,255,0.4)",
+            "fontWeight": "300",
+            "lineHeight": 1.6
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 7000,
+              "endMs": 9000,
+              "easing": "ease-in"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 10500,
+              "endMs": 12000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "act4-morning-glory",
+      "name": "Act IV: Morning Glory",
+      "duration": 9000,
+      "transition": "morning-to-noon",
+      "layers": [
+        {
+          "id": "morning-sky",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#87ceeb", "#b0e0e6", "#f0f8ff"],
+            "direction": "vertical"
+          }
+        },
+        {
+          "id": "morning-sun",
+          "type": "glowOrb",
+          "zIndex": 5,
+          "config": {
+            "x": "35%",
+            "y": "30%",
+            "radius": 55,
+            "color": "#ffff00",
+            "intensity": 1.5,
+            "blur": 18
+          },
+          "animations": [
+            {
+              "property": "intensity",
+              "from": 1.3,
+              "to": 1.7,
+              "startMs": 0,
+              "endMs": 4500,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "morning-light",
+          "type": "light",
+          "zIndex": 4,
+          "config": {
+            "mode": "radial",
+            "x": "35%",
+            "y": "30%",
+            "radius": 400,
+            "color": "#ffffcc",
+            "intensity": 0.8,
+            "blendMode": "screen"
+          }
+        },
+        {
+          "id": "floating-clouds",
+          "type": "particles",
+          "zIndex": 3,
+          "config": {
+            "count": 40,
+            "size": 15,
+            "speed": 0.4,
+            "color": "#ffffff",
+            "opacity": 0.7,
+            "type": "circle",
+            "x": "20%",
+            "y": "35%"
+          },
+          "animations": [
+            {
+              "property": "x",
+              "from": "10%",
+              "to": "90%",
+              "startMs": 0,
+              "endMs": 9000,
+              "easing": "linear"
+            }
+          ]
+        },
+        {
+          "id": "morning-birds",
+          "type": "particles",
+          "zIndex": 6,
+          "config": {
+            "count": 15,
+            "size": 2,
+            "speed": 1.5,
+            "color": "#333333",
+            "opacity": 0.6,
+            "type": "circle",
+            "x": "70%",
+            "y": "25%"
+          }
+        },
+        {
+          "id": "act4-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "ACT IV\nMorning Glory",
             "fontSize": 40,
-            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, serif",
+            "fontFamily": "SF Pro Display, -apple-system, serif",
             "color": "#2c5530",
             "textAlign": "center",
             "x": "50%",
             "y": "70%",
-            "textShadow": "0 3px 12px rgba(255, 255, 255, 0.6)",
-            "fontWeight": "700"
+            "textShadow": "0 3px 15px rgba(255,255,255,0.8)",
+            "fontWeight": "700",
+            "lineHeight": 1.3
           },
           "animations": [
             {
@@ -649,23 +995,202 @@
               "startMs": 2000,
               "endMs": 4000,
               "easing": "ease-out"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 7500,
+              "endMs": 9000,
+              "easing": "ease-in"
             }
           ]
         },
         {
-          "id": "day-desc",
+          "id": "morning-quote",
           "type": "textBlock",
           "zIndex": 9,
           "config": {
-            "text": "The sun reaches its zenith,\nilluminating the world with brilliant light",
+            "text": "Life awakens in gentle light\nas the world begins anew",
             "fontSize": 18,
-            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, serif",
+            "fontFamily": "SF Pro Display, -apple-system, serif",
             "color": "#2d5016",
             "textAlign": "center",
             "x": "50%",
-            "y": "80%",
-            "textShadow": "0 2px 8px rgba(255, 255, 255, 0.4)",
-            "fontWeight": "400"
+            "y": "82%",
+            "textShadow": "0 2px 10px rgba(255,255,255,0.5)",
+            "fontWeight": "300",
+            "lineHeight": 1.6
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 4500,
+              "endMs": 6500,
+              "easing": "ease-in"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 7500,
+              "endMs": 9000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "act5-high-noon",
+      "name": "Act V: High Noon - The Zenith",
+      "duration": 10000,
+      "transition": "noon-to-golden",
+      "camera": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1,
+        "rotate": 0
+      },
+      "cameraAnimations": [
+        {
+          "property": "rotate",
+          "from": 0,
+          "to": 2,
+          "startMs": 0,
+          "endMs": 5000,
+          "easing": "ease-in-out",
+          "loop": true,
+          "yoyo": true
+        }
+      ],
+      "layers": [
+        {
+          "id": "noon-sky",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#4da6ff", "#87ceeb", "#b0e0e6"],
+            "direction": "vertical"
+          }
+        },
+        {
+          "id": "noon-sun",
+          "type": "glowOrb",
+          "zIndex": 5,
+          "config": {
+            "x": "50%",
+            "y": "18%",
+            "radius": 70,
+            "color": "#ffff00",
+            "intensity": 2.2,
+            "blur": 25
+          },
+          "animations": [
+            {
+              "property": "intensity",
+              "from": 2.0,
+              "to": 2.4,
+              "startMs": 0,
+              "endMs": 3000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "noon-radiance",
+          "type": "light",
+          "zIndex": 4,
+          "config": {
+            "mode": "radial",
+            "x": "50%",
+            "y": "18%",
+            "radius": 500,
+            "color": "#ffffdd",
+            "intensity": 1.0,
+            "blendMode": "screen"
+          }
+        },
+        {
+          "id": "noon-rays",
+          "type": "particles",
+          "zIndex": 3,
+          "config": {
+            "count": 150,
+            "size": 2.5,
+            "speed": 1.5,
+            "color": "#ffff99",
+            "opacity": 0.8,
+            "type": "circle",
+            "x": "50%",
+            "y": "18%"
+          }
+        },
+        {
+          "id": "heat-shimmer",
+          "type": "noiseOverlay",
+          "zIndex": 7,
+          "config": {
+            "intensity": 0.08,
+            "scale": 3,
+            "animated": true,
+            "speed": 0.8
+          }
+        },
+        {
+          "id": "act5-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "ACT V\nHigh Noon",
+            "fontSize": 44,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#1a4d2e",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "65%",
+            "textShadow": "0 4px 25px rgba(255,255,255,0.9)",
+            "fontWeight": "700",
+            "lineHeight": 1.3
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 2000,
+              "endMs": 4000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 8500,
+              "endMs": 10000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "noon-quote",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "The sun reigns supreme at its throne\nbathing the world in brilliant light",
+            "fontSize": 18,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#2d5016",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "78%",
+            "textShadow": "0 2px 12px rgba(255,255,255,0.6)",
+            "fontWeight": "300",
+            "lineHeight": 1.6
           },
           "animations": [
             {
@@ -675,18 +1200,43 @@
               "startMs": 5000,
               "endMs": 7000,
               "easing": "ease-in"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 8500,
+              "endMs": 10000,
+              "easing": "ease-in"
             }
           ]
         }
       ]
     },
     {
-      "id": "chapter3-evening",
-      "name": "Chapter 3 - Golden Evening",
-      "duration": 10000,
+      "id": "act6-golden-hour",
+      "name": "Act VI: The Golden Hour",
+      "duration": 11000,
+      "transition": "golden-to-twilight",
+      "camera": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1,
+        "rotate": 0
+      },
+      "cameraAnimations": [
+        {
+          "property": "zoom",
+          "from": 1,
+          "to": 1.1,
+          "startMs": 0,
+          "endMs": 11000,
+          "easing": "ease-in-out"
+        }
+      ],
       "layers": [
         {
-          "id": "evening-bg",
+          "id": "golden-sky",
           "type": "gradient",
           "zIndex": 0,
           "config": {
@@ -696,41 +1246,41 @@
           "animations": [
             {
               "property": "colors",
-              "from": ["#87ceeb", "#98fb98", "#f0e68c"],
-              "to": ["#ff7f50", "#ff6347", "#ffd700"],
+              "from": ["#87ceeb", "#b0e0e6", "#f0f8ff"],
+              "to": ["#ff7f50", "#ff6347", "#ffd700", "#ff8c00"],
               "startMs": 0,
-              "endMs": 4000,
+              "endMs": 6000,
               "easing": "ease-in-out"
             }
           ]
         },
         {
-          "id": "evening-sun",
+          "id": "setting-sun",
           "type": "glowOrb",
-          "zIndex": 8,
+          "zIndex": 5,
           "config": {
-            "x": "80%",
-            "y": "25%",
-            "radius": 65,
+            "x": "75%",
+            "y": "30%",
+            "radius": 68,
             "color": "#ff4500",
-            "intensity": 1.6,
-            "blur": 35
+            "intensity": 1.8,
+            "blur": 30
           },
           "animations": [
             {
               "property": "y",
-              "from": "20%",
-              "to": "70%",
+              "from": "25%",
+              "to": "60%",
               "startMs": 2000,
-              "endMs": 9000,
+              "endMs": 10000,
               "easing": "ease-in"
             },
             {
               "property": "x",
               "from": "70%",
-              "to": "90%",
+              "to": "85%",
               "startMs": 2000,
-              "endMs": 9000,
+              "endMs": 10000,
               "easing": "ease-in"
             },
             {
@@ -738,81 +1288,95 @@
               "from": "#ffff00",
               "to": "#ff4500",
               "startMs": 0,
-              "endMs": 5000,
+              "endMs": 8000,
               "easing": "ease-in-out"
             }
           ]
         },
         {
-          "id": "evening-sun-core",
-          "type": "glowOrb",
-          "zIndex": 9,
+          "id": "golden-light",
+          "type": "light",
+          "zIndex": 4,
           "config": {
-            "x": "80%",
-            "y": "25%",
-            "radius": 30,
-            "color": "#ffff99",
-            "intensity": 1.0,
-            "blur": 12
+            "mode": "radial",
+            "x": "75%",
+            "y": "30%",
+            "radius": 450,
+            "color": "#ffa500",
+            "intensity": 1.2,
+            "blendMode": "screen"
           },
           "animations": [
             {
               "property": "y",
-              "from": "20%",
-              "to": "70%",
+              "from": "25%",
+              "to": "60%",
               "startMs": 2000,
-              "endMs": 9000,
+              "endMs": 10000,
               "easing": "ease-in"
             },
             {
               "property": "x",
               "from": "70%",
-              "to": "90%",
+              "to": "85%",
               "startMs": 2000,
-              "endMs": 9000,
+              "endMs": 10000,
               "easing": "ease-in"
             }
           ]
         },
         {
-          "id": "evening-glow",
+          "id": "golden-particles",
           "type": "particles",
           "zIndex": 3,
           "config": {
-            "count": 60,
+            "count": 100,
             "size": 3,
-            "speed": 0.4,
+            "speed": 0.6,
             "color": "#ffa500",
             "opacity": 0.7,
             "type": "circle",
-            "x": "75%",
-            "y": "40%"
+            "x": "70%",
+            "y": "45%"
           },
           "animations": [
             {
               "property": "y",
-              "from": "30%",
-              "to": "60%",
+              "from": "35%",
+              "to": "55%",
               "startMs": 2000,
-              "endMs": 9000,
+              "endMs": 10000,
               "easing": "ease-in"
             }
           ]
         },
         {
-          "id": "chapter3-title",
+          "id": "golden-fog",
+          "type": "fog",
+          "zIndex": 7,
+          "config": {
+            "density": 0.15,
+            "color": "#ff8c00",
+            "speed": 0.3,
+            "direction": 270,
+            "opacity": 0.3
+          }
+        },
+        {
+          "id": "act6-title",
           "type": "textBlock",
           "zIndex": 10,
           "config": {
-            "text": "Chapter 3: Evening",
-            "fontSize": 38,
-            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, serif",
+            "text": "ACT VI\nThe Golden Hour",
+            "fontSize": 42,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
             "color": "#8b0000",
             "textAlign": "center",
             "x": "50%",
             "y": "15%",
-            "textShadow": "0 3px 15px rgba(255, 165, 0, 0.5)",
-            "fontWeight": "700"
+            "textShadow": "0 4px 25px rgba(255,165,0,0.7)",
+            "fontWeight": "700",
+            "lineHeight": 1.3
           },
           "animations": [
             {
@@ -822,23 +1386,32 @@
               "startMs": 3000,
               "endMs": 5000,
               "easing": "ease-out"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 9500,
+              "endMs": 11000,
+              "easing": "ease-in"
             }
           ]
         },
         {
-          "id": "evening-desc",
+          "id": "golden-quote",
           "type": "textBlock",
           "zIndex": 9,
           "config": {
-            "text": "As day surrenders to night,\nthe sky burns with golden fire",
+            "text": "The world is painted in liquid gold\nas day prepares its final bow",
             "fontSize": 18,
-            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, serif",
+            "fontFamily": "SF Pro Display, -apple-system, serif",
             "color": "#8b4513",
             "textAlign": "center",
             "x": "50%",
             "y": "85%",
-            "textShadow": "0 2px 10px rgba(255, 140, 0, 0.4)",
-            "fontWeight": "400"
+            "textShadow": "0 3px 15px rgba(255,140,0,0.5)",
+            "fontWeight": "300",
+            "lineHeight": 1.6
           },
           "animations": [
             {
@@ -847,6 +1420,14 @@
               "to": 1,
               "startMs": 6000,
               "endMs": 8000,
+              "easing": "ease-in"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 9500,
+              "endMs": 11000,
               "easing": "ease-in"
             }
           ]
@@ -854,79 +1435,565 @@
       ]
     },
     {
-      "id": "chapter4-night",
-      "name": "Chapter 4 - Return to Night",
-      "duration": 11000,
+      "id": "act7-twilight",
+      "name": "Act VII: Twilight - The Transition",
+      "duration": 10000,
+      "transition": "twilight-to-dusk",
+      "camera": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1,
+        "rotate": 0
+      },
+      "cameraAnimations": [
+        {
+          "property": "y",
+          "from": 0,
+          "to": 15,
+          "startMs": 0,
+          "endMs": 10000,
+          "easing": "ease-in-out"
+        }
+      ],
       "layers": [
         {
-          "id": "final-night-bg",
+          "id": "twilight-sky",
           "type": "gradient",
           "zIndex": 0,
           "config": {
-            "colors": ["#191970", "#000080", "#0c0c1e"],
+            "colors": ["#4b0082", "#8b008b", "#ff1493", "#ff69b4"],
             "direction": "vertical"
           },
           "animations": [
             {
               "property": "colors",
               "from": ["#ff7f50", "#ff6347", "#ffd700"],
-              "to": ["#191970", "#000080", "#0c0c1e"],
+              "to": ["#4b0082", "#8b008b", "#ff1493", "#ff69b4"],
               "startMs": 0,
-              "endMs": 5000,
+              "endMs": 7000,
               "easing": "ease-in-out"
             }
           ]
         },
         {
-          "id": "final-stars",
+          "id": "twilight-sun",
+          "type": "glowOrb",
+          "zIndex": 5,
+          "config": {
+            "x": "90%",
+            "y": "70%",
+            "radius": 50,
+            "color": "#ff1493",
+            "intensity": 1.2,
+            "blur": 35
+          },
+          "animations": [
+            {
+              "property": "y",
+              "from": "65%",
+              "to": "85%",
+              "startMs": 0,
+              "endMs": 8000,
+              "easing": "ease-in"
+            },
+            {
+              "property": "intensity",
+              "from": 1.5,
+              "to": 0.6,
+              "startMs": 0,
+              "endMs": 8000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0.3,
+              "startMs": 6000,
+              "endMs": 10000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "twilight-glow",
+          "type": "light",
+          "zIndex": 4,
+          "config": {
+            "mode": "radial",
+            "x": "90%",
+            "y": "70%",
+            "radius": 400,
+            "color": "#ff69b4",
+            "intensity": 0.8,
+            "blendMode": "screen"
+          },
+          "animations": [
+            {
+              "property": "y",
+              "from": "65%",
+              "to": "85%",
+              "startMs": 0,
+              "endMs": 8000,
+              "easing": "ease-in"
+            },
+            {
+              "property": "intensity",
+              "from": 0.8,
+              "to": 0.3,
+              "startMs": 5000,
+              "endMs": 10000,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "emerging-stars-twilight",
           "type": "starfield",
           "zIndex": 2,
           "config": {
-            "count": 400,
-            "speed": 0.08,
-            "opacity": 0.9,
+            "count": 150,
+            "speed": 0.05,
+            "opacity": 0,
             "twinkle": true,
-            "minSize": 0.4,
-            "maxSize": 2.5
+            "minSize": 0.5,
+            "maxSize": 2
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 0.5,
+              "startMs": 4000,
+              "endMs": 10000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "twilight-fog",
+          "type": "fog",
+          "zIndex": 7,
+          "config": {
+            "density": 0.2,
+            "color": "#8b008b",
+            "speed": 0.25,
+            "direction": 180,
+            "opacity": 0.35
+          }
+        },
+        {
+          "id": "twilight-vignette",
+          "type": "vignette",
+          "zIndex": 8,
+          "config": {
+            "intensity": 0.4,
+            "radius": 0.65,
+            "color": "#000000"
+          },
+          "animations": [
+            {
+              "property": "intensity",
+              "from": 0.2,
+              "to": 0.6,
+              "startMs": 5000,
+              "endMs": 10000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "act7-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "ACT VII\nTwilight",
+            "fontSize": 40,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#ff69b4",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "40%",
+            "textShadow": "0 4px 25px rgba(139,0,139,0.8)",
+            "fontWeight": "700",
+            "lineHeight": 1.3
           },
           "animations": [
             {
               "property": "opacity",
               "from": 0,
               "to": 1,
-              "startMs": 3000,
+              "startMs": 2000,
+              "endMs": 4000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 8500,
+              "endMs": 10000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "twilight-quote",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "Between day and night, a sacred pause\nwhere colors dance their final waltz",
+            "fontSize": 18,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#ffb6c1",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "55%",
+            "textShadow": "0 3px 15px rgba(75,0,130,0.6)",
+            "fontWeight": "300",
+            "lineHeight": 1.6
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 5000,
+              "endMs": 7000,
+              "easing": "ease-in"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 8500,
+              "endMs": 10000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "act8-dusk",
+      "name": "Act VIII: Dusk - The Deepening",
+      "duration": 9000,
+      "transition": "dusk-to-night",
+      "layers": [
+        {
+          "id": "dusk-sky",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#191970", "#2f4f4f", "#483d8b", "#2c2c54"],
+            "direction": "vertical"
+          },
+          "animations": [
+            {
+              "property": "colors",
+              "from": ["#4b0082", "#8b008b", "#ff1493"],
+              "to": ["#191970", "#2f4f4f", "#483d8b", "#1a1a2e"],
+              "startMs": 0,
+              "endMs": 6000,
+              "easing": "ease-in-out"
+            }
+          ]
+        },
+        {
+          "id": "dusk-stars",
+          "type": "starfield",
+          "zIndex": 2,
+          "config": {
+            "count": 250,
+            "speed": 0.06,
+            "opacity": 0.3,
+            "twinkle": true,
+            "minSize": 0.5,
+            "maxSize": 2.2
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0.3,
+              "to": 0.8,
+              "startMs": 2000,
+              "endMs": 8000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "dusk-horizon-glow",
+          "type": "light",
+          "zIndex": 3,
+          "config": {
+            "mode": "radial",
+            "x": "95%",
+            "y": "90%",
+            "radius": 250,
+            "color": "#483d8b",
+            "intensity": 0.4,
+            "blendMode": "screen"
+          },
+          "animations": [
+            {
+              "property": "intensity",
+              "from": 0.6,
+              "to": 0.1,
+              "startMs": 0,
               "endMs": 7000,
               "easing": "ease-out"
             }
           ]
         },
         {
-          "id": "final-moon",
+          "id": "moon-rising",
           "type": "glowOrb",
-          "zIndex": 8,
+          "zIndex": 5,
           "config": {
-            "x": "70%",
-            "y": "30%",
-            "radius": 45,
+            "x": "20%",
+            "y": "95%",
+            "radius": 35,
             "color": "#f5f5dc",
-            "intensity": 1.1,
-            "blur": 18
+            "intensity": 0.5,
+            "blur": 12
+          },
+          "animations": [
+            {
+              "property": "y",
+              "from": "95%",
+              "to": "30%",
+              "startMs": 2000,
+              "endMs": 9000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "intensity",
+              "from": 0.3,
+              "to": 0.9,
+              "startMs": 2000,
+              "endMs": 9000,
+              "easing": "ease-in"
+            },
+            {
+              "property": "radius",
+              "from": 25,
+              "to": 42,
+              "startMs": 2000,
+              "endMs": 9000,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "moon-light-dusk",
+          "type": "light",
+          "zIndex": 4,
+          "config": {
+            "mode": "radial",
+            "x": "20%",
+            "y": "95%",
+            "radius": 150,
+            "color": "#f5f5dc",
+            "intensity": 0,
+            "blendMode": "screen"
+          },
+          "animations": [
+            {
+              "property": "y",
+              "from": "95%",
+              "to": "30%",
+              "startMs": 2000,
+              "endMs": 9000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "intensity",
+              "from": 0,
+              "to": 0.6,
+              "startMs": 4000,
+              "endMs": 9000,
+              "easing": "ease-in"
+            },
+            {
+              "property": "radius",
+              "from": 100,
+              "to": 180,
+              "startMs": 4000,
+              "endMs": 9000,
+              "easing": "ease-out"
+            }
+          ]
+        },
+        {
+          "id": "dusk-fog",
+          "type": "fog",
+          "zIndex": 7,
+          "config": {
+            "density": 0.18,
+            "color": "#2f4f4f",
+            "speed": 0.2,
+            "direction": 90,
+            "opacity": 0.35
+          }
+        },
+        {
+          "id": "act8-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "ACT VIII\nDusk",
+            "fontSize": 40,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#b0c4de",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "60%",
+            "textShadow": "0 4px 25px rgba(72,61,139,0.7)",
+            "fontWeight": "700",
+            "lineHeight": 1.3
           },
           "animations": [
             {
               "property": "opacity",
               "from": 0,
               "to": 1,
-              "startMs": 4000,
-              "endMs": 7000,
+              "startMs": 2000,
+              "endMs": 4000,
               "easing": "ease-out"
             },
             {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 7500,
+              "endMs": 9000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "dusk-quote",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "The last light fades from the horizon\nas the moon begins its gentle reign",
+            "fontSize": 18,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#d3d3d3",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "72%",
+            "textShadow": "0 3px 15px rgba(25,25,112,0.8)",
+            "fontWeight": "300",
+            "lineHeight": 1.6
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 4500,
+              "endMs": 6500,
+              "easing": "ease-in"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 7500,
+              "endMs": 9000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "act9-night-returns",
+      "name": "Act IX: Night Returns - The Circle Closes",
+      "duration": 10000,
+      "transition": "night-to-eternal",
+      "camera": {
+        "x": 0,
+        "y": 0,
+        "zoom": 1,
+        "rotate": 0
+      },
+      "cameraAnimations": [
+        {
+          "property": "zoom",
+          "from": 1,
+          "to": 1.15,
+          "startMs": 0,
+          "endMs": 10000,
+          "easing": "ease-in-out"
+        },
+        {
+          "property": "rotate",
+          "from": 0,
+          "to": -3,
+          "startMs": 0,
+          "endMs": 10000,
+          "easing": "ease-in-out"
+        }
+      ],
+      "layers": [
+        {
+          "id": "night-return-sky",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#0a0a0a", "#1a1a2e", "#0f0f23", "#000000"],
+            "direction": "vertical"
+          }
+        },
+        {
+          "id": "full-starfield",
+          "type": "starfield",
+          "zIndex": 1,
+          "config": {
+            "count": 500,
+            "speed": 0.08,
+            "opacity": 1,
+            "twinkle": true,
+            "minSize": 0.4,
+            "maxSize": 3
+          }
+        },
+        {
+          "id": "cosmic-nebula",
+          "type": "particles",
+          "zIndex": 2,
+          "config": {
+            "count": 250,
+            "size": 1.2,
+            "speed": 0.04,
+            "color": "#9370db",
+            "opacity": 0.4,
+            "type": "circle",
+            "x": "40%",
+            "y": "30%"
+          }
+        },
+        {
+          "id": "moon-full",
+          "type": "glowOrb",
+          "zIndex": 6,
+          "config": {
+            "x": "70%",
+            "y": "25%",
+            "radius": 48,
+            "color": "#ffffff",
+            "intensity": 1.0,
+            "blur": 10
+          },
+          "animations": [
+            {
               "property": "intensity",
               "from": 0.8,
-              "to": 1.4,
-              "startMs": 7000,
-              "endMs": 11000,
+              "to": 1.2,
+              "startMs": 0,
+              "endMs": 5000,
               "easing": "ease-in-out",
               "loop": true,
               "yoyo": true
@@ -934,119 +2001,275 @@
           ]
         },
         {
-          "id": "final-moon-surface",
-          "type": "glowOrb",
+          "id": "moon-radiance-full",
+          "type": "light",
+          "zIndex": 5,
+          "config": {
+            "mode": "radial",
+            "x": "70%",
+            "y": "25%",
+            "radius": 200,
+            "color": "#f5f5dc",
+            "intensity": 0.8,
+            "blendMode": "screen"
+          },
+          "animations": [
+            {
+              "property": "intensity",
+              "from": 0.7,
+              "to": 1.0,
+              "startMs": 0,
+              "endMs": 5000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "night-fog-return",
+          "type": "fog",
+          "zIndex": 8,
+          "config": {
+            "density": 0.22,
+            "color": "#1a1a2e",
+            "speed": 0.25,
+            "direction": 135,
+            "opacity": 0.35
+          }
+        },
+        {
+          "id": "night-vignette-return",
+          "type": "vignette",
           "zIndex": 9,
           "config": {
-            "x": "70%",
-            "y": "30%",
-            "radius": 28,
-            "color": "#ffffff",
-            "intensity": 0.7,
-            "blur": 6
+            "intensity": 0.65,
+            "radius": 0.6,
+            "color": "#000000"
+          }
+        },
+        {
+          "id": "act9-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "ACT IX\nNight Returns",
+            "fontSize": 42,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#e6e6fa",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "70%",
+            "textShadow": "0 4px 30px rgba(245,245,220,0.5)",
+            "fontWeight": "700",
+            "lineHeight": 1.3
           },
           "animations": [
             {
               "property": "opacity",
               "from": 0,
               "to": 1,
-              "startMs": 4000,
-              "endMs": 7000,
+              "startMs": 2000,
+              "endMs": 4000,
               "easing": "ease-out"
-            }
-          ]
-        },
-        {
-          "id": "cosmic-dust",
-          "type": "particles",
-          "zIndex": 1,
-          "config": {
-            "count": 200,
-            "size": 0.8,
-            "speed": 0.1,
-            "color": "#e6e6fa",
-            "opacity": 0.5,
-            "type": "circle",
-            "x": "40%",
-            "y": "30%"
-          },
-          "animations": [
+            },
             {
               "property": "opacity",
-              "from": 0,
-              "to": 0.6,
-              "startMs": 5000,
-              "endMs": 9000,
+              "from": 1,
+              "to": 0,
+              "startMs": 8500,
+              "endMs": 10000,
               "easing": "ease-in"
             }
           ]
         },
         {
-          "id": "chapter4-title",
+          "id": "night-return-quote",
           "type": "textBlock",
-          "zIndex": 10,
+          "zIndex": 9,
           "config": {
-            "text": "Chapter 4: Night Returns",
-            "fontSize": 36,
-            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, serif",
-            "color": "#ddddff",
+            "text": "The cycle completes, as it always must\nnight embraces the world once more",
+            "fontSize": 18,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#d3d3d3",
             "textAlign": "center",
             "x": "50%",
-            "y": "75%",
-            "textShadow": "0 4px 20px rgba(245, 245, 220, 0.4)",
-            "fontWeight": "700"
+            "y": "82%",
+            "textShadow": "0 3px 15px rgba(0,0,0,0.9)",
+            "fontWeight": "300",
+            "lineHeight": 1.6
           },
           "animations": [
             {
               "property": "opacity",
               "from": 0,
               "to": 1,
-              "startMs": 6000,
-              "endMs": 8000,
+              "startMs": 5000,
+              "endMs": 7000,
+              "easing": "ease-in"
+            },
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 8500,
+              "endMs": 10000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "epilogue-eternal",
+      "name": "Epilogue: The Eternal",
+      "duration": 12000,
+      "layers": [
+        {
+          "id": "eternal-void",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#000000", "#0a0a0a", "#1a1a2e", "#000000"],
+            "direction": "radial",
+            "centerX": 0.5,
+            "centerY": 0.5
+          }
+        },
+        {
+          "id": "eternal-stars",
+          "type": "starfield",
+          "zIndex": 1,
+          "config": {
+            "count": 300,
+            "speed": 0.05,
+            "opacity": 0.7,
+            "twinkle": true,
+            "minSize": 0.5,
+            "maxSize": 2.5
+          }
+        },
+        {
+          "id": "eternal-light",
+          "type": "light",
+          "zIndex": 3,
+          "config": {
+            "mode": "radial",
+            "x": "50%",
+            "y": "50%",
+            "radius": 250,
+            "color": "#ffffff",
+            "intensity": 0,
+            "blendMode": "screen"
+          },
+          "animations": [
+            {
+              "property": "intensity",
+              "from": 0,
+              "to": 0.4,
+              "startMs": 3000,
+              "endMs": 7000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "eternal-particles",
+          "type": "particles",
+          "zIndex": 2,
+          "config": {
+            "count": 100,
+            "size": 1.5,
+            "speed": 0.2,
+            "color": "#e6e6fa",
+            "opacity": 0.5,
+            "type": "circle",
+            "x": "50%",
+            "y": "50%"
+          }
+        },
+        {
+          "id": "eternal-vignette",
+          "type": "vignette",
+          "zIndex": 8,
+          "config": {
+            "intensity": 0.7,
+            "radius": 0.5,
+            "color": "#000000"
+          }
+        },
+        {
+          "id": "epilogue-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "EPILOGUE\nThe Eternal",
+            "fontSize": 44,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "35%",
+            "textShadow": "0 4px 30px rgba(255,255,255,0.8)",
+            "fontWeight": "700",
+            "lineHeight": 1.3
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 2000,
+              "endMs": 4500,
               "easing": "ease-out"
             }
           ]
         },
         {
-          "id": "final-desc",
+          "id": "eternal-message",
           "type": "textBlock",
           "zIndex": 9,
           "config": {
-            "text": "The eternal cycle completes,\nas night reclaims its throne among the stars",
+            "text": "Day and night, light and dark\nForever dancing, forever one\nThe eternal cycle continues\nAs it has since time began\nAnd will, until time ends",
+            "fontSize": 20,
+            "fontFamily": "SF Pro Display, -apple-system, serif",
+            "color": "#e6e6fa",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "55%",
+            "textShadow": "0 3px 20px rgba(255,255,255,0.6)",
+            "fontWeight": "300",
+            "lineHeight": 1.8,
+            "letterSpacing": "1px"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 5000,
+              "endMs": 8000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "eternal-signature",
+          "type": "textBlock",
+          "zIndex": 9,
+          "config": {
+            "text": "— The Eternal Cycle —",
             "fontSize": 16,
-            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, serif",
+            "fontFamily": "SF Pro Display, -apple-system, serif",
             "color": "#cccccc",
             "textAlign": "center",
             "x": "50%",
             "y": "85%",
-            "textShadow": "0 2px 8px rgba(0, 0, 0, 0.8)",
-            "fontWeight": "400"
-          },
-          "animations": [
-            {
-              "property": "opacity",
-              "from": 0,
-              "to": 1,
-              "startMs": 8500,
-              "endMs": 10500,
-              "easing": "ease-in"
-            }
-          ]
-        },
-        {
-          "id": "the-end",
-          "type": "textBlock",
-          "zIndex": 11,
-          "config": {
-            "text": "~ The End ~",
-            "fontSize": 28,
-            "fontFamily": "SF Pro Display, -apple-system, BlinkMacSystemFont, serif",
-            "color": "#ffffff",
-            "textAlign": "center",
-            "x": "50%",
-            "y": "50%",
-            "textShadow": "0 3px 15px rgba(255, 255, 255, 0.6)",
-            "fontWeight": "600",
+            "textShadow": "0 2px 10px rgba(255,255,255,0.4)",
+            "fontWeight": "300",
+            "fontStyle": "italic",
             "letterSpacing": "2px"
           },
           "animations": [
@@ -1054,17 +2277,9 @@
               "property": "opacity",
               "from": 0,
               "to": 1,
-              "startMs": 9500,
+              "startMs": 9000,
               "endMs": 11000,
-              "easing": "ease-out"
-            },
-            {
-              "property": "transform.scale",
-              "from": 0.8,
-              "to": 1.1,
-              "startMs": 9500,
-              "endMs": 11000,
-              "easing": "ease-out"
+              "easing": "ease-in"
             }
           ]
         }

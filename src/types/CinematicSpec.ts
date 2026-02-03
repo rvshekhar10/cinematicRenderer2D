@@ -82,6 +82,10 @@ export type LayerType =
   | 'starfield' 
   | 'dust' 
   | 'nebulaNoise'
+  // Enhanced layers
+  | 'light'
+  | 'fog'
+  | 'parallaxGroup'
   // Future WebGL layers
   | 'webgl-custom';
 
@@ -128,6 +132,44 @@ export interface AnimationTrackSpec {
   loop?: boolean;
   /** Whether to reverse the animation on each loop */
   yoyo?: boolean;
+  /** Keyframes for multi-step animations (overrides from/to if provided) */
+  keyframes?: AnimationKeyframe[];
+  /** Stagger configuration for multiple targets */
+  stagger?: StaggerConfig;
+  /** Randomization configuration for property variations */
+  randomize?: RandomizeConfig;
+}
+
+/** Keyframe definition for multi-step animations */
+export interface AnimationKeyframe {
+  /** Time position in the animation (0-1, where 0 is start and 1 is end) */
+  time: number;
+  /** Value at this keyframe */
+  value: AnimationValue;
+  /** Optional easing function for this segment (defaults to track easing) */
+  easing?: EasingType;
+}
+
+/** Stagger configuration for time-offset animations */
+export interface StaggerConfig {
+  /** Time offset between items in milliseconds */
+  amount: number;
+  /** Starting point for stagger effect */
+  from?: 'start' | 'center' | 'end';
+  /** Grid dimensions for 2D stagger [columns, rows] */
+  grid?: [number, number];
+}
+
+/** Randomization configuration for animation variations */
+export interface RandomizeConfig {
+  /** Property to randomize (e.g., 'from', 'to', 'duration') */
+  property: string;
+  /** Minimum value for randomization */
+  min: number;
+  /** Maximum value for randomization */
+  max: number;
+  /** Optional seed for reproducible randomness */
+  seed?: number;
 }
 
 /** Supported animation value types */
@@ -213,7 +255,7 @@ export interface TransitionSpec {
 }
 
 /** Supported transition types */
-export type TransitionType = 'fade' | 'slide' | 'zoom' | 'wipe' | 'dissolve' | 'blur';
+export type TransitionType = 'fade' | 'crossfade' | 'slide' | 'zoom' | 'wipe' | 'dissolve' | 'blur';
 
 /** Configuration for transition effects */
 export interface TransitionConfig {
