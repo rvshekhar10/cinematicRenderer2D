@@ -4,6 +4,7 @@ import { copyFileSync, mkdirSync, existsSync } from 'fs';
 
 export default defineConfig({
   root: 'playground',
+  base: './', // Use relative paths for assets
   publicDir: resolve(__dirname, 'public'),
   resolve: {
     alias: {
