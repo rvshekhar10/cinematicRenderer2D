@@ -85,7 +85,7 @@ export function createSunriseScene(
             to: 1,
             startMs: 0,
             endMs: timing.fadeInDuration!,
-            easing: 'easeInOut'
+            easing: 'ease-in-out'
           },
           // Fade out
           {
@@ -94,7 +94,7 @@ export function createSunriseScene(
             to: 0,
             startMs: timing.duration! - timing.fadeOutDuration!,
             endMs: timing.duration!,
-            easing: 'easeInOut'
+            easing: 'ease-in-out'
           }
         ]
       },
@@ -121,7 +121,7 @@ export function createSunriseScene(
             to: effects.intensity!,
             startMs: timing.fadeInDuration! * 0.5,
             endMs: timing.fadeInDuration! * 1.5,
-            easing: 'easeIn'
+            easing: 'ease-in'
           },
           // Fade out particles
           {
@@ -130,7 +130,7 @@ export function createSunriseScene(
             to: 0,
             startMs: timing.duration! - timing.fadeOutDuration!,
             endMs: timing.duration!,
-            easing: 'easeOut'
+            easing: 'ease-out'
           }
         ]
       },
@@ -155,7 +155,7 @@ export function createSunriseScene(
             to: 40,
             startMs: 0,
             endMs: timing.duration! * 0.6,
-            easing: 'easeOut'
+            easing: 'ease-out'
           },
           // Fade in glow
           {
@@ -164,7 +164,7 @@ export function createSunriseScene(
             to: 0.6,
             startMs: 0,
             endMs: timing.fadeInDuration!,
-            easing: 'easeIn'
+            easing: 'ease-in'
           },
           // Fade out glow
           {
@@ -173,12 +173,12 @@ export function createSunriseScene(
             to: 0,
             startMs: timing.duration! - timing.fadeOutDuration!,
             endMs: timing.duration!,
-            easing: 'easeOut'
+            easing: 'ease-out'
           }
         ]
       }
     ],
-    audioTracks: [
+    audio: [
       // Optional morning ambience
       // Users can provide their own audio file
       // {
@@ -277,7 +277,7 @@ export function createCosmicBirthScene(
             to: 0.5,
             startMs: 0,
             endMs: timing.fadeInDuration!,
-            easing: 'easeIn'
+            easing: 'ease-in'
           }
         ]
       },
@@ -304,7 +304,7 @@ export function createCosmicBirthScene(
             to: effects.speed!,
             startMs: timing.duration! * 0.3,
             endMs: timing.duration! * 0.4,
-            easing: 'easeOut'
+            easing: 'ease-out'
           },
           // Fade out explosion
           {
@@ -313,7 +313,7 @@ export function createCosmicBirthScene(
             to: 0,
             startMs: timing.duration! * 0.6,
             endMs: timing.duration!,
-            easing: 'easeOut'
+            easing: 'ease-out'
           }
         ]
       },
@@ -338,7 +338,7 @@ export function createCosmicBirthScene(
             to: 60,
             startMs: timing.duration! * 0.3,
             endMs: timing.duration! * 0.7,
-            easing: 'easeOut'
+            easing: 'ease-out'
           },
           // Intensity pulse
           {
@@ -347,7 +347,7 @@ export function createCosmicBirthScene(
             to: 1.0,
             startMs: timing.duration! * 0.3,
             endMs: timing.duration! * 0.4,
-            easing: 'easeIn'
+            easing: 'ease-in'
           },
           {
             property: 'intensity',
@@ -355,12 +355,12 @@ export function createCosmicBirthScene(
             to: 0,
             startMs: timing.duration! * 0.7,
             endMs: timing.duration!,
-            easing: 'easeOut'
+            easing: 'ease-out'
           }
         ]
       }
     ],
-    audioTracks: []
+    audio: []
   };
 }
 
@@ -434,7 +434,7 @@ export function createRainScene(
             to: 0.4,
             startMs: 0,
             endMs: timing.fadeInDuration!,
-            easing: 'easeIn'
+            easing: 'ease-in'
           }
         ]
       },
@@ -460,7 +460,7 @@ export function createRainScene(
             to: effects.intensity!,
             startMs: timing.fadeInDuration! * 0.5,
             endMs: timing.fadeInDuration! * 1.5,
-            easing: 'easeIn'
+            easing: 'ease-in'
           },
           {
             property: 'opacity',
@@ -468,7 +468,7 @@ export function createRainScene(
             to: 0,
             startMs: timing.duration! - timing.fadeOutDuration!,
             endMs: timing.duration!,
-            easing: 'easeOut'
+            easing: 'ease-out'
           }
         ]
       },
@@ -483,7 +483,7 @@ export function createRainScene(
         }
       }
     ],
-    audioTracks: [
+    audio: [
       // Optional rain sound effects
       // {
       //   id: 'rain-sound',
@@ -555,7 +555,7 @@ export function createDivineAuraScene(
             to: 1,
             startMs: 0,
             endMs: timing.fadeInDuration!,
-            easing: 'easeIn'
+            easing: 'ease-in'
           }
         ]
       },
@@ -580,7 +580,7 @@ export function createDivineAuraScene(
             to: effects.intensity!,
             startMs: 0,
             endMs: timing.duration! * 0.5,
-            easing: 'easeInOut',
+            easing: 'ease-in-out',
             loop: true,
             yoyo: true
           },
@@ -590,7 +590,7 @@ export function createDivineAuraScene(
             to: 35,
             startMs: 0,
             endMs: timing.duration! * 0.5,
-            easing: 'easeInOut',
+            easing: 'ease-in-out',
             loop: true,
             yoyo: true
           }
@@ -599,14 +599,15 @@ export function createDivineAuraScene(
       // Outer glow ring
       {
         id: 'divine-glow',
-        type: 'glowEffect',
+        type: 'light',
         zIndex: 2,
         config: {
+          mode: 'radial',
           position: { x: 50, y: 50 },
           radius: 40,
           intensity: 0.6,
           color: colors.secondary!,
-          blur: 20
+          blendMode: 'screen'
         },
         animations: [
           {
@@ -615,7 +616,7 @@ export function createDivineAuraScene(
             to: 0.8,
             startMs: timing.fadeInDuration! * 0.5,
             endMs: timing.fadeInDuration! * 1.5,
-            easing: 'easeIn'
+            easing: 'ease-in'
           }
         ]
       },
@@ -641,7 +642,7 @@ export function createDivineAuraScene(
             to: 0.5,
             startMs: timing.fadeInDuration!,
             endMs: timing.fadeInDuration! * 2,
-            easing: 'easeIn'
+            easing: 'ease-in'
           },
           {
             property: 'opacity',
@@ -649,12 +650,12 @@ export function createDivineAuraScene(
             to: 0,
             startMs: timing.duration! - timing.fadeOutDuration!,
             endMs: timing.duration!,
-            easing: 'easeOut'
+            easing: 'ease-out'
           }
         ]
       }
     ],
-    audioTracks: []
+    audio: []
   };
 }
 
@@ -733,7 +734,7 @@ export function createUnderwaterScene(
             to: 190,
             startMs: 0,
             endMs: timing.duration! * 0.4,
-            easing: 'easeInOut',
+            easing: 'ease-in-out',
             loop: true,
             yoyo: true
           },
@@ -743,7 +744,7 @@ export function createUnderwaterScene(
             to: 0.5,
             startMs: 0,
             endMs: timing.fadeInDuration!,
-            easing: 'easeIn'
+            easing: 'ease-in'
           }
         ]
       },
@@ -768,7 +769,7 @@ export function createUnderwaterScene(
             to: 185,
             startMs: timing.duration! * 0.2,
             endMs: timing.duration! * 0.6,
-            easing: 'easeInOut',
+            easing: 'ease-in-out',
             loop: true,
             yoyo: true
           },
@@ -778,7 +779,7 @@ export function createUnderwaterScene(
             to: 0.5,
             startMs: timing.fadeInDuration! * 0.5,
             endMs: timing.fadeInDuration! * 1.5,
-            easing: 'easeIn'
+            easing: 'ease-in'
           }
         ]
       },
@@ -804,7 +805,7 @@ export function createUnderwaterScene(
             to: effects.intensity!,
             startMs: timing.fadeInDuration!,
             endMs: timing.fadeInDuration! * 2,
-            easing: 'easeIn'
+            easing: 'ease-in'
           },
           {
             property: 'opacity',
@@ -812,7 +813,7 @@ export function createUnderwaterScene(
             to: 0,
             startMs: timing.duration! - timing.fadeOutDuration!,
             endMs: timing.duration!,
-            easing: 'easeOut'
+            easing: 'ease-out'
           }
         ]
       },
@@ -827,7 +828,7 @@ export function createUnderwaterScene(
         }
       }
     ],
-    audioTracks: []
+    audio: []
   };
 }
 
@@ -916,7 +917,7 @@ export class SceneTemplateManager {
    * Validate customization options for a template
    */
   static validateCustomization(
-    templateType: TemplateType,
+    _templateType: TemplateType,
     customization: TemplateCustomization
   ): { valid: boolean; errors: string[] } {
     const errors: string[] = [];

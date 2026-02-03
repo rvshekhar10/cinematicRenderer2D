@@ -526,11 +526,11 @@ export class EditorMode {
     const properties: Record<string, any> = {};
 
     // Try to get common properties
-    if ('opacity' in layer) properties.opacity = (layer as any).opacity;
-    if ('x' in layer) properties.x = (layer as any).x;
-    if ('y' in layer) properties.y = (layer as any).y;
-    if ('scale' in layer) properties.scale = (layer as any).scale;
-    if ('rotation' in layer) properties.rotation = (layer as any).rotation;
+    if ('opacity' in layer) properties['opacity'] = (layer as any).opacity;
+    if ('x' in layer) properties['x'] = (layer as any).x;
+    if ('y' in layer) properties['y'] = (layer as any).y;
+    if ('scale' in layer) properties['scale'] = (layer as any).scale;
+    if ('rotation' in layer) properties['rotation'] = (layer as any).rotation;
 
     return properties;
   }
@@ -719,14 +719,15 @@ export class EditorMode {
    */
   private extractTimelineMarkers(): void {
     // Get scenes from renderer and create markers
-    const scenes = this.renderer.getScenes();
-    scenes.forEach(scene => {
-      this.addMarker({
-        time: scene.startTime,
-        label: scene.name || scene.id,
-        type: 'scene',
-      });
-    });
+    // TODO: Implement getScenes() method in CinematicRenderer2D
+    // const scenes = this.renderer.getScenes();
+    // scenes.forEach((scene: any) => {
+    //   this.addMarker({
+    //     time: scene.startTime,
+    //     label: scene.name || scene.id,
+    //     type: 'scene',
+    //   });
+    // });
   }
 
   /**
