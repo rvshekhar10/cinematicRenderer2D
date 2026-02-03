@@ -1,0 +1,317 @@
+{
+  "schemaVersion": "1.0.0",
+  "engine": {
+    "targetFps": 60,
+    "quality": "high"
+  },
+  "events": [{
+    "id": "lights",
+    "name": "Light Effects Showcase",
+    "scenes": ["radial", "spot", "ambient", "multi-light"]
+  }],
+  "scenes": [
+    {
+      "id": "radial",
+      "name": "Radial Light",
+      "duration": 6000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#1a1a2e", "#16213e"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "light",
+          "type": "light",
+          "zIndex": 2,
+          "config": {
+            "mode": "radial",
+            "position": { "x": "50%", "y": "50%" },
+            "radius": 200,
+            "intensity": 0.8,
+            "color": "#ffd93d",
+            "blendMode": "screen"
+          },
+          "animations": [
+            {
+              "property": "config.intensity",
+              "from": 0.5,
+              "to": 1.0,
+              "startMs": 0,
+              "endMs": 3000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            },
+            {
+              "property": "config.radius",
+              "from": 150,
+              "to": 250,
+              "startMs": 0,
+              "endMs": 3000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 3,
+          "config": {
+            "text": "Radial Light",
+            "fontSize": "48px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "20%" },
+            "transform": { "translateX": "-50%" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "spot",
+      "name": "Spotlight",
+      "duration": 6000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#0a0a0a", "#1a1a1a"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "spotlight",
+          "type": "light",
+          "zIndex": 2,
+          "config": {
+            "mode": "spot",
+            "position": { "x": "50%", "y": "10%" },
+            "radius": 300,
+            "intensity": 0.9,
+            "color": "#ffffff",
+            "angle": 60,
+            "direction": 180,
+            "blendMode": "overlay"
+          },
+          "animations": [
+            {
+              "property": "config.position.x",
+              "from": "30%",
+              "to": "70%",
+              "startMs": 0,
+              "endMs": 6000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 3,
+          "config": {
+            "text": "Spotlight Effect",
+            "fontSize": "48px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "50%" },
+            "transform": { "translateX": "-50%", "translateY": "-50%" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ambient",
+      "name": "Ambient Light",
+      "duration": 6000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#2d3561", "#1a1a2e"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "ambient",
+          "type": "light",
+          "zIndex": 2,
+          "config": {
+            "mode": "ambient",
+            "color": "#ff6b6b",
+            "intensity": 0.3,
+            "blendMode": "overlay"
+          },
+          "animations": [
+            {
+              "property": "config.color",
+              "from": "#ff6b6b",
+              "to": "#4ecdc4",
+              "startMs": 0,
+              "endMs": 6000,
+              "easing": "ease-in-out"
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 3,
+          "config": {
+            "text": "Ambient Light\nColor Transition",
+            "fontSize": "48px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "50%" },
+            "transform": { "translateX": "-50%", "translateY": "-50%" },
+            "lineHeight": 1.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "multi-light",
+      "name": "Multiple Lights",
+      "duration": 8000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#0a0a0a", "#1a1a2e"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "light1",
+          "type": "light",
+          "zIndex": 2,
+          "config": {
+            "mode": "radial",
+            "position": { "x": "25%", "y": "50%" },
+            "radius": 200,
+            "intensity": 0.7,
+            "color": "#ff006e",
+            "blendMode": "screen"
+          },
+          "animations": [
+            {
+              "property": "config.position.y",
+              "from": "30%",
+              "to": "70%",
+              "startMs": 0,
+              "endMs": 4000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "light2",
+          "type": "light",
+          "zIndex": 2,
+          "config": {
+            "mode": "radial",
+            "position": { "x": "75%", "y": "50%" },
+            "radius": 200,
+            "intensity": 0.7,
+            "color": "#00f5ff",
+            "blendMode": "screen"
+          },
+          "animations": [
+            {
+              "property": "config.position.y",
+              "from": "70%",
+              "to": "30%",
+              "startMs": 0,
+              "endMs": 4000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "light3",
+          "type": "light",
+          "zIndex": 2,
+          "config": {
+            "mode": "radial",
+            "position": { "x": "50%", "y": "50%" },
+            "radius": 150,
+            "intensity": 0.5,
+            "color": "#ffd93d",
+            "blendMode": "screen"
+          },
+          "animations": [
+            {
+              "property": "config.intensity",
+              "from": 0.3,
+              "to": 0.8,
+              "startMs": 0,
+              "endMs": 2000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 3,
+          "config": {
+            "text": "Multiple Light Sources",
+            "fontSize": "48px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "15%" },
+            "transform": { "translateX": "-50%" },
+            "textShadow": "0 4px 20px rgba(0,0,0,0.8)"
+          }
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "fromScene": "radial",
+      "toScene": "spot",
+      "type": "crossfade",
+      "duration": 1000,
+      "easing": "ease-in-out"
+    },
+    {
+      "fromScene": "spot",
+      "toScene": "ambient",
+      "type": "crossfade",
+      "duration": 1000,
+      "easing": "ease-in-out"
+    },
+    {
+      "fromScene": "ambient",
+      "toScene": "multi-light",
+      "type": "crossfade",
+      "duration": 1000,
+      "easing": "ease-in-out"
+    }
+  ]
+}

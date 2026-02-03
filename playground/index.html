@@ -605,13 +605,35 @@
         <h4 class="section-title">Examples</h4>
         <select id="examplesDropdown" class="examples-select">
           <option value="">Choose an example...</option>
-          <option value="enhanced">✨ Enhanced Story (Recommended)</option>
-          <option value="simple">Simple Demo</option>
-          <option value="daynight">Day & Night Story (Epic)</option>
-          <option value="story">Story Narration</option>
-          <option value="nightsky">Night Sky Demo</option>
-          <option value="custom">Custom Specification</option>
+          
+          <optgroup label="⭐ Featured">
+            <option value="masterpiece">🎬 Cinematic Masterpiece (NEW!)</option>
+            <option value="enhanced">Enhanced Story</option>
+          </optgroup>
+          
+          <optgroup label="🎯 Feature Showcases">
+            <option value="lights">💡 Light Effects</option>
+            <option value="transitions">🔄 Transition Types</option>
+            <option value="animations">✨ Animation Features</option>
+            <option value="audio">🔊 Audio Showcase</option>
+            <option value="templates">🎨 Scene Templates</option>
+          </optgroup>
+          
+          <optgroup label="📚 Basic Examples">
+            <option value="simple">Simple Demo</option>
+            <option value="story">Story Narration</option>
+            <option value="daynight">Day & Night Story</option>
+            <option value="nightsky">Night Sky Demo</option>
+            <option value="templateDemo">Template Demo</option>
+          </optgroup>
+          
+          <optgroup label="✏️ Custom">
+            <option value="custom">Custom Specification</option>
+          </optgroup>
         </select>
+        <div style="margin-top: 12px; padding: 12px; background: rgba(0, 122, 255, 0.1); border: 1px solid rgba(0, 122, 255, 0.2); border-radius: 8px; font-size: 12px; color: var(--text-secondary); line-height: 1.5;">
+          <strong style="color: var(--accent-blue);">💡 Tip:</strong> Try the Feature Showcases to learn specific capabilities like camera movements, lighting, and transitions!
+        </div>
       </div>
 
       <!-- JSON Editor section -->
@@ -754,6 +776,29 @@
             Use This in Your Project
           </span>
         </a>
+      </div>
+
+      <!-- Keyboard Shortcuts -->
+      <div class="panel-section" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--glass-border);">
+        <h4 class="section-title">Keyboard Shortcuts</h4>
+        <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.8;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span>Create/Play</span>
+            <code style="background: var(--surface-secondary); padding: 2px 8px; border-radius: 4px; font-family: 'SF Mono', monospace;">Ctrl+Enter</code>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span>Play/Pause</span>
+            <code style="background: var(--surface-secondary); padding: 2px 8px; border-radius: 4px; font-family: 'SF Mono', monospace;">Ctrl+Space</code>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span>Fullscreen</span>
+            <code style="background: var(--surface-secondary); padding: 2px 8px; border-radius: 4px; font-family: 'SF Mono', monospace;">Ctrl+F</code>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>Exit Fullscreen</span>
+            <code style="background: var(--surface-secondary); padding: 2px 8px; border-radius: 4px; font-family: 'SF Mono', monospace;">Esc</code>
+          </div>
+        </div>
       </div>
     </div>
   </div>

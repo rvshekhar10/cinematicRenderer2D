@@ -86,7 +86,7 @@ describe('CLI Tool', () => {
   it('should validate with verbose output', async () => {
     const { stdout } = await execAsync(`node ${cliPath} validate --file ${testSpecPath} --verbose`);
     expect(stdout).toContain('✅ Specification is valid!');
-    expect(stdout).toContain('Specification Details:');
+    expect(stdout).toContain('📋 Detailed Information:');
     expect(stdout).toContain('Schema Version: 1.0.0');
     expect(stdout).toContain('Events: 1');
     expect(stdout).toContain('Scenes: 1');
@@ -111,8 +111,8 @@ describe('CLI Tool', () => {
       await execAsync(`node ${cliPath} validate --file ${invalidJsonPath}`);
       expect.fail('Should have thrown an error');
     } catch (error: any) {
-      expect(error.stderr).toContain('❌ Specification validation failed:');
-      expect(error.stderr).toContain('Invalid JSON format:');
+      expect(error.stderr).toContain('❌ JSON Parsing Error:');
+      expect(error.stderr).toContain('Expected property name');
     } finally {
       if (existsSync(invalidJsonPath)) {
         unlinkSync(invalidJsonPath);

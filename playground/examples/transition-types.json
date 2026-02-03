@@ -1,0 +1,256 @@
+{
+  "schemaVersion": "1.0.0",
+  "engine": {
+    "targetFps": 60,
+    "quality": "high"
+  },
+  "events": [{
+    "id": "transitions",
+    "name": "Transition Types Showcase",
+    "scenes": ["scene1", "scene2", "scene3", "scene4", "scene5", "scene6"]
+  }],
+  "scenes": [
+    {
+      "id": "scene1",
+      "name": "Crossfade Transition",
+      "duration": 3000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#667eea", "#764ba2"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "text",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "Crossfade\nTransition",
+            "fontSize": "56px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "50%" },
+            "transform": { "translateX": "-50%", "translateY": "-50%" },
+            "lineHeight": 1.3
+          }
+        }
+      ]
+    },
+    {
+      "id": "scene2",
+      "name": "Slide Transition",
+      "duration": 3000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#f093fb", "#f5576c"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "text",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "Slide\nTransition",
+            "fontSize": "56px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "50%" },
+            "transform": { "translateX": "-50%", "translateY": "-50%" },
+            "lineHeight": 1.3
+          }
+        }
+      ]
+    },
+    {
+      "id": "scene3",
+      "name": "Zoom Transition",
+      "duration": 3000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#4facfe", "#00f2fe"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "text",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "Zoom\nTransition",
+            "fontSize": "56px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "50%" },
+            "transform": { "translateX": "-50%", "translateY": "-50%" },
+            "lineHeight": 1.3
+          }
+        }
+      ]
+    },
+    {
+      "id": "scene4",
+      "name": "Wipe Transition",
+      "duration": 3000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#fa709a", "#fee140"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "text",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "Wipe\nTransition",
+            "fontSize": "56px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "50%" },
+            "transform": { "translateX": "-50%", "translateY": "-50%" },
+            "lineHeight": 1.3
+          }
+        }
+      ]
+    },
+    {
+      "id": "scene5",
+      "name": "Dissolve Transition",
+      "duration": 3000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#30cfd0", "#330867"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "text",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "Dissolve\nTransition",
+            "fontSize": "56px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "50%" },
+            "transform": { "translateX": "-50%", "translateY": "-50%" },
+            "lineHeight": 1.3
+          }
+        }
+      ]
+    },
+    {
+      "id": "scene6",
+      "name": "Blur Transition",
+      "duration": 3000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#a8edea", "#fed6e3"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "text",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "Blur\nTransition",
+            "fontSize": "56px",
+            "fontWeight": "bold",
+            "color": "#333333",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "50%" },
+            "transform": { "translateX": "-50%", "translateY": "-50%" },
+            "lineHeight": 1.3
+          }
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "fromScene": "scene1",
+      "toScene": "scene2",
+      "type": "crossfade",
+      "duration": 1200,
+      "easing": "ease-in-out"
+    },
+    {
+      "fromScene": "scene2",
+      "toScene": "scene3",
+      "type": "slide",
+      "duration": 1000,
+      "easing": "ease-out",
+      "config": {
+        "direction": "left"
+      }
+    },
+    {
+      "fromScene": "scene3",
+      "toScene": "scene4",
+      "type": "zoom",
+      "duration": 1200,
+      "easing": "ease-in-out",
+      "config": {
+        "direction": "in"
+      }
+    },
+    {
+      "fromScene": "scene4",
+      "toScene": "scene5",
+      "type": "wipe",
+      "duration": 1000,
+      "easing": "linear",
+      "config": {
+        "direction": "right"
+      }
+    },
+    {
+      "fromScene": "scene5",
+      "toScene": "scene6",
+      "type": "dissolve",
+      "duration": 1500,
+      "easing": "ease-in-out"
+    },
+    {
+      "fromScene": "scene6",
+      "toScene": "scene1",
+      "type": "blur",
+      "duration": 1500,
+      "easing": "ease-in-out",
+      "config": {
+        "blurAmount": 20
+      }
+    }
+  ]
+}

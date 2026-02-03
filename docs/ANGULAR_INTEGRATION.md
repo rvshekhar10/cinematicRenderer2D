@@ -109,6 +109,20 @@ export class AppComponent {
 @Input() autoplay: boolean = false;        // Auto-start playback
 @Input() quality: QualityLevel = 'auto';   // Quality level
 @Input() debug: boolean = false;           // Enable debug overlay
+@Input() editorMode: boolean | Partial<EditorModeConfig> = false; // Enable editor mode
+```
+
+### Editor Mode Configuration
+
+```typescript
+interface EditorModeConfig {
+  enabled: boolean;
+  showTimeline?: boolean;              // Show timeline scrubber (default: true)
+  showBoundingBoxes?: boolean;         // Show layer bounding boxes (default: true)
+  showPropertyInspector?: boolean;     // Show property inspector (default: true)
+  showPerformanceMetrics?: boolean;    // Show performance metrics (default: true)
+  autoEnableWithDebug?: boolean;       // Auto-enable with debug mode (default: true)
+}
 ```
 
 ### Outputs
@@ -126,7 +140,149 @@ export class AppComponent {
 
 ## Advanced Usage Patterns
 
-### Service-Based Architecture
+### Imperative API Access
+
+The `CinematicPlayerComponent` provides comprehensive methods for programmatic control:
+
+```typescript
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import { CinematicPlayerComponent } from 'cinematic-renderer2d/angular';
+import type { CinematicSpec, QualityLevel } from 'cinematic-renderer2d';
+
+@Component({
+  selector: 'app-imperative-api',
+  template: `
+    <div class="api-example">
+      <cinematic-player
+        #player
+        [spec]="spec"
+        [autoplay]="false">
+      </cinematic-player>
+      
+      <div class="controls">
+        <button (click)="play()">Play</button>
+        <button (click)="pause()">Pause</button>
+        <button (click)="stop()">Stop</button>
+        <button (click)="seek(5000)">Seek to 5s</button>
+        <button (click)="toggleDebug()">Toggle Debug</button>
+        <button (click)="toggleEditor()">Toggle Editor</button>
+        <button (click)="setVolume(0.5)">50% Volume</button>
+      </div>
+      
+      <div class="info">
+        <p>Time: {{ getCurrentTime() }}ms / {{ getDuration() }}ms</p>
+        <p>FPS: {{ getCurrentFps() }}</p>
+        <p>Playing: {{ isPlaying() ? 'Yes' : 'No' }}</p>
+        <p>Debug: {{ isDebugEnabled() ? 'On' : 'Off' }}</p>
+        <p>Editor: {{ isEditorEnabled() ? 'On' : 'Off' }}</p>
+      </div>
+    </div>
+  `
+})
+export class ImperativeAPIComponent implements AfterViewInit {
+  @ViewChild('player') player!: CinematicPlayerComponent;
+  
+  spec: CinematicSpec = {
+    // Your specification here
+  };
+
+  ngAfterViewInit(): void {
+    // Player is now available
+  }
+
+  // Playback control
+  play(): void {
+    this.player.playEngine();
+  }
+
+  pause(): void {
+    this.player.pauseEngine();
+  }
+
+  stop(): void {
+    this.player.stopEngine();
+  }
+
+  seek(timeMs: number): void {
+    this.player.seekEngine(timeMs);
+  }
+
+  // Navigation
+  goToEvent(eventId: string): void {
+    this.player.goToEvent(eventId);
+  }
+
+  goToScene(sceneId: string): void {
+    this.player.goToScene(sceneId);
+  }
+
+  // Quality control
+  setQuality(level: QualityLevel): void {
+    this.player.setQuality(level);
+  }
+
+  // Debug and editor mode
+  toggleDebug(): void {
+    this.player.toggleDebug();
+  }
+
+  toggleEditor(): void {
+    this.player.toggleEditorMode();
+  }
+
+  showDebug(): void {
+    this.player.showDebug();
+  }
+
+  hideDebug(): void {
+    this.player.hideDebug();
+  }
+
+  showEditor(): void {
+    this.player.showEditorMode();
+  }
+
+  hideEditor(): void {
+    this.player.hideEditorMode();
+  }
+
+  // State queries
+  getCurrentTime(): number {
+    return this.player.getCurrentTime();
+  }
+
+  getDuration(): number {
+    return this.player.getDuration();
+  }
+
+  isPlaying(): boolean {
+    return this.player.isPlaying();
+  }
+
+  getCurrentFps(): number {
+    return this.player.getCurrentFps();
+  }
+
+  isDebugEnabled(): boolean {
+    return this.player.isDebugEnabled();
+  }
+
+  isEditorEnabled(): boolean {
+    return this.player.isEditorModeEnabled();
+  }
+
+  // Audio control
+  setVolume(volume: number): void {
+    this.player.setMasterVolume(volume);
+  }
+
+  getVolume(): number {
+    return this.player.getMasterVolume();
+  }
+}
+```
+
+### Editor Mode Usage
 
 ```typescript
 // cinematic.service.ts
@@ -253,7 +409,128 @@ export class AppComponent implements OnInit, OnDestroy {
 }
 ```
 
-### ViewChild for Direct Control
+### Editor Mode Usage
+
+```typescript
+import { Component } from '@angular/core';
+import type { CinematicSpec } from 'cinematic-renderer2d';
+
+@Component({
+  selector: 'app-editor-mode',
+  template: `
+    <div class="editor-container">
+      <cinematic-player
+        [spec]="cinematicSpec"
+        [editorMode]="true"
+        [debug]="false"
+        (play)="onPlay()"
+        (pause)="onPause()">
+      </cinematic-player>
+      
+      <div class="controls">
+        <button (click)="toggleEditor()">Toggle Editor Mode</button>
+        <button (click)="toggleDebug()">Toggle Debug Overlay</button>
+      </div>
+    </div>
+  `
+})
+export class EditorModeComponent {
+  cinematicSpec: CinematicSpec = {
+    // Your specification here
+  };
+
+  toggleEditor(): void {
+    // Access via ViewChild
+  }
+
+  toggleDebug(): void {
+    // Access via ViewChild
+  }
+
+  onPlay(): void {
+    console.log('Playback started');
+  }
+
+  onPause(): void {
+    console.log('Playback paused');
+  }
+}
+
+// Advanced editor mode configuration
+@Component({
+  selector: 'app-advanced-editor',
+  template: `
+    <cinematic-player
+      [spec]="cinematicSpec"
+      [editorMode]="editorConfig">
+    </cinematic-player>
+  `
+})
+export class AdvancedEditorComponent {
+  cinematicSpec: CinematicSpec = {
+    // Your specification here
+  };
+
+  editorConfig = {
+    enabled: true,
+    showTimeline: true,
+    showBoundingBoxes: true,
+    showPropertyInspector: true,
+    showPerformanceMetrics: true,
+    autoEnableWithDebug: true
+  };
+}
+```
+
+### Editor Mode Features
+
+The editor mode provides several visual development tools:
+
+- **Timeline Scrubber**: Visual timeline with scene markers and draggable scrubber for precise time navigation
+- **Bounding Boxes**: Visual outlines around all layers with click-to-inspect functionality
+- **Property Inspector**: Real-time property viewer for selected layers
+- **Performance Metrics**: Integrated debug overlay showing FPS, frame time, and quality settings
+- **Keyboard Shortcuts**: Press `Ctrl+E` (or `Cmd+E` on Mac) to toggle editor mode
+
+```typescript
+// Example: Using editor mode with keyboard shortcuts
+import { Component, HostListener } from '@angular/core';
+
+@Component({
+  selector: 'app-editor-shortcuts',
+  template: `
+    <cinematic-player
+      [spec]="cinematicSpec"
+      [editorMode]="true">
+    </cinematic-player>
+    <div class="shortcuts-info">
+      <p>Ctrl+E / Cmd+E: Toggle Editor Mode</p>
+      <p>Ctrl+D / Cmd+D: Toggle Debug Overlay</p>
+    </div>
+  `
+})
+export class EditorShortcutsComponent {
+  cinematicSpec: CinematicSpec = {
+    // Your specification here
+  };
+
+  @HostListener('window:keydown', ['$event'])
+  handleKeyPress(event: KeyboardEvent): void {
+    // Ctrl+E or Cmd+E toggles editor mode
+    if ((event.ctrlKey || event.metaKey) && event.key === 'e') {
+      event.preventDefault();
+      // Toggle editor mode via ViewChild reference
+    }
+    // Ctrl+D or Cmd+D toggles debug overlay
+    if ((event.ctrlKey || event.metaKey) && event.key === 'd') {
+      event.preventDefault();
+      // Toggle debug via ViewChild reference
+    }
+  }
+}
+```
+
+### Service-Based Architecture
 
 ```typescript
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
@@ -268,6 +545,7 @@ import type { CinematicSpec } from 'cinematic-renderer2d';
         #cinematicPlayer
         [spec]="spec"
         [autoplay]="false"
+        [editorMode]="false"
         (play)="onPlay()"
         (pause)="onPause()">
       </cinematic-player>
@@ -279,6 +557,8 @@ import type { CinematicSpec } from 'cinematic-renderer2d';
         <button (click)="restart()">Restart</button>
         <button (click)="goToScene('scene2')">Go to Scene 2</button>
         <button (click)="setHighQuality()">High Quality</button>
+        <button (click)="toggleDebug()">Toggle Debug</button>
+        <button (click)="toggleEditor()">Toggle Editor</button>
       </div>
       
       <div class="timeline">
@@ -337,10 +617,18 @@ export class CinematicControlComponent implements AfterViewInit {
     this.cinematicPlayer.setQuality('high');
   }
 
+  toggleDebug(): void {
+    this.cinematicPlayer.toggleDebug();
+  }
+
+  toggleEditor(): void {
+    this.cinematicPlayer.toggleEditorMode();
+  }
+
   seekTo(event: Event): void {
     const target = event.target as HTMLInputElement;
     const timeMs = parseInt(target.value, 10);
-    this.cinematicPlayer.seek(timeMs);
+    this.cinematicPlayer.seekEngine(timeMs);
   }
 
   onPlay(): void {
@@ -390,6 +678,14 @@ import type { CinematicSpec, QualityLevel } from 'cinematic-renderer2d';
           id="debug"
           formControlName="debug">
       </div>
+      
+      <div class="form-group">
+        <label for="editorMode">Editor Mode:</label>
+        <input 
+          type="checkbox" 
+          id="editorMode"
+          formControlName="editorMode">
+      </div>
     </form>
     
     <cinematic-player
@@ -412,7 +708,8 @@ export class CinematicFormComponent implements OnInit {
     this.cinematicForm = this.fb.group({
       autoplay: [false],
       quality: ['auto', Validators.required],
-      debug: [false]
+      debug: [false],
+      editorMode: [false]
     });
   }
 

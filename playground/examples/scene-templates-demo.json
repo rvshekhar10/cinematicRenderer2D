@@ -1,0 +1,261 @@
+{
+  "schemaVersion": "1.0.0",
+  "engine": {
+    "targetFps": 60,
+    "quality": "high"
+  },
+  "events": [{
+    "id": "templates",
+    "name": "Scene Templates Showcase",
+    "scenes": ["sunrise", "cosmic", "rain", "divine", "underwater"]
+  }],
+  "scenes": [
+    {
+      "id": "sunrise",
+      "name": "Sunrise Template",
+      "duration": 6000,
+      "template": "sunrise",
+      "templateConfig": {
+        "colors": {
+          "sky": ["#ff6b6b", "#feca57", "#48dbfb"],
+          "sun": "#ffd93d"
+        },
+        "timing": {
+          "sunRise": 3000
+        }
+      },
+      "layers": [
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "Sunrise Template",
+            "fontSize": "48px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "20%" },
+            "transform": { "translateX": "-50%" },
+            "textShadow": "0 4px 20px rgba(0,0,0,0.5)"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 1000,
+              "endMs": 2000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cosmic",
+      "name": "Cosmic Birth Template",
+      "duration": 6000,
+      "template": "cosmicBirth",
+      "templateConfig": {
+        "colors": {
+          "nebula": ["#667eea", "#764ba2", "#f093fb"],
+          "stars": "#ffffff"
+        },
+        "effects": {
+          "particleCount": 150,
+          "explosionIntensity": 1.2
+        }
+      },
+      "layers": [
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "Cosmic Birth Template",
+            "fontSize": "48px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "20%" },
+            "transform": { "translateX": "-50%" },
+            "textShadow": "0 4px 20px rgba(102,126,234,0.8)"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 1000,
+              "endMs": 2000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rain",
+      "name": "Rain Template",
+      "duration": 6000,
+      "template": "rain",
+      "templateConfig": {
+        "colors": {
+          "sky": ["#2c3e50", "#34495e"],
+          "rain": "#ecf0f1"
+        },
+        "effects": {
+          "rainIntensity": 150,
+          "fogDensity": 0.2
+        }
+      },
+      "layers": [
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "Rain Template",
+            "fontSize": "48px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "20%" },
+            "transform": { "translateX": "-50%" },
+            "textShadow": "0 4px 20px rgba(0,0,0,0.7)"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 1000,
+              "endMs": 2000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "divine",
+      "name": "Divine Aura Template",
+      "duration": 6000,
+      "template": "divineAura",
+      "templateConfig": {
+        "colors": {
+          "background": ["#1a1a2e", "#16213e"],
+          "aura": "#ffd93d",
+          "glow": "#ffffff"
+        },
+        "effects": {
+          "lightIntensity": 1.5,
+          "particleCount": 80
+        }
+      },
+      "layers": [
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "Divine Aura Template",
+            "fontSize": "48px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "20%" },
+            "transform": { "translateX": "-50%" },
+            "textShadow": "0 4px 20px rgba(255,217,61,0.8)"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 1000,
+              "endMs": 2000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "underwater",
+      "name": "Underwater Template",
+      "duration": 6000,
+      "template": "underwater",
+      "templateConfig": {
+        "colors": {
+          "water": ["#0a4d68", "#088395", "#05bfdb"],
+          "particles": "#48dbfb"
+        },
+        "effects": {
+          "particleCount": 60,
+          "lightRayCount": 5
+        }
+      },
+      "layers": [
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "Underwater Template",
+            "fontSize": "48px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "20%" },
+            "transform": { "translateX": "-50%" },
+            "textShadow": "0 4px 20px rgba(8,131,149,0.8)"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 1000,
+              "endMs": 2000,
+              "easing": "ease-in"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "fromScene": "sunrise",
+      "toScene": "cosmic",
+      "type": "crossfade",
+      "duration": 1500,
+      "easing": "ease-in-out"
+    },
+    {
+      "fromScene": "cosmic",
+      "toScene": "rain",
+      "type": "blur",
+      "duration": 1500,
+      "blurAmount": 20,
+      "easing": "ease-in-out"
+    },
+    {
+      "fromScene": "rain",
+      "toScene": "divine",
+      "type": "zoom",
+      "duration": 1200,
+      "direction": "in",
+      "easing": "ease-in-out"
+    },
+    {
+      "fromScene": "divine",
+      "toScene": "underwater",
+      "type": "dissolve",
+      "duration": 1500,
+      "easing": "ease-in-out"
+    }
+  ]
+}

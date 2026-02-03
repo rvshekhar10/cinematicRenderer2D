@@ -8,25 +8,70 @@ import type { CinematicSpec } from 'cinematic-renderer2d';
 
 // Example specifications
 const EXAMPLES = {
-  enhanced: {
-    name: 'Enhanced Story (Recommended)',
-    url: '/examples/enhanced-story.json'
+  // Featured Examples
+  masterpiece: {
+    name: '⭐ Cinematic Masterpiece (NEW!)',
+    url: '/examples/cinematic-masterpiece.json',
+    category: 'featured'
   },
+  enhanced: {
+    name: '⭐ Enhanced Story',
+    url: '/examples/enhanced-story.json',
+    category: 'featured'
+  },
+  
+  // Feature Showcases
+  lights: {
+    name: '💡 Light Effects Demo',
+    url: '/examples/light-effects-demo.json',
+    category: 'features'
+  },
+  transitions: {
+    name: '🔄 Transition Types',
+    url: '/examples/transition-types.json',
+    category: 'features'
+  },
+  animations: {
+    name: '✨ Animation Features',
+    url: '/examples/animation-features.json',
+    category: 'features'
+  },
+  audio: {
+    name: '🔊 Audio Showcase',
+    url: '/examples/audio-showcase.json',
+    category: 'features'
+  },
+  templates: {
+    name: '🎨 Scene Templates',
+    url: '/examples/scene-templates-demo.json',
+    category: 'features'
+  },
+  
+  // Basic Examples
   simple: {
     name: 'Simple Demo',
-    url: '/examples/simple-demo-spec.json'
-  },
-  daynight: {
-    name: 'Day & Night Story',
-    url: '/examples/day-night-story-spec.json'
+    url: '/examples/simple-demo-spec.json',
+    category: 'basic'
   },
   story: {
     name: 'Story Narration',
-    url: '/examples/story-narration-spec.json'
+    url: '/examples/story-narration-spec.json',
+    category: 'basic'
+  },
+  daynight: {
+    name: 'Day & Night Story',
+    url: '/examples/day-night-story-spec.json',
+    category: 'basic'
   },
   nightsky: {
     name: 'Night Sky Demo',
-    url: '/examples/night-sky-demo.json'
+    url: '/examples/night-sky-demo.json',
+    category: 'basic'
+  },
+  templateDemo: {
+    name: 'Template Demo',
+    url: '/examples/template-demo.json',
+    category: 'basic'
   }
 };
 

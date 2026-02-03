@@ -252,6 +252,10 @@ describe('LayerRegistry Integration', () => {
     test('should handle layer creation with validation', () => {
       // Register layer with validation
       registry.registerLayerType('validated', (id, config) => {
+        // Skip validation for the test layer created during registration
+        if (id === '__validation_test__') {
+          return new CustomTestLayer(id, config);
+        }
         if (!config.required) {
           throw new Error('Required property missing');
         }
@@ -262,9 +266,8 @@ describe('LayerRegistry Integration', () => {
         registry.createLayer('validated', 'test-invalid', {});
       }).toThrow('Required property missing');
 
-      expect(() => {
-        registry.createLayer('validated', 'test-valid', { required: true });
-      }).not.toThrow();
+      const validLayer = registry.createLayer('validated', 'test-valid', { required: true });
+      expect(validLayer).toBeDefined();
     });
   });
 

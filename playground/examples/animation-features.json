@@ -1,0 +1,410 @@
+{
+  "schemaVersion": "1.0.0",
+  "engine": {
+    "targetFps": 60,
+    "quality": "high"
+  },
+  "events": [{
+    "id": "animations",
+    "name": "Enhanced Animation Features",
+    "scenes": ["loop", "yoyo", "keyframes", "stagger"]
+  }],
+  "scenes": [
+    {
+      "id": "loop",
+      "name": "Looping Animation",
+      "duration": 8000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#667eea", "#764ba2"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "circle",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "●",
+            "fontSize": "80px",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "20%", "y": "50%" },
+            "transform": { "translateY": "-50%" }
+          },
+          "animations": [
+            {
+              "property": "config.position.x",
+              "from": "20%",
+              "to": "80%",
+              "startMs": 0,
+              "endMs": 2000,
+              "easing": "ease-in-out",
+              "loop": true
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 3,
+          "config": {
+            "text": "Loop Animation\n(Continuous Repeat)",
+            "fontSize": "36px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "20%" },
+            "transform": { "translateX": "-50%" },
+            "lineHeight": 1.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "yoyo",
+      "name": "Yoyo Animation",
+      "duration": 8000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#f093fb", "#f5576c"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "square",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "■",
+            "fontSize": "80px",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "50%" },
+            "transform": { "translateX": "-50%", "translateY": "-50%", "scale": 1 }
+          },
+          "animations": [
+            {
+              "property": "config.transform.scale",
+              "from": 0.5,
+              "to": 1.5,
+              "startMs": 0,
+              "endMs": 2000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 3,
+          "config": {
+            "text": "Yoyo Animation\n(Back and Forth)",
+            "fontSize": "36px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "20%" },
+            "transform": { "translateX": "-50%" },
+            "lineHeight": 1.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "keyframes",
+      "name": "Keyframe Animation",
+      "duration": 8000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#4facfe", "#00f2fe"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "path",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "★",
+            "fontSize": "60px",
+            "color": "#ffd93d",
+            "textAlign": "center",
+            "position": { "x": "10%", "y": "50%" },
+            "transform": { "translateX": "-50%", "translateY": "-50%" }
+          },
+          "animations": [
+            {
+              "property": "config.position.x",
+              "from": "10%",
+              "to": "10%",
+              "keyframes": [
+                { "time": 0, "value": "10%", "easing": "ease-in" },
+                { "time": 0.25, "value": "50%", "easing": "ease-out" },
+                { "time": 0.5, "value": "90%", "easing": "ease-in" },
+                { "time": 0.75, "value": "50%", "easing": "ease-out" },
+                { "time": 1.0, "value": "10%" }
+              ],
+              "startMs": 0,
+              "endMs": 8000
+            },
+            {
+              "property": "config.position.y",
+              "from": "50%",
+              "to": "50%",
+              "keyframes": [
+                { "time": 0, "value": "50%" },
+                { "time": 0.25, "value": "20%" },
+                { "time": 0.5, "value": "50%" },
+                { "time": 0.75, "value": "80%" },
+                { "time": 1.0, "value": "50%" }
+              ],
+              "startMs": 0,
+              "endMs": 8000
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 3,
+          "config": {
+            "text": "Keyframe Animation\n(Complex Paths)",
+            "fontSize": "36px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "10%" },
+            "transform": { "translateX": "-50%" },
+            "lineHeight": 1.4,
+            "textShadow": "0 2px 10px rgba(0,0,0,0.5)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "stagger",
+      "name": "Stagger Animation",
+      "duration": 8000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#fa709a", "#fee140"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "dot1",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "●",
+            "fontSize": "60px",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "20%", "y": "50%" },
+            "transform": { "translateY": "-50%", "scale": 0.5 }
+          },
+          "animations": [
+            {
+              "property": "config.transform.scale",
+              "from": 0.5,
+              "to": 1.5,
+              "startMs": 0,
+              "endMs": 1000,
+              "easing": "ease-out"
+            },
+            {
+              "property": "config.transform.scale",
+              "from": 1.5,
+              "to": 0.5,
+              "startMs": 1000,
+              "endMs": 2000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "dot2",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "●",
+            "fontSize": "60px",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "35%", "y": "50%" },
+            "transform": { "translateY": "-50%", "scale": 0.5 }
+          },
+          "animations": [
+            {
+              "property": "config.transform.scale",
+              "from": 0.5,
+              "to": 1.5,
+              "startMs": 200,
+              "endMs": 1200,
+              "easing": "ease-out"
+            },
+            {
+              "property": "config.transform.scale",
+              "from": 1.5,
+              "to": 0.5,
+              "startMs": 1200,
+              "endMs": 2200,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "dot3",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "●",
+            "fontSize": "60px",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "50%" },
+            "transform": { "translateY": "-50%", "scale": 0.5 }
+          },
+          "animations": [
+            {
+              "property": "config.transform.scale",
+              "from": 0.5,
+              "to": 1.5,
+              "startMs": 400,
+              "endMs": 1400,
+              "easing": "ease-out"
+            },
+            {
+              "property": "config.transform.scale",
+              "from": 1.5,
+              "to": 0.5,
+              "startMs": 1400,
+              "endMs": 2400,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "dot4",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "●",
+            "fontSize": "60px",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "65%", "y": "50%" },
+            "transform": { "translateY": "-50%", "scale": 0.5 }
+          },
+          "animations": [
+            {
+              "property": "config.transform.scale",
+              "from": 0.5,
+              "to": 1.5,
+              "startMs": 600,
+              "endMs": 1600,
+              "easing": "ease-out"
+            },
+            {
+              "property": "config.transform.scale",
+              "from": 1.5,
+              "to": 0.5,
+              "startMs": 1600,
+              "endMs": 2600,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "dot5",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "●",
+            "fontSize": "60px",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "80%", "y": "50%" },
+            "transform": { "translateY": "-50%", "scale": 0.5 }
+          },
+          "animations": [
+            {
+              "property": "config.transform.scale",
+              "from": 0.5,
+              "to": 1.5,
+              "startMs": 800,
+              "endMs": 1800,
+              "easing": "ease-out"
+            },
+            {
+              "property": "config.transform.scale",
+              "from": 1.5,
+              "to": 0.5,
+              "startMs": 1800,
+              "endMs": 2800,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 3,
+          "config": {
+            "text": "Stagger Animation\n(Sequential Timing)",
+            "fontSize": "36px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "20%" },
+            "transform": { "translateX": "-50%" },
+            "lineHeight": 1.4,
+            "textShadow": "0 2px 10px rgba(0,0,0,0.5)"
+          }
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "fromScene": "loop",
+      "toScene": "yoyo",
+      "type": "crossfade",
+      "duration": 1000,
+      "easing": "ease-in-out"
+    },
+    {
+      "fromScene": "yoyo",
+      "toScene": "keyframes",
+      "type": "crossfade",
+      "duration": 1000,
+      "easing": "ease-in-out"
+    },
+    {
+      "fromScene": "keyframes",
+      "toScene": "stagger",
+      "type": "crossfade",
+      "duration": 1000,
+      "easing": "ease-in-out"
+    }
+  ]
+}

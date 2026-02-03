@@ -74,7 +74,7 @@ export class CinematicPlayerComponent implements OnInit, OnDestroy, OnChanges {
   @Input() autoplay: boolean = false;
   @Input() quality?: QualityLevel;
   @Input() debug: boolean = false;
-  @Input() editorMode: boolean = false;
+  @Input() editorMode: boolean | Partial<import('../../editor/EditorMode').EditorModeConfig> = false;
   @Input() containerClass?: string;
   @Input() containerStyle?: { [key: string]: any };
 
@@ -233,6 +233,44 @@ export class CinematicPlayerComponent implements OnInit, OnDestroy, OnChanges {
     return this.engine?.getActiveAudioTrackCount() ?? 0;
   }
 
+  // Debug methods
+  isDebugEnabled(): boolean {
+    return this.engine?.isDebugEnabled() ?? false;
+  }
+
+  toggleDebug(): void {
+    this.engine?.toggleDebug();
+  }
+
+  showDebug(): void {
+    this.engine?.showDebug();
+  }
+
+  hideDebug(): void {
+    this.engine?.hideDebug();
+  }
+
+  // Editor mode methods
+  isEditorModeEnabled(): boolean {
+    return this.engine?.isEditorModeEnabled() ?? false;
+  }
+
+  toggleEditorMode(): void {
+    this.engine?.toggleEditorMode();
+  }
+
+  showEditorMode(): void {
+    this.engine?.showEditorMode();
+  }
+
+  hideEditorMode(): void {
+    this.engine?.hideEditorMode();
+  }
+
+  getEditorMode(): import('../../editor/EditorMode').EditorMode | null {
+    return this.engine?.getEditorMode() ?? null;
+  }
+
   // Direct engine access for advanced use cases
   getEngine(): CinematicRenderer2D | null {
     return this.engine;
@@ -250,6 +288,7 @@ export class CinematicPlayerComponent implements OnInit, OnDestroy, OnChanges {
         autoplay: this.autoplay,
         quality: this.quality,
         debug: this.debug,
+        editorMode: this.editorMode,
       };
 
       this.engine = new CinematicRenderer2D(options);

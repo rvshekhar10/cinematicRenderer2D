@@ -1,0 +1,254 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "title": "Scene Template Demo",
+    "description": "Demonstration of pre-built scene templates with customization",
+    "author": "cinematicRenderer2D",
+    "duration": 53000
+  },
+  "assets": {},
+  "events": [
+    {
+      "id": "sunrise-event",
+      "name": "Sunrise Scene",
+      "startMs": 0,
+      "endMs": 8000,
+      "scenes": [
+        {
+          "id": "sunrise-scene",
+          "name": "Sunrise",
+          "duration": 8000,
+          "layers": [
+            {
+              "id": "sunrise-gradient",
+              "type": "gradient",
+              "zIndex": 0,
+              "config": {
+                "type": "linear",
+                "angle": 180,
+                "stops": [
+                  { "offset": 0, "color": "#87CEEB" },
+                  { "offset": 0.4, "color": "#FFD23F" },
+                  { "offset": 1, "color": "#FF6B35" }
+                ]
+              },
+              "animations": [
+                {
+                  "property": "opacity",
+                  "from": 0,
+                  "to": 1,
+                  "startMs": 0,
+                  "endMs": 2000,
+                  "easing": "easeInOut"
+                },
+                {
+                  "property": "opacity",
+                  "from": 1,
+                  "to": 0,
+                  "startMs": 6000,
+                  "endMs": 8000,
+                  "easing": "easeInOut"
+                }
+              ]
+            },
+            {
+              "id": "sunrise-particles",
+              "type": "particles",
+              "zIndex": 1,
+              "config": {
+                "count": 50,
+                "size": { "min": 2, "max": 6 },
+                "color": "#FFD23F",
+                "opacity": 0.3,
+                "speed": 0.5,
+                "direction": 90,
+                "spread": 30,
+                "lifetime": 5000
+              },
+              "animations": [
+                {
+                  "property": "opacity",
+                  "from": 0,
+                  "to": 0.3,
+                  "startMs": 1000,
+                  "endMs": 3000,
+                  "easing": "easeIn"
+                },
+                {
+                  "property": "opacity",
+                  "from": 0.3,
+                  "to": 0,
+                  "startMs": 6000,
+                  "endMs": 8000,
+                  "easing": "easeOut"
+                }
+              ]
+            }
+          ],
+          "audioTracks": []
+        }
+      ]
+    },
+    {
+      "id": "cosmic-event",
+      "name": "Cosmic Birth Scene",
+      "startMs": 8000,
+      "endMs": 18000,
+      "scenes": [
+        {
+          "id": "cosmic-birth-scene",
+          "name": "Cosmic Birth",
+          "duration": 10000,
+          "layers": [
+            {
+              "id": "space-background",
+              "type": "gradient",
+              "zIndex": 0,
+              "config": {
+                "type": "radial",
+                "stops": [
+                  { "offset": 0, "color": "#1a0033" },
+                  { "offset": 1, "color": "#000000" }
+                ]
+              }
+            },
+            {
+              "id": "starfield",
+              "type": "particles",
+              "zIndex": 1,
+              "config": {
+                "count": 100,
+                "size": { "min": 1, "max": 3 },
+                "color": "#ffffff",
+                "opacity": 0.6,
+                "speed": 0.1,
+                "direction": 0,
+                "spread": 360,
+                "lifetime": 10000
+              }
+            }
+          ],
+          "audioTracks": []
+        }
+      ]
+    },
+    {
+      "id": "rain-event",
+      "name": "Rain Scene",
+      "startMs": 18000,
+      "endMs": 30000,
+      "scenes": [
+        {
+          "id": "rain-scene",
+          "name": "Rain",
+          "duration": 12000,
+          "layers": [
+            {
+              "id": "rain-sky",
+              "type": "gradient",
+              "zIndex": 0,
+              "config": {
+                "type": "linear",
+                "angle": 180,
+                "stops": [
+                  { "offset": 0, "color": "#cbd5e0" },
+                  { "offset": 1, "color": "#4a5568" }
+                ]
+              }
+            },
+            {
+              "id": "rain-drops",
+              "type": "particles",
+              "zIndex": 2,
+              "config": {
+                "count": 300,
+                "size": { "min": 1, "max": 3 },
+                "color": "#ffffff",
+                "opacity": 0.6,
+                "speed": 3.0,
+                "direction": 180,
+                "spread": 10,
+                "lifetime": 2000
+              }
+            }
+          ],
+          "audioTracks": []
+        }
+      ]
+    },
+    {
+      "id": "divine-event",
+      "name": "Divine Aura Scene",
+      "startMs": 30000,
+      "endMs": 40000,
+      "scenes": [
+        {
+          "id": "divine-aura-scene",
+          "name": "Divine Aura",
+          "duration": 10000,
+          "layers": [
+            {
+              "id": "divine-background",
+              "type": "gradient",
+              "zIndex": 0,
+              "config": {
+                "type": "radial",
+                "stops": [
+                  { "offset": 0, "color": "#ffffff" },
+                  { "offset": 0.5, "color": "#fffacd" },
+                  { "offset": 1, "color": "#ffd700" }
+                ]
+              }
+            }
+          ],
+          "audioTracks": []
+        }
+      ]
+    },
+    {
+      "id": "underwater-event",
+      "name": "Underwater Scene",
+      "startMs": 40000,
+      "endMs": 53000,
+      "scenes": [
+        {
+          "id": "underwater-scene",
+          "name": "Underwater",
+          "duration": 13000,
+          "layers": [
+            {
+              "id": "ocean-background",
+              "type": "gradient",
+              "zIndex": 0,
+              "config": {
+                "type": "linear",
+                "angle": 180,
+                "stops": [
+                  { "offset": 0, "color": "#0074D9" },
+                  { "offset": 0.5, "color": "#001f3f" },
+                  { "offset": 1, "color": "#000814" }
+                ]
+              }
+            },
+            {
+              "id": "underwater-debris",
+              "type": "particles",
+              "zIndex": 2,
+              "config": {
+                "count": 100,
+                "size": { "min": 1, "max": 4 },
+                "color": "#7FDBFF",
+                "opacity": 0.4,
+                "speed": 0.2,
+                "direction": 90,
+                "spread": 180,
+                "lifetime": 10000
+              }
+            }
+          ],
+          "audioTracks": []
+        }
+      ]
+    }
+  ]
+}

@@ -22,7 +22,7 @@ export interface CinematicPlayerProps {
   /** Enable debug mode */
   debug?: boolean;
   /** Enable editor mode with timeline and layer inspection */
-  editorMode?: boolean;
+  editorMode?: boolean | Partial<import('../../editor/EditorMode').EditorModeConfig>;
   /** Container CSS class name */
   className?: string;
   /** Container CSS styles */
@@ -83,6 +83,19 @@ export interface CinematicPlayerRef {
   getMasterVolume(): number;
   isWebAudioAvailable(): boolean;
   getActiveAudioTrackCount(): number;
+  
+  // Debug methods
+  isDebugEnabled(): boolean;
+  toggleDebug(): void;
+  showDebug(): void;
+  hideDebug(): void;
+  
+  // Editor mode methods
+  isEditorModeEnabled(): boolean;
+  toggleEditorMode(): void;
+  showEditorMode(): void;
+  hideEditorMode(): void;
+  getEditorMode(): import('../../editor/EditorMode').EditorMode | null;
   
   // Direct access to the engine instance (for advanced use cases)
   getEngine(): CinematicRenderer2D | null;
@@ -193,6 +206,7 @@ export const CinematicPlayer = forwardRef<CinematicPlayerRef, CinematicPlayerPro
           autoplay,
           quality,
           debug,
+          editorMode,
         };
 
         const engine = new CinematicRenderer2D(options);
@@ -273,6 +287,19 @@ export const CinematicPlayer = forwardRef<CinematicPlayerRef, CinematicPlayerPro
       getMasterVolume: () => engineRef.current?.getMasterVolume() ?? 1,
       isWebAudioAvailable: () => engineRef.current?.isWebAudioAvailable() ?? false,
       getActiveAudioTrackCount: () => engineRef.current?.getActiveAudioTrackCount() ?? 0,
+      
+      // Debug methods
+      isDebugEnabled: () => engineRef.current?.isDebugEnabled() ?? false,
+      toggleDebug: () => engineRef.current?.toggleDebug(),
+      showDebug: () => engineRef.current?.showDebug(),
+      hideDebug: () => engineRef.current?.hideDebug(),
+      
+      // Editor mode methods
+      isEditorModeEnabled: () => engineRef.current?.isEditorModeEnabled() ?? false,
+      toggleEditorMode: () => engineRef.current?.toggleEditorMode(),
+      showEditorMode: () => engineRef.current?.showEditorMode(),
+      hideEditorMode: () => engineRef.current?.hideEditorMode(),
+      getEditorMode: () => engineRef.current?.getEditorMode() ?? null,
       
       // Direct engine access
       getEngine: () => engineRef.current,

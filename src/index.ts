@@ -119,6 +119,10 @@ export type { CameraState, CameraAnimation } from './core/CameraSystem';
 export { DebugOverlay } from './debug/DebugOverlay';
 export type { DebugInfo, DebugOverlayOptions } from './debug/DebugOverlay';
 
+// Editor mode
+export { EditorMode } from './editor/EditorMode';
+export type { EditorModeConfig, TimelineMarker } from './editor/EditorMode';
+
 // Utility types
 export type {
   Viewport,
@@ -134,6 +138,22 @@ export type {
   DeepPartial,
   DeepRequired,
 } from './types/UtilityTypes';
+
+// Scene templates
+export {
+  SceneTemplates,
+  SceneTemplateManager,
+  createSunriseScene,
+  createCosmicBirthScene,
+  createRainScene,
+  createDivineAuraScene,
+  createUnderwaterScene,
+} from './templates';
+export type {
+  TemplateCustomization,
+  TemplateType,
+  TemplateInfo,
+} from './templates';
 
 // Version
 export const VERSION = '0.1.0';

@@ -1,0 +1,346 @@
+{
+  "schemaVersion": "1.0.0",
+  "engine": {
+    "targetFps": 60,
+    "quality": "high"
+  },
+  "events": [{
+    "id": "audio",
+    "name": "Audio Features Showcase",
+    "scenes": ["fade-in", "fade-out", "crossfade", "multi-track"]
+  }],
+  "scenes": [
+    {
+      "id": "fade-in",
+      "name": "Audio Fade In",
+      "duration": 5000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#667eea", "#764ba2"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "waveform",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "🔊",
+            "fontSize": "120px",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "45%" },
+            "transform": { "translateX": "-50%", "translateY": "-50%", "scale": 0.8 }
+          },
+          "animations": [
+            {
+              "property": "config.transform.scale",
+              "from": 0.8,
+              "to": 1.2,
+              "startMs": 0,
+              "endMs": 2500,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 3,
+          "config": {
+            "text": "Audio Fade In\n(2 second fade)",
+            "fontSize": "42px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "70%" },
+            "transform": { "translateX": "-50%" },
+            "lineHeight": 1.4
+          }
+        }
+      ],
+      "audio": [{
+        "id": "music",
+        "type": "music",
+        "src": "/assets/audio/waves-crashing-397977.mp3",
+        "startMs": 0,
+        "volume": 0.6,
+        "fadeIn": 2000,
+        "loop": true
+      }]
+    },
+    {
+      "id": "fade-out",
+      "name": "Audio Fade Out",
+      "duration": 5000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#f093fb", "#f5576c"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "waveform",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "🔉",
+            "fontSize": "120px",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "45%" },
+            "transform": { "translateX": "-50%", "translateY": "-50%", "scale": 1.2 }
+          },
+          "animations": [
+            {
+              "property": "config.transform.scale",
+              "from": 1.2,
+              "to": 0.8,
+              "startMs": 0,
+              "endMs": 5000,
+              "easing": "ease-in"
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 3,
+          "config": {
+            "text": "Audio Fade Out\n(2 second fade)",
+            "fontSize": "42px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "70%" },
+            "transform": { "translateX": "-50%" },
+            "lineHeight": 1.4
+          }
+        }
+      ],
+      "audio": [{
+        "id": "music",
+        "type": "music",
+        "src": "/assets/audio/waves-crashing-397977.mp3",
+        "startMs": 0,
+        "volume": 0.6,
+        "fadeOut": 2000,
+        "loop": true
+      }]
+    },
+    {
+      "id": "crossfade",
+      "name": "Audio Crossfade",
+      "duration": 6000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#4facfe", "#00f2fe"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "icon1",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "🎵",
+            "fontSize": "80px",
+            "textAlign": "center",
+            "position": { "x": "30%", "y": "45%" },
+            "transform": { "translateX": "-50%", "translateY": "-50%" }
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 1,
+              "to": 0,
+              "startMs": 2000,
+              "endMs": 4000,
+              "easing": "ease-in-out"
+            }
+          ]
+        },
+        {
+          "id": "icon2",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "🎶",
+            "fontSize": "80px",
+            "textAlign": "center",
+            "position": { "x": "70%", "y": "45%" },
+            "transform": { "translateX": "-50%", "translateY": "-50%" }
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 2000,
+              "endMs": 4000,
+              "easing": "ease-in-out"
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 3,
+          "config": {
+            "text": "Audio Crossfade\n(Smooth Transition)",
+            "fontSize": "42px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "70%" },
+            "transform": { "translateX": "-50%" },
+            "lineHeight": 1.4
+          }
+        }
+      ],
+      "audio": [{
+        "id": "music",
+        "type": "music",
+        "src": "/assets/audio/waves-crashing-397977.mp3",
+        "startMs": 0,
+        "volume": 0.6,
+        "fadeIn": 1000,
+        "fadeOut": 2000,
+        "loop": true
+      }]
+    },
+    {
+      "id": "multi-track",
+      "name": "Multi-Track Audio",
+      "duration": 8000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#fa709a", "#fee140"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "track1",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "Track 1: Music",
+            "fontSize": "32px",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "35%" },
+            "transform": { "translateX": "-50%" }
+          }
+        },
+        {
+          "id": "track2",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "Track 2: Ambience",
+            "fontSize": "32px",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "50%" },
+            "transform": { "translateX": "-50%" }
+          }
+        },
+        {
+          "id": "track3",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "Track 3: SFX",
+            "fontSize": "32px",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "65%" },
+            "transform": { "translateX": "-50%" }
+          }
+        },
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 3,
+          "config": {
+            "text": "Multi-Track Playback\n(3 Simultaneous Tracks)",
+            "fontSize": "36px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "15%" },
+            "transform": { "translateX": "-50%" },
+            "lineHeight": 1.4,
+            "textShadow": "0 2px 10px rgba(0,0,0,0.5)"
+          }
+        }
+      ],
+      "audio": [
+        {
+          "id": "music",
+          "type": "music",
+          "src": "/assets/audio/waves-crashing-397977.mp3",
+          "startMs": 0,
+          "volume": 0.4,
+          "fadeIn": 1000,
+          "loop": true
+        },
+        {
+          "id": "ambience",
+          "type": "ambience",
+          "src": "/assets/audio/waves-crashing-397977.mp3",
+          "startMs": 0,
+          "volume": 0.3,
+          "fadeIn": 1500,
+          "loop": true
+        },
+        {
+          "id": "sfx",
+          "type": "sfx",
+          "src": "/assets/audio/waves-crashing-397977.mp3",
+          "startMs": 2000,
+          "volume": 0.5
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "fromScene": "fade-in",
+      "toScene": "fade-out",
+      "type": "crossfade",
+      "duration": 1000,
+      "easing": "ease-in-out"
+    },
+    {
+      "fromScene": "fade-out",
+      "toScene": "crossfade",
+      "type": "crossfade",
+      "duration": 1000,
+      "easing": "ease-in-out"
+    },
+    {
+      "fromScene": "crossfade",
+      "toScene": "multi-track",
+      "type": "crossfade",
+      "duration": 1000,
+      "easing": "ease-in-out"
+    }
+  ]
+}

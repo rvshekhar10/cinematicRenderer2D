@@ -213,13 +213,13 @@ describe('Build System', () => {
 
     it('should have appropriate bundle sizes', () => {
       const files = [
-        { path: 'dist/index.js', maxSize: 120 * 1024 },
-        { path: 'dist/index.cjs', maxSize: 120 * 1024 },
-        { path: 'dist/react.js', maxSize: 90 * 1024 },
-        { path: 'dist/react.cjs', maxSize: 90 * 1024 },
-        { path: 'dist/angular.js', maxSize: 95 * 1024 },
-        { path: 'dist/angular.cjs', maxSize: 95 * 1024 },
-        { path: 'dist/cli/index.js', maxSize: 50 * 1024 }
+        { path: 'dist/index.js', maxSize: 125 * 1024 }, // Increased for templates
+        { path: 'dist/index.cjs', maxSize: 125 * 1024 }, // Increased for templates
+        { path: 'dist/react.js', maxSize: 125 * 1024 }, // Increased for templates
+        { path: 'dist/react.cjs', maxSize: 125 * 1024 }, // Increased for templates
+        { path: 'dist/angular.js', maxSize: 130 * 1024 }, // Increased for templates
+        { path: 'dist/angular.cjs', maxSize: 130 * 1024 }, // Increased for templates
+        { path: 'dist/cli/index.js', maxSize: 80 * 1024 } // Increased for templates
       ];
 
       for (const { path, maxSize } of files) {

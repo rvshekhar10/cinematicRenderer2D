@@ -83,6 +83,7 @@ interface CinematicPlayerProps {
   autoplay?: boolean;            // Auto-start playback (default: false)
   quality?: QualityLevel;        // Quality level (default: 'auto')
   debug?: boolean;               // Enable debug overlay (default: false)
+  editorMode?: boolean | Partial<EditorModeConfig>; // Enable editor mode (default: false)
   
   // Event handlers
   onPlay?: () => void;           // Playback started
@@ -98,22 +99,200 @@ interface CinematicPlayerProps {
   className?: string;            // CSS class name
   style?: React.CSSProperties;   // Inline styles
 }
+
+// Editor Mode Configuration
+interface EditorModeConfig {
+  enabled: boolean;
+  showTimeline?: boolean;              // Show timeline scrubber (default: true)
+  showBoundingBoxes?: boolean;         // Show layer bounding boxes (default: true)
+  showPropertyInspector?: boolean;     // Show property inspector (default: true)
+  showPerformanceMetrics?: boolean;    // Show performance metrics (default: true)
+  autoEnableWithDebug?: boolean;       // Auto-enable with debug mode (default: true)
+}
 ```
 
 ## Advanced Usage Patterns
+
+### Imperative API Access
+
+The `CinematicPlayer` component exposes a comprehensive imperative API through refs:
+
+```tsx
+import React, { useRef } from 'react';
+import { CinematicPlayer, type CinematicPlayerRef } from 'cinematic-renderer2d/react';
+
+function ImperativeAPIExample() {
+  const playerRef = useRef<CinematicPlayerRef>(null);
+
+  // Playback control
+  const handlePlay = () => playerRef.current?.play();
+  const handlePause = () => playerRef.current?.pause();
+  const handleStop = () => playerRef.current?.stop();
+  const handleSeek = (time: number) => playerRef.current?.seek(time);
+  
+  // Navigation
+  const goToEvent = (eventId: string) => playerRef.current?.goToEvent(eventId);
+  const goToScene = (sceneId: string) => playerRef.current?.goToScene(sceneId);
+  
+  // Quality control
+  const setQuality = (level: QualityLevel) => playerRef.current?.setQuality(level);
+  
+  // Debug and editor mode
+  const toggleDebug = () => playerRef.current?.toggleDebug();
+  const toggleEditor = () => playerRef.current?.toggleEditorMode();
+  const showDebug = () => playerRef.current?.showDebug();
+  const hideDebug = () => playerRef.current?.hideDebug();
+  const showEditor = () => playerRef.current?.showEditorMode();
+  const hideEditor = () => playerRef.current?.hideEditorMode();
+  
+  // State queries
+  const getCurrentTime = () => playerRef.current?.getCurrentTime() ?? 0;
+  const getDuration = () => playerRef.current?.getDuration() ?? 0;
+  const isPlaying = () => playerRef.current?.isPlaying() ?? false;
+  const getCurrentFps = () => playerRef.current?.getCurrentFps() ?? 0;
+  
+  // Audio control
+  const setVolume = (volume: number) => playerRef.current?.setMasterVolume(volume);
+  const getVolume = () => playerRef.current?.getMasterVolume() ?? 1;
+
+  return (
+    <div>
+      <CinematicPlayer ref={playerRef} spec={cinematicSpec} />
+      
+      <div className="controls">
+        <button onClick={handlePlay}>Play</button>
+        <button onClick={handlePause}>Pause</button>
+        <button onClick={handleStop}>Stop</button>
+        <button onClick={() => handleSeek(5000)}>Seek to 5s</button>
+        <button onClick={toggleDebug}>Toggle Debug</button>
+        <button onClick={toggleEditor}>Toggle Editor</button>
+        <button onClick={() => setVolume(0.5)}>50% Volume</button>
+      </div>
+      
+      <div className="info">
+        <p>Time: {getCurrentTime()}ms / {getDuration()}ms</p>
+        <p>FPS: {getCurrentFps()}</p>
+        <p>Playing: {isPlaying() ? 'Yes' : 'No'}</p>
+      </div>
+    </div>
+  );
+}
+```
+
+### Editor Mode Usage
+
+```tsx
+import React, { useRef } from 'react';
+import { CinematicPlayer, type CinematicPlayerRef } from 'cinematic-renderer2d/react';
+
+function EditorModeExample() {
+  const playerRef = useRef<CinematicPlayerRef>(null);
+
+  const toggleEditor = () => {
+    playerRef.current?.toggleEditorMode();
+  };
+
+  const toggleDebug = () => {
+    playerRef.current?.toggleDebug();
+  };
+
+  return (
+    <div className="editor-example">
+      <CinematicPlayer
+        ref={playerRef}
+        spec={cinematicSpec}
+        editorMode={true}  // Enable editor mode
+        debug={false}
+      />
+      
+      <div className="controls">
+        <button onClick={toggleEditor}>
+          Toggle Editor Mode
+        </button>
+        <button onClick={toggleDebug}>
+          Toggle Debug Overlay
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// Advanced editor mode configuration
+function AdvancedEditorMode() {
+  const playerRef = useRef<CinematicPlayerRef>(null);
+
+  return (
+    <CinematicPlayer
+      ref={playerRef}
+      spec={cinematicSpec}
+      editorMode={{
+        enabled: true,
+        showTimeline: true,
+        showBoundingBoxes: true,
+        showPropertyInspector: true,
+        showPerformanceMetrics: true,
+        autoEnableWithDebug: true
+      }}
+    />
+  );
+}
+```
+
+### Editor Mode Features
+
+The editor mode provides several visual development tools:
+
+- **Timeline Scrubber**: Visual timeline with scene markers and draggable scrubber for precise time navigation
+- **Bounding Boxes**: Visual outlines around all layers with click-to-inspect functionality
+- **Property Inspector**: Real-time property viewer for selected layers
+- **Performance Metrics**: Integrated debug overlay showing FPS, frame time, and quality settings
+- **Keyboard Shortcuts**: Press `Ctrl+E` (or `Cmd+E` on Mac) to toggle editor mode
+
+```tsx
+// Example: Using editor mode with keyboard shortcuts
+function EditorWithShortcuts() {
+  const playerRef = useRef<CinematicPlayerRef>(null);
+
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      // Ctrl+E or Cmd+E toggles editor mode
+      if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+        e.preventDefault();
+        playerRef.current?.toggleEditorMode();
+      }
+      // Ctrl+D or Cmd+D toggles debug overlay
+      if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+        e.preventDefault();
+        playerRef.current?.toggleDebug();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, []);
+
+  return (
+    <CinematicPlayer
+      ref={playerRef}
+      spec={cinematicSpec}
+      editorMode={true}
+    />
+  );
+}
+```
 
 ### State Management with Hooks
 
 ```tsx
 import React, { useState, useCallback, useRef } from 'react';
-import { CinematicPlayer } from 'cinematic-renderer2d/react';
-import type { CinematicRenderer2D, QualityLevel } from 'cinematic-renderer2d';
+import { CinematicPlayer, type CinematicPlayerRef } from 'cinematic-renderer2d/react';
+import type { QualityLevel } from 'cinematic-renderer2d';
 
 function CinematicApp() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentQuality, setCurrentQuality] = useState<QualityLevel>('auto');
   const [error, setError] = useState<Error | null>(null);
-  const rendererRef = useRef<CinematicRenderer2D | null>(null);
+  const rendererRef = useRef<CinematicPlayerRef | null>(null);
 
   const handlePlay = useCallback(() => {
     setIsPlaying(true);
@@ -135,15 +314,19 @@ function CinematicApp() {
 
   // Manual control methods
   const seekTo = useCallback((timeMs: number) => {
-    if (rendererRef.current) {
-      rendererRef.current.seek(timeMs);
-    }
+    rendererRef.current?.seek(timeMs);
   }, []);
 
   const changeQuality = useCallback((quality: QualityLevel) => {
-    if (rendererRef.current) {
-      rendererRef.current.setQuality(quality);
-    }
+    rendererRef.current?.setQuality(quality);
+  }, []);
+
+  const toggleDebug = useCallback(() => {
+    rendererRef.current?.toggleDebug();
+  }, []);
+
+  const toggleEditor = useCallback(() => {
+    rendererRef.current?.toggleEditorMode();
   }, []);
 
   return (
@@ -166,6 +349,8 @@ function CinematicApp() {
           {isPlaying ? 'Pause' : 'Play'}
         </button>
         <button onClick={() => seekTo(0)}>Restart</button>
+        <button onClick={toggleDebug}>Toggle Debug</button>
+        <button onClick={toggleEditor}>Toggle Editor</button>
         <select 
           value={currentQuality} 
           onChange={(e) => changeQuality(e.target.value as QualityLevel)}

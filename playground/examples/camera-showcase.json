@@ -1,0 +1,243 @@
+{
+  "schemaVersion": "1.0.0",
+  "engine": {
+    "targetFps": 60,
+    "quality": "high"
+  },
+  "events": [{
+    "id": "camera-demo",
+    "name": "Camera System Showcase",
+    "scenes": ["pan", "zoom", "rotate", "combined"]
+  }],
+  "scenes": [
+    {
+      "id": "pan",
+      "name": "Camera Pan",
+      "duration": 6000,
+      "camera": {
+        "animations": [
+          {
+            "property": "x",
+            "from": -100,
+            "to": 100,
+            "startMs": 0,
+            "endMs": 6000,
+            "easing": "ease-in-out"
+          }
+        ]
+      },
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#667eea", "#764ba2"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "grid",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "← Camera Panning →",
+            "fontSize": "48px",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "50%"  },
+            "transform": { "translateX": "-50%", "translateY": "-50%" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "zoom",
+      "name": "Camera Zoom",
+      "duration": 6000,
+      "camera": {
+        "animations": [
+          {
+            "property": "zoom",
+            "from": 0.5,
+            "to": 2.0,
+            "startMs": 0,
+            "endMs": 6000,
+            "easing": "ease-in-out"
+          }
+        ]
+      },
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#f093fb", "#f5576c"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "text",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "Zoom In/Out",
+            "fontSize": "48px",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "50%" },
+            "transform": { "translateX": "-50%", "translateY": "-50%" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "rotate",
+      "name": "Camera Rotation",
+      "duration": 6000,
+      "camera": {
+        "animations": [
+          {
+            "property": "rotation",
+            "from": 0,
+            "to": 360,
+            "startMs": 0,
+            "endMs": 6000,
+            "easing": "linear"
+          }
+        ]
+      },
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#4facfe", "#00f2fe"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "text",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "↻ Rotating ↺",
+            "fontSize": "48px",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "50%" },
+            "transform": { "translateX": "-50%", "translateY": "-50%" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "combined",
+      "name": "Combined Camera Movements",
+      "duration": 8000,
+      "camera": {
+        "animations": [
+          {
+            "property": "x",
+            "from": -50,
+            "to": 50,
+            "startMs": 0,
+            "endMs": 8000,
+            "easing": "ease-in-out"
+          },
+          {
+            "property": "y",
+            "from": -30,
+            "to": 30,
+            "startMs": 0,
+            "endMs": 8000,
+            "easing": "ease-in-out"
+          },
+          {
+            "property": "zoom",
+            "from": 1.0,
+            "to": 1.5,
+            "startMs": 0,
+            "endMs": 4000,
+            "easing": "ease-in"
+          },
+          {
+            "property": "zoom",
+            "from": 1.5,
+            "to": 1.0,
+            "startMs": 4000,
+            "endMs": 8000,
+            "easing": "ease-out"
+          },
+          {
+            "property": "rotation",
+            "from": 0,
+            "to": 10,
+            "startMs": 0,
+            "endMs": 4000,
+            "easing": "ease-in-out"
+          },
+          {
+            "property": "rotation",
+            "from": 10,
+            "to": 0,
+            "startMs": 4000,
+            "endMs": 8000,
+            "easing": "ease-in-out"
+          }
+        ]
+      },
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 1,
+          "config": {
+            "colors": ["#fa709a", "#fee140"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "text",
+          "type": "textBlock",
+          "zIndex": 2,
+          "config": {
+            "text": "All Movements Combined!",
+            "fontSize": "52px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "50%" },
+            "transform": { "translateX": "-50%", "translateY": "-50%" },
+            "textShadow": "0 4px 20px rgba(0,0,0,0.5)"
+          }
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "fromScene": "pan",
+      "toScene": "zoom",
+      "type": "crossfade",
+      "duration": 1000,
+      "easing": "ease-in-out"
+    },
+    {
+      "fromScene": "zoom",
+      "toScene": "rotate",
+      "type": "crossfade",
+      "duration": 1000,
+      "easing": "ease-in-out"
+    },
+    {
+      "fromScene": "rotate",
+      "toScene": "combined",
+      "type": "crossfade",
+      "duration": 1000,
+      "easing": "ease-in-out"
+    }
+  ]
+}

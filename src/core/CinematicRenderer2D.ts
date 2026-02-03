@@ -14,6 +14,8 @@ import { Scheduler, type FrameContext } from './Scheduler';
 import { QualitySystem } from '../performance/QualitySystem';
 import { AudioSystem } from '../audio/AudioSystem';
 import { DebugOverlay } from '../debug/DebugOverlay';
+import { EditorMode } from '../editor/EditorMode';
+import type { EditorModeConfig } from '../editor/EditorMode';
 import { LayerRegistry } from './LayerRegistry';
 import { DOMRenderer } from '../rendering/dom/DOMRenderer';
 import { Canvas2DRenderer } from '../rendering/canvas2d/Canvas2DRenderer';
@@ -30,6 +32,7 @@ export interface CinematicRenderer2DOptions {
   autoplay?: boolean;
   quality?: QualityLevel;
   debug?: boolean;
+  editorMode?: boolean | Partial<EditorModeConfig>; // Enable editor mode with optional config
 }
 
 export type PlaybackState = 'idle' | 'loading' | 'ready' | 'playing' | 'paused' | 'stopped' | 'destroyed';
@@ -56,6 +59,7 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
   private _qualitySystem: QualitySystem;
   private _audioSystem: AudioSystem;
   private _debugOverlay: DebugOverlay | null = null;
+  private _editorMode: EditorMode | null = null;
   private _layerRegistry: LayerRegistry;
   private _domRenderer: DOMRenderer | null = null;
   private _canvas2DRenderer: Canvas2DRenderer | null = null;
@@ -175,6 +179,21 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
         position: 'top-right',
         showPerformanceGraph: true,
       });
+    }
+    
+    // Initialize editor mode if enabled
+    if (this._options.editorMode) {
+      const editorConfig: EditorModeConfig = typeof this._options.editorMode === 'boolean'
+        ? {
+            enabled: true,
+            autoEnableWithDebug: true,
+          }
+        : {
+            enabled: true,
+            ...this._options.editorMode,
+          };
+      
+      this._editorMode = new EditorMode(this, this._container, editorConfig);
     }
     
     // TODO: Initialize other subsystems in future tasks
@@ -420,6 +439,12 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
     if (this._debugOverlay) {
       this._debugOverlay.destroy();
       this._debugOverlay = null;
+    }
+    
+    // Destroy editor mode
+    if (this._editorMode) {
+      this._editorMode.destroy();
+      this._editorMode = null;
     }
     
     // Clear container
@@ -693,19 +718,52 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
   toggleDebug(): void {
     if (this._debugOverlay) {
       this._debugOverlay.toggle();
+      // Emit debug mode changed event for editor mode integration
+      this.emit('debugModeChanged', this._debugOverlay !== null);
     }
   }
   
   showDebug(): void {
     if (this._debugOverlay) {
       this._debugOverlay.show();
+      // Emit debug mode changed event for editor mode integration
+      this.emit('debugModeChanged', true);
     }
   }
   
   hideDebug(): void {
     if (this._debugOverlay) {
       this._debugOverlay.hide();
+      // Emit debug mode changed event for editor mode integration
+      this.emit('debugModeChanged', false);
     }
+  }
+  
+  // Editor mode methods
+  isEditorModeEnabled(): boolean {
+    return this._editorMode !== null;
+  }
+  
+  toggleEditorMode(): void {
+    if (this._editorMode) {
+      this._editorMode.toggle();
+    }
+  }
+  
+  showEditorMode(): void {
+    if (this._editorMode) {
+      this._editorMode.enable();
+    }
+  }
+  
+  hideEditorMode(): void {
+    if (this._editorMode) {
+      this._editorMode.disable();
+    }
+  }
+  
+  getEditorMode(): EditorMode | null {
+    return this._editorMode;
   }
   
   // Scene lifecycle methods
