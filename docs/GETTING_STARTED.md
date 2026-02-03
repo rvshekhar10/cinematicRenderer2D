@@ -165,9 +165,11 @@ export class AppComponent {
 Cinematic experiences are defined using JSON specifications that describe:
 - **Events**: High-level sequences of scenes
 - **Scenes**: Individual moments with duration and layers
-- **Layers**: Visual elements (gradients, images, text, particles, etc.)
-- **Animations**: Property changes over time with easing
-- **Audio**: Synchronized sound tracks
+- **Layers**: Visual elements (gradients, images, text, particles, lights, fog, etc.)
+- **Animations**: Property changes over time with easing, looping, and keyframes
+- **Audio**: Synchronized sound tracks with fade effects and multi-track support
+- **Transitions**: Smooth scene transitions (crossfade, slide, zoom, wipe, dissolve, blur)
+- **Camera**: Viewport transformations for cinematic effects
 
 ### 2. Rendering Backends
 
@@ -180,15 +182,82 @@ The library supports multiple rendering backends:
 
 Automatic quality adaptation ensures smooth performance:
 - Targets 60-120fps on modern devices
-- Adaptive quality based on device capabilities
+- Adaptive quality based on device capabilities and FPS monitoring
 - Object pooling for particle systems
 - Precompiled animation tracks
+- Automatic performance monitoring with quality adjustments
+- Asset preloading and caching for optimal loading times
+
+## New Features
+
+### Camera System
+Control viewport transformations for cinematic effects:
+```typescript
+renderer.setCameraState({ zoom: 2.0, x: 100, y: 50 });
+renderer.addCameraAnimation({
+  property: 'zoom',
+  from: 1.0,
+  to: 2.0,
+  startMs: 0,
+  endMs: 2000,
+  easing: 'ease-in-out'
+});
+```
+
+### Scene Transitions
+Smooth transitions between scenes:
+```json
+{
+  "transitions": [{
+    "fromScene": "scene1",
+    "toScene": "scene2",
+    "type": "crossfade",
+    "duration": 1000,
+    "easing": "ease-in-out"
+  }]
+}
+```
+
+### Light Layers
+Cinematic lighting effects:
+```json
+{
+  "type": "light",
+  "config": {
+    "mode": "spot",
+    "position": { "x": 50, "y": 50 },
+    "radius": 200,
+    "intensity": 0.8,
+    "color": "#ffffff",
+    "blendMode": "screen"
+  }
+}
+```
+
+### Enhanced Audio
+Per-track control with fade effects:
+```json
+{
+  "audio": [{
+    "id": "music",
+    "type": "ambience",
+    "src": "audio/ambient.mp3",
+    "volume": 0.6,
+    "fadeIn": 1000,
+    "fadeOut": 500,
+    "loop": true
+  }]
+}
+```
 
 ## Next Steps
 
 - 📖 [Read the full API documentation](./API.md)
 - 🎨 [Explore layer types and configurations](./API.md#layer-types)
 - 🎬 [Learn about animations](./API.md#animation-system)
+- 🎥 [Camera system guide](./API.md#camera-system-new)
+- 🌟 [Light layers guide](./API.md#light-layer-new)
+- 🔄 [Transitions guide](./API.md#transition-engine-new)
 - ⚛️ [React integration guide](./REACT_INTEGRATION.md)
 - 🅰️ [Angular integration guide](./ANGULAR_INTEGRATION.md)
 - ⚡ [Performance optimization tips](./PERFORMANCE.md)

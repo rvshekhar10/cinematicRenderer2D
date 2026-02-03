@@ -7,12 +7,21 @@ High-performance, framework-agnostic NPM library that renders cinematic experien
 - 🚀 **High Performance**: Targets 60-120fps with optimized rendering backends and precompiled animations
 - 🎯 **Framework Agnostic**: Works with React, Angular, Vue, Next.js, or plain JavaScript
 - 🎨 **Multiple Backends**: DOM, Canvas2D rendering with future WebGL support
-- 📱 **Adaptive Quality**: Automatic performance optimization based on device capabilities
-- 🎵 **Audio Integration**: Synchronized audio tracks with fade effects and WebAudio API
+- 📱 **Adaptive Quality**: Automatic performance optimization based on device capabilities and FPS monitoring
+- 🎵 **Audio Integration**: Synchronized audio tracks with fade effects, multi-track support, and WebAudio API
 - 🔧 **TypeScript**: Full type safety with comprehensive interfaces and definitions
 - 📦 **Tree Shakeable**: ESM/CJS dual output with optimized bundles and tree-shaking
 - 🎭 **Layer System**: Extensible plugin architecture for custom visual elements
 - 🎬 **CLI Tools**: Validation and preview tools for development workflow
+- 🎥 **Camera System**: Viewport transformations with zoom, pan, and rotation
+- 🌟 **Light Layers**: Cinematic lighting with radial, spot, ambient, and vignette modes
+- 🔄 **Scene Transitions**: Smooth transitions with crossfade, slide, zoom, wipe, dissolve, and blur
+- 🎨 **Enhanced Animations**: Looping, yoyo, keyframes, stagger effects, and randomization
+- 🔊 **Advanced Audio**: Per-track control, fade in/out, crossfading, and multi-track mixing
+- ⚡ **Performance Monitor**: Auto quality adjustment based on real-time FPS monitoring
+- 🌫️ **New Layer Types**: Fog, enhanced vignette, parallax groups, and glow effects
+- 🔄 **State Machine**: Well-defined renderer and scene states with lifecycle management
+- 📦 **Asset Preloader**: Intelligent preloading with caching and priority loading
 
 ## Installation
 
@@ -89,7 +98,7 @@ renderer.on('pause', () => console.log('Playback paused'));
 renderer.on('end', () => console.log('Playback completed'));
 ```
 
-### Navigation and Control
+// Navigation and Control
 
 ```typescript
 // Playback control
@@ -104,6 +113,31 @@ renderer.goToScene('scene1');
 
 // Quality control
 renderer.setQuality('high'); // 'low', 'medium', 'high', 'ultra', 'auto'
+
+// Camera control (NEW)
+renderer.setCameraState({ zoom: 2.0, x: 100, y: 50, rotation: 45 });
+renderer.addCameraAnimation({
+  property: 'zoom',
+  from: 1.0,
+  to: 2.0,
+  startMs: 0,
+  endMs: 2000,
+  easing: 'ease-in-out'
+});
+renderer.resetCamera();
+
+// Audio control (NEW)
+renderer.setMasterVolume(0.8);
+const volume = renderer.getMasterVolume();
+
+// Performance monitoring (NEW)
+const fps = renderer.getCurrentFps();
+const metrics = renderer.getPerformanceMetrics();
+
+// Debug mode (NEW)
+renderer.toggleDebug();
+renderer.showDebug();
+renderer.hideDebug();
 
 // Cleanup
 renderer.destroy();
@@ -310,6 +344,51 @@ interface AnimationTrackSpec {
 }
 ```
 
+#### Light Layer (NEW)
+```json
+{
+  "type": "light",
+  "config": {
+    "mode": "spot",
+    "position": { "x": 50, "y": 50 },
+    "radius": 200,
+    "intensity": 0.8,
+    "color": "#ffffff",
+    "angle": 45,
+    "direction": 90,
+    "blendMode": "screen"
+  }
+}
+```
+
+#### Fog Layer (NEW)
+```json
+{
+  "type": "fog",
+  "config": {
+    "density": 0.5,
+    "color": "#cccccc",
+    "speed": 1,
+    "direction": "horizontal",
+    "opacity": 0.7
+  }
+}
+```
+
+#### Glow Effect Layer (NEW)
+```json
+{
+  "type": "glowEffect",
+  "config": {
+    "position": { "x": 50, "y": 50 },
+    "radius": 100,
+    "intensity": 0.8,
+    "color": "#ffff00",
+    "blur": 20
+  }
+}
+```
+
 ### Canvas2D Layers
 
 #### Particles Layer
@@ -334,6 +413,18 @@ interface AnimationTrackSpec {
     "density": 0.5,
     "twinkle": true,
     "colors": ["#ffffff", "#ffffcc"]
+  }
+}
+```
+
+#### Parallax Group Layer (NEW)
+```json
+{
+  "type": "parallaxGroup",
+  "config": {
+    "layers": ["layer1", "layer2", "layer3"],
+    "depth": 0.5,
+    "scrollSpeed": 1.2
   }
 }
 ```
@@ -385,6 +476,66 @@ Supported easing functions:
       "startMs": 0,
       "endMs": 2000,
       "easing": "linear"
+    },
+    {
+      "property": "transform.rotation",
+      "from": 0,
+      "to": 360,
+      "startMs": 0,
+      "endMs": 2000,
+      "easing": "linear",
+      "loop": true,
+      "yoyo": false
+    }
+  ]
+}
+```
+
+### Keyframe Animations (NEW)
+
+```json
+{
+  "keyframes": [
+    {
+      "property": "opacity",
+      "keyframes": [
+        { "time": 0, "value": 0, "easing": "ease-in" },
+        { "time": 500, "value": 1, "easing": "ease-out" },
+        { "time": 1500, "value": 1, "easing": "ease-in" },
+        { "time": 2000, "value": 0 }
+      ]
+    }
+  ]
+}
+```
+
+### Scene Transitions (NEW)
+
+```json
+{
+  "transitions": [
+    {
+      "fromScene": "scene1",
+      "toScene": "scene2",
+      "type": "crossfade",
+      "duration": 1000,
+      "easing": "ease-in-out"
+    },
+    {
+      "fromScene": "scene2",
+      "toScene": "scene3",
+      "type": "slide",
+      "duration": 800,
+      "easing": "ease-out",
+      "direction": "left"
+    },
+    {
+      "fromScene": "scene3",
+      "toScene": "scene4",
+      "type": "zoom",
+      "duration": 1200,
+      "easing": "ease-in-out",
+      "direction": "in"
     }
   ]
 }

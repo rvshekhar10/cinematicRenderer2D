@@ -31,8 +31,23 @@ Advanced example demonstrating:
 - Multiple animated layers
 - Particle effects
 - Atmospheric effects
+- Light layers for day/night simulation
+- Camera movements
+- Scene transitions
 
 **Use Case**: Great for creating immersive environmental experiences or mood-based content.
+
+### 4. Night Sky Demo (`night-sky-demo.json`)
+
+Showcase of advanced features:
+- Starfield and particle systems
+- Light layers with blend modes
+- Camera zoom and pan animations
+- Fog effects
+- Multi-track audio with crossfading
+- Complex scene transitions
+
+**Use Case**: Demonstrates the full capabilities of the rendering engine.
 
 ## Running Examples
 
@@ -176,6 +191,104 @@ renderer.play();
       "startMs": 0,
       "endMs": 2000,
       "easing": "ease-in-out"
+    }
+  ]
+}
+```
+
+### Camera Movement Pattern
+
+```json
+{
+  "animations": [
+    {
+      "property": "camera.zoom",
+      "from": 1.0,
+      "to": 2.0,
+      "startMs": 0,
+      "endMs": 2000,
+      "easing": "ease-in-out"
+    },
+    {
+      "property": "camera.x",
+      "from": 0,
+      "to": 100,
+      "startMs": 0,
+      "endMs": 2000,
+      "easing": "ease-in-out"
+    }
+  ]
+}
+```
+
+### Light Layer Pattern
+
+```json
+{
+  "id": "spotlight",
+  "type": "light",
+  "zIndex": 10,
+  "config": {
+    "mode": "spot",
+    "position": { "x": 50, "y": 50 },
+    "radius": 200,
+    "intensity": 0.8,
+    "color": "#ffffff",
+    "angle": 45,
+    "direction": 90,
+    "blendMode": "screen"
+  },
+  "animations": [
+    {
+      "property": "config.intensity",
+      "from": 0,
+      "to": 0.8,
+      "startMs": 0,
+      "endMs": 1000,
+      "easing": "ease-in"
+    }
+  ]
+}
+```
+
+### Scene Transition Pattern
+
+```json
+{
+  "transitions": [
+    {
+      "fromScene": "scene1",
+      "toScene": "scene2",
+      "type": "crossfade",
+      "duration": 1000,
+      "easing": "ease-in-out"
+    },
+    {
+      "fromScene": "scene2",
+      "toScene": "scene3",
+      "type": "slide",
+      "duration": 800,
+      "easing": "ease-out",
+      "direction": "left"
+    }
+  ]
+}
+```
+
+### Audio with Fade Pattern
+
+```json
+{
+  "audio": [
+    {
+      "id": "background-music",
+      "type": "ambience",
+      "src": "audio/ambient.mp3",
+      "startMs": 0,
+      "volume": 0.6,
+      "fadeIn": 1000,
+      "fadeOut": 500,
+      "loop": true
     }
   ]
 }

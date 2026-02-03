@@ -254,7 +254,7 @@ function DynamicCinematicPlayer({ specUrl }: { specUrl: string }) {
 ### Custom Hook for Cinematic Control
 
 ```tsx
-import { useRef, useCallback, useState } from 'react';
+import { useRef, useCallback, useState, useEffect } from 'react';
 import type { CinematicRenderer2D, QualityLevel } from 'cinematic-renderer2d';
 
 interface UseCinematicReturn {
@@ -263,6 +263,7 @@ interface UseCinematicReturn {
   currentTime: number;
   duration: number;
   quality: QualityLevel;
+  fps: number;
   play: () => void;
   pause: () => void;
   stop: () => void;
@@ -270,6 +271,8 @@ interface UseCinematicReturn {
   setQuality: (quality: QualityLevel) => void;
   goToEvent: (eventId: string) => void;
   goToScene: (sceneId: string) => void;
+  setCameraState: (state: Partial<CameraState>) => void;
+  setMasterVolume: (volume: number) => void;
 }
 
 export function useCinematic(): UseCinematicReturn {
@@ -278,6 +281,18 @@ export function useCinematic(): UseCinematicReturn {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [quality, setQualityState] = useState<QualityLevel>('auto');
+  const [fps, setFps] = useState(60);
+
+  // Update FPS periodically
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (rendererRef.current) {
+        setFps(rendererRef.current.getCurrentFps());
+      }
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   const play = useCallback(() => {
     rendererRef.current?.play();
@@ -308,19 +323,30 @@ export function useCinematic(): UseCinematicReturn {
     rendererRef.current?.goToScene(sceneId);
   }, []);
 
+  const setCameraState = useCallback((state: Partial<CameraState>) => {
+    rendererRef.current?.setCameraState(state);
+  }, []);
+
+  const setMasterVolume = useCallback((volume: number) => {
+    rendererRef.current?.setMasterVolume(volume);
+  }, []);
+
   return {
     rendererRef,
     isPlaying,
     currentTime,
     duration,
     quality,
+    fps,
     play,
     pause,
     stop,
     seek,
     setQuality,
     goToEvent,
-    goToScene
+    goToScene,
+    setCameraState,
+    setMasterVolume
   };
 }
 
@@ -329,10 +355,13 @@ function CinematicWithCustomHook() {
   const {
     rendererRef,
     isPlaying,
+    fps,
     play,
     pause,
     seek,
-    setQuality
+    setQuality,
+    setCameraState,
+    setMasterVolume
   } = useCinematic();
 
   return (
@@ -343,11 +372,20 @@ function CinematicWithCustomHook() {
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
       />
-      <button onClick={isPlaying ? pause : play}>
-        {isPlaying ? 'Pause' : 'Play'}
-      </button>
-      <button onClick={() => seek(0)}>Restart</button>
-      <button onClick={() => setQuality('high')}>High Quality</button>
+      
+      <div className="controls">
+        <button onClick={isPlaying ? pause : play}>
+          {isPlaying ? 'Pause' : 'Play'}
+        </button>
+        <button onClick={() => seek(0)}>Restart</button>
+        <button onClick={() => setQuality('high')}>High Quality</button>
+        <button onClick={() => setCameraState({ zoom: 2.0 })}>Zoom In</button>
+        <button onClick={() => setMasterVolume(0.5)}>50% Volume</button>
+      </div>
+      
+      <div className="stats">
+        FPS: {fps}
+      </div>
     </div>
   );
 }

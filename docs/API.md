@@ -28,6 +28,31 @@ class CinematicRenderer2D implements ICinematicRenderer2D {
   setQuality(level: QualityLevel): void;
   resize(width: number, height: number): void;
   
+  // Camera methods (NEW)
+  getCameraState(): CameraState;
+  setCameraState(state: Partial<CameraState>): void;
+  addCameraAnimation(animation: CameraAnimation): void;
+  resetCamera(): void;
+  getCameraTransformMatrix(): DOMMatrix;
+  
+  // Audio methods (NEW)
+  setMasterVolume(volume: number): void;
+  getMasterVolume(): number;
+  isWebAudioAvailable(): boolean;
+  getActiveAudioTrackCount(): number;
+  
+  // Performance methods (NEW)
+  getCurrentFps(): number;
+  getPerformanceMetrics(): PerformanceMetrics;
+  getQualitySettings(): QualitySettings;
+  getDeviceCapabilities(): DeviceCapabilities;
+  
+  // Debug methods (NEW)
+  isDebugEnabled(): boolean;
+  toggleDebug(): void;
+  showDebug(): void;
+  hideDebug(): void;
+  
   // Event system
   on(event: string, callback: Function): void;
   off(event: string, callback: Function): void;
@@ -40,6 +65,7 @@ class CinematicRenderer2D implements ICinematicRenderer2D {
 interface CinematicRendererOptions {
   container: HTMLElement;         // DOM container element
   spec: CinematicSpec;           // JSON specification
+  autoplay?: boolean;            // Auto-start playback
   quality?: QualityLevel;        // Override quality setting
   debug?: boolean;               // Enable debug mode
 }
@@ -49,15 +75,304 @@ interface CinematicRendererOptions {
 
 The renderer emits the following events:
 
+**Playback Events:**
 - `play` - Playback started
 - `pause` - Playback paused
 - `stop` - Playback stopped
-- `end` - Playback completed
+- `ended` - Playback completed
 - `seek` - Playback position changed
+
+**State Events:**
+- `ready` - Renderer mounted and ready
+- `loading` - Assets loading
+- `stateChange` - Renderer state changed
 - `error` - Error occurred
-- `qualityChange` - Quality level changed
+
+**Scene Events:**
 - `sceneChange` - Scene changed
 - `eventChange` - Event changed
+
+**System Events:**
+- `qualityChange` - Quality level changed
+- `resize` - Container resized
+- `frame` - Frame rendered (high frequency)
+
+**Audio Events (NEW):**
+- `audioError` - Audio track error
+- `autoplayBlocked` - Autoplay blocked by browser
+
+**Lifecycle Events (NEW):**
+- `destroy` - Renderer destroyed
+
+## Enhanced Systems
+
+### Camera System (NEW)
+
+Control viewport transformations for cinematic effects.
+
+```typescript
+interface CameraState {
+  x: number;              // Horizontal position
+  y: number;              // Vertical position
+  zoom: number;           // Zoom level (1.0 = 100%)
+  rotation: number;       // Rotation in degrees
+}
+
+interface CameraAnimation {
+  property: 'x' | 'y' | 'zoom' | 'rotation';
+  from: number;
+  to: number;
+  startMs: number;
+  endMs: number;
+  easing?: EasingType;
+}
+
+// Usage
+renderer.setCameraState({ zoom: 2.0, x: 100, y: 50 });
+renderer.addCameraAnimation({
+  property: 'zoom',
+  from: 1.0,
+  to: 2.0,
+  startMs: 0,
+  endMs: 2000,
+  easing: 'ease-in-out'
+});
+```
+
+### Transition Engine (NEW)
+
+Smooth transitions between scenes.
+
+```typescript
+interface TransitionSpec {
+  type: 'crossfade' | 'slide' | 'zoom' | 'wipe' | 'dissolve' | 'blur';
+  duration: number;       // Duration in milliseconds
+  easing?: EasingType;    // Easing function
+  direction?: 'up' | 'down' | 'left' | 'right';  // For slide/wipe
+}
+
+// In scene specification
+{
+  "scenes": [...],
+  "transitions": [{
+    "fromScene": "scene1",
+    "toScene": "scene2",
+    "type": "crossfade",
+    "duration": 1000,
+    "easing": "ease-in-out"
+  }]
+}
+```
+
+### State Machine (NEW)
+
+Well-defined renderer and scene states.
+
+```typescript
+// Renderer States
+type RendererState = 'IDLE' | 'READY' | 'PLAYING' | 'PAUSED' | 'STOPPED' | 'DESTROYED';
+
+// Scene States  
+type SceneState = 'CREATED' | 'MOUNTED' | 'ACTIVE' | 'EXITING' | 'UNMOUNTED';
+
+// Check current state
+const state = renderer.getState();
+
+// State transitions are validated automatically
+renderer.play();  // Only works from READY or PAUSED states
+```
+
+### Scene Lifecycle Manager (NEW)
+
+Manages scene lifecycle phases.
+
+```typescript
+// Lifecycle phases (automatic):
+// 1. prepare() - Preload assets
+// 2. mount() - Create DOM nodes
+// 3. play() - Start animations/audio
+// 4. unmount() - Remove DOM nodes
+// 5. destroy() - Release resources
+
+// Access lifecycle manager
+const manager = renderer.getSceneLifecycleManager();
+```
+
+### Asset Preloader (NEW)
+
+Preload and cache assets efficiently.
+
+```typescript
+interface AssetPreloaderConfig {
+  maxConcurrentLoads?: number;    // Max parallel loads
+  defaultTimeout?: number;        // Load timeout (ms)
+  defaultRetries?: number;        // Retry attempts
+  baseUrl?: string;              // Base URL for assets
+}
+
+// Assets are preloaded automatically per scene
+// Cached assets are reused across scenes
+```
+
+### Performance Monitor (NEW)
+
+Automatic performance adaptation.
+
+```typescript
+interface PerformanceMetrics {
+  fps: number;
+  frameTime: number;
+  droppedFrames: number;
+  memoryUsage?: number;
+  activeLayers: number;
+  activeParticles: number;
+}
+
+// Get current metrics
+const metrics = renderer.getPerformanceMetrics();
+
+// Quality automatically adjusts based on FPS:
+// - FPS < 30: Switch to low quality
+// - FPS < 50: Reduce particle counts
+// - FPS > 55: Increase quality if possible
+```
+
+## New Layer Types
+
+### Light Layer (NEW)
+
+Cinematic lighting effects.
+
+```typescript
+interface LightLayerConfig {
+  mode: 'radial' | 'spot' | 'ambient' | 'vignette';
+  position?: { x: number; y: number };
+  radius?: number;
+  intensity?: number;
+  color?: string;
+  angle?: number;          // For spot lights
+  direction?: number;      // For spot lights (degrees)
+  blendMode?: 'screen' | 'overlay' | 'soft-light' | 'multiply';
+}
+
+// Example
+{
+  "id": "spotlight",
+  "type": "light",
+  "zIndex": 10,
+  "config": {
+    "mode": "spot",
+    "position": { "x": 50, "y": 50 },
+    "radius": 200,
+    "intensity": 0.8,
+    "color": "#ffffff",
+    "angle": 45,
+    "direction": 90,
+    "blendMode": "screen"
+  }
+}
+```
+
+### Fog Layer (NEW)
+
+Atmospheric fog effects.
+
+```typescript
+interface FogLayerConfig {
+  density: number;         // 0-1
+  color: string;
+  speed?: number;
+  direction?: 'horizontal' | 'vertical';
+  opacity?: number;
+}
+```
+
+### Parallax Group Layer (NEW)
+
+Group layers with depth-based scrolling.
+
+```typescript
+interface ParallaxGroupConfig {
+  layers: string[];        // Layer IDs to group
+  depth: number;          // Depth factor (0-1)
+  scrollSpeed?: number;
+}
+```
+
+### Glow Effect Layer (NEW)
+
+Soft glow effects.
+
+```typescript
+interface GlowEffectConfig {
+  position: { x: number; y: number };
+  radius: number;
+  intensity: number;
+  color: string;
+  blur?: number;
+}
+```
+
+## Enhanced Animation System
+
+### Looping and Yoyo (NEW)
+
+```typescript
+interface AnimationTrackSpec {
+  property: string;
+  from: any;
+  to: any;
+  startMs: number;
+  endMs: number;
+  easing?: EasingType;
+  loop?: boolean;          // NEW: Loop animation
+  yoyo?: boolean;          // NEW: Reverse on loop
+}
+```
+
+### Keyframe Animations (NEW)
+
+```typescript
+interface KeyframeAnimation {
+  property: string;
+  keyframes: Array<{
+    time: number;          // Time in ms
+    value: any;
+    easing?: EasingType;
+  }>;
+}
+```
+
+### Stagger Effects (NEW)
+
+```typescript
+interface StaggerConfig {
+  count: number;           // Number of elements
+  delay: number;           // Delay between each (ms)
+  pattern?: 'start' | 'center' | 'end';
+}
+```
+
+## Enhanced Audio System
+
+### Per-Track Control (NEW)
+
+```typescript
+interface AudioTrackSpec {
+  id: string;
+  type: AudioTrackType;
+  src: string;
+  startMs: number;
+  endMs?: number;
+  volume?: number;         // 0-1
+  fadeIn?: number;         // NEW: Fade in duration (ms)
+  fadeOut?: number;        // NEW: Fade out duration (ms)
+  loop?: boolean;          // NEW: Loop track
+}
+
+// Audio crossfading between scenes (automatic)
+// Multi-track playback supported
+```
 
 ## Core Interfaces
 
