@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
+import { copyFileSync, mkdirSync, existsSync } from 'fs';
 
 export default defineConfig({
   root: 'playground',
@@ -21,8 +22,41 @@ export default defineConfig({
   build: {
     outDir: '../dist-playground',
     emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'playground/index.html'),
+        'getting-started': resolve(__dirname, 'playground/getting-started.html'),
+      },
+    },
   },
   optimizeDeps: {
     include: ['fast-check'],
   },
+  plugins: [
+    {
+      name: 'copy-examples',
+      closeBundle() {
+        const examplesDir = resolve(__dirname, 'dist-playground/examples');
+        if (!existsSync(examplesDir)) {
+          mkdirSync(examplesDir, { recursive: true });
+        }
+        
+        // Copy example files
+        const examples = [
+          'simple-demo-spec.json',
+          'story-narration-spec.json',
+          'day-night-story-spec.json',
+        ];
+        
+        examples.forEach(file => {
+          const src = resolve(__dirname, 'playground/examples', file);
+          const dest = resolve(examplesDir, file);
+          if (existsSync(src)) {
+            copyFileSync(src, dest);
+            console.log(`Copied ${file} to dist-playground/examples/`);
+          }
+        });
+      },
+    },
+  ],
 });

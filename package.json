@@ -36,6 +36,8 @@
     "build": "tsup",
     "build:analyze": "tsup --metafile && npx esbuild-visualizer dist/metafile-*.json --metadata --open",
     "build:check": "npm run build && npm run validate-build",
+    "build:playground": "vite build",
+    "preview:playground": "vite preview",
     "validate-build": "node scripts/validate-build.js",
     "test": "vitest",
     "test:ui": "vitest --ui",
@@ -104,6 +106,8 @@
     "zone.js": "^0.16.0"
   },
   "dependencies": {
+    "compression": "^1.8.1",
+    "express": "^4.22.1",
     "zod": "^3.22.4"
   },
   "peerDependencies": {

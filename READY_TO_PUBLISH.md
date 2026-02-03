@@ -38,6 +38,16 @@ The following files have been updated with your information:
 
 You're all set! Here's what to do next:
 
+### ⚠️ Important: Enable 2FA First
+
+NPM requires Two-Factor Authentication to publish packages. If you haven't enabled it yet:
+
+```bash
+npm profile enable-2fa auth-and-writes
+```
+
+This takes 2 minutes. See [ENABLE_2FA.md](./ENABLE_2FA.md) for detailed instructions.
+
 ### Option 1: Publish Now (Recommended)
 
 ```bash

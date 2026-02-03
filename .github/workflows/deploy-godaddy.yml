@@ -1,0 +1,104 @@
+name: Deploy to GoDaddy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  deploy:
+    name: Build and Deploy to GoDaddy
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build playground
+        run: npm run build:playground
+      
+      - name: Create deployment package
+        run: |
+          mkdir -p deploy-package
+          cp -r dist-playground deploy-package/
+          cp server.js deploy-package/
+          
+          # Create production package.json
+          cat > deploy-package/package.json << 'EOF'
+          {
+            "name": "cinematic-renderer2d-server",
+            "version": "1.0.0",
+            "description": "Server for cinematicRenderer2D playground",
+            "main": "server.js",
+            "scripts": {
+              "start": "node server.js"
+            },
+            "dependencies": {
+              "express": "^4.18.2",
+              "compression": "^1.7.4"
+            },
+            "engines": {
+              "node": ">=16.0.0"
+            }
+          }
+          EOF
+          
+          cd deploy-package
+          tar -czf ../cinematicrenderer2d-deploy.tar.gz .
+          cd ..
+      
+      - name: Deploy to GoDaddy via SSH
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.GODADDY_HOST }}
+          username: ${{ secrets.GODADDY_USERNAME }}
+          key: ${{ secrets.GODADDY_SSH_KEY }}
+          port: ${{ secrets.GODADDY_PORT }}
+          source: "cinematicrenderer2d-deploy.tar.gz"
+          target: "/home/${{ secrets.GODADDY_USERNAME }}/"
+      
+      - name: Extract and restart on GoDaddy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.GODADDY_HOST }}
+          username: ${{ secrets.GODADDY_USERNAME }}
+          key: ${{ secrets.GODADDY_SSH_KEY }}
+          port: ${{ secrets.GODADDY_PORT }}
+          script: |
+            cd /home/${{ secrets.GODADDY_USERNAME }}/cinematicrenderer2d.purpuldigital.com
+            tar -xzf ~/cinematicrenderer2d-deploy.tar.gz
+            npm install --production
+            pm2 restart cinematicrenderer2d || pm2 start server.js --name cinematicrenderer2d
+            pm2 save
+            echo "Deployment completed successfully!"
+      
+      - name: Verify deployment
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.GODADDY_HOST }}
+          username: ${{ secrets.GODADDY_USERNAME }}
+          key: ${{ secrets.GODADDY_SSH_KEY }}
+          port: ${{ secrets.GODADDY_PORT }}
+          script: |
+            pm2 status cinematicrenderer2d
+            echo "Deployment verification complete!"
+      
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "✅ Deployment successful!"
+            echo "🌐 Site: https://cinematicrenderer2d.purpuldigital.com"
+          else
+            echo "❌ Deployment failed!"
+          fi
