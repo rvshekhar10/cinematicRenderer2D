@@ -39,7 +39,7 @@
     "build:check": "npm run build:lib && npm run validate-build",
     "build:playground": "vite build",
     "preview:playground": "vite preview",
-    "start": "node start.cjs",
+    "start": "node start.js",
     "start:app": "node app.cjs",
     "start:server": "node server.cjs",
     "validate-build": "node scripts/validate-build.js",
