@@ -1,168 +1,102 @@
-# 🔧 Hostinger Entry File Fix
+# Hostinger Entry File Fix - MIME Type Error Resolved
 
-## The Issue
-
-Hostinger's Entry file setting was pointing to `./dist/index.cjs` (library file) instead of the server file.
-
-## ✅ Solution Applied
-
-I've created `app.js` - a CommonJS-compatible server file specifically for Hostinger.
-
----
-
-## 📝 Update Hostinger Settings
-
-### Go to Hostinger Settings
-
-1. Log into **Hostinger hPanel**
-2. Go to your GitHub deployment settings
-3. Find **"Build and output settings"**
-
-### Change Entry File
-
-**Change from**: `./dist/index.cjs`
-
-**Change to**: `app.js`
-
-### Save and Redeploy
-
-1. Click **"Save and redeploy"**
-2. Wait 2-3 minutes
-3. Visit your site
-
----
-
-## 📊 What Changed
-
-### Files Created
-
-1. **`app.js`** - CommonJS server (Hostinger-compatible)
-   - Same functionality as `server.js`
-   - Uses `require()` instead of `import`
-   - Works with Hostinger's Node.js environment
-
-### Package.json Updated
-
-```json
-{
-  "scripts": {
-    "start": "node app.js"  // Now uses app.js
-  }
-}
+## Problem
+The playground was showing this error on Hostinger:
+```
+Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of "text/html".
 ```
 
----
+This error occurs when the server returns HTML (usually a 404 page) instead of the JavaScript module file.
 
-## 🎯 Complete Hostinger Settings
+## Root Cause
+The HTML files contained **absolute paths** for internal links:
+- `href="/getting-started.html"` - Won't work in subdirectories
+- `href="/"` - Points to server root, not the app
 
-After the change, your settings should be:
+When deployed in a subdirectory on Hostinger (e.g., `yourdomain.com/playground/`), these absolute paths break.
 
-### Build Configuration
-- **Framework preset**: Express
-- **Branch**: main
-- **Node version**: 22.x
-- **Root directory**: /
+## Solution Applied
+Changed all internal links to **relative paths**:
 
-### Build and Output Settings
-- **Entry file**: `app.js` ⭐ **CHANGE THIS**
-- **Package manager**: npm
+### In `playground/index.html`:
+```html
+<!-- BEFORE -->
+<a href="/getting-started.html" class="btn btn-primary">
 
----
-
-## 🔍 Why This Works
-
-### Before (Broken)
-```
-Entry file: ./dist/index.cjs
-↓
-Tries to run library file
-↓
-❌ 503 Error (not a server!)
+<!-- AFTER -->
+<a href="./getting-started.html" class="btn btn-primary">
 ```
 
-### After (Fixed)
-```
-Entry file: app.js
-↓
-Runs Express server
-↓
-Serves dist-playground/
-↓
-✅ Site works!
-```
+### In `playground/getting-started.html`:
+```html
+<!-- BEFORE -->
+<a href="/" class="back-link">Back to Playground</a>
+<a href="/" class="btn">Try in Playground</a>
 
----
-
-## 🚀 Deployment Steps
-
-1. **Update Entry file** in Hostinger to `app.js`
-2. **Click "Save and redeploy"**
-3. **Wait 2-3 minutes** for deployment
-4. **Visit**: https://cinematicrenderer2d.purpuldigital.com
-5. **Success!** 🎉
-
----
-
-## 🐛 If Still Not Working
-
-### Check 1: Verify Files Exist
-
-The deployment log should show:
-```
-✓ dist-playground/ created
-✓ app.js exists
-✓ server.js exists
+<!-- AFTER -->
+<a href="./index.html" class="back-link">Back to Playground</a>
+<a href="./index.html" class="btn">Try in Playground</a>
 ```
 
-### Check 2: View Hostinger Logs
+## Deployment Package
+**New fixed package:** `cinematicrenderer2d-playground-hostinger.zip`
 
-In Hostinger hPanel:
-1. Go to deployment logs
-2. Look for:
-   ```
-   🎬 cinematicRenderer2D Playground Server
-   ✅ Server is running!
-   ```
+This package includes:
+- ✅ All 13 example specifications
+- ✅ Relative paths for assets (`base: './'` in vite.config.ts)
+- ✅ Relative paths for internal navigation
+- ✅ All audio, image, and video assets
 
-### Check 3: Test Health Endpoint
+## Deployment Instructions
 
-Visit: https://cinematicrenderer2d.purpuldigital.com/health
+### Option 1: Root Directory (Recommended)
+1. Extract `cinematicrenderer2d-playground-hostinger.zip`
+2. Upload the **contents of `dist-playground/`** folder to `public_html/`
+3. Access at: `https://yourdomain.com/`
 
-Should return:
-```json
-{
-  "status": "ok",
-  "timestamp": "...",
-  "uptime": 123,
-  "environment": "production",
-  "port": 3000
-}
-```
+### Option 2: Subdirectory
+1. Extract `cinematicrenderer2d-playground-hostinger.zip`
+2. Create a folder in `public_html/` (e.g., `public_html/playground/`)
+3. Upload the **contents of `dist-playground/`** folder to that subdirectory
+4. Access at: `https://yourdomain.com/playground/`
 
----
+### Important Notes
+- Upload the **contents** of `dist-playground/`, not the folder itself
+- The structure should be:
+  ```
+  public_html/
+  ├── index.html
+  ├── getting-started.html
+  ├── assets/
+  │   ├── main-CAz7xJvJ.js
+  │   ├── audio/
+  │   ├── images/
+  │   └── video/
+  └── examples/
+      ├── animation-features.json
+      ├── audio-showcase.json
+      └── ... (11 more)
+  ```
 
-## 📚 File Reference
+## Verification
+After deployment, check:
+1. ✅ Main page loads without errors
+2. ✅ JavaScript console shows no MIME type errors
+3. ✅ Examples load and play correctly
+4. ✅ "Use This in Your Project" button navigates correctly
+5. ✅ "Back to Playground" button works on getting-started page
 
-| File | Purpose | Used By |
-|------|---------|---------|
-| `app.js` | CommonJS server | Hostinger (Entry file) |
-| `server.js` | ES Module server | Local development |
-| `dist-playground/` | Built website | Both servers |
+## Technical Details
+- **Vite base path:** `'./'` (relative)
+- **Script tag:** `<script type="module" crossorigin src="./assets/main-CAz7xJvJ.js"></script>`
+- **Internal links:** All use `./` prefix for relative paths
+- **Asset references:** All use relative paths
 
----
+## Files Changed
+1. `playground/index.html` - Fixed getting-started link
+2. `playground/getting-started.html` - Fixed back and playground links
+3. Rebuilt with `npm run build:playground`
+4. Created new deployment package
 
-## ✅ Success Checklist
-
-After updating Entry file to `app.js`:
-
-- [ ] Changed Entry file in Hostinger settings
-- [ ] Clicked "Save and redeploy"
-- [ ] Waited for deployment to complete
-- [ ] Site loads at https://cinematicrenderer2d.purpuldigital.com
-- [ ] No 503 error
-- [ ] Playground is interactive
-- [ ] Examples load correctly
-
----
-
-**Ready?** Change Entry file to `app.js` and redeploy! 🚀
+## Status
+✅ **FIXED** - Ready for deployment to Hostinger in any directory structure
