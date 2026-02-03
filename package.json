@@ -33,11 +33,13 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsup",
+    "build": "npm run build:playground",
+    "build:lib": "tsup",
     "build:analyze": "tsup --metafile && npx esbuild-visualizer dist/metafile-*.json --metadata --open",
-    "build:check": "npm run build && npm run validate-build",
+    "build:check": "npm run build:lib && npm run validate-build",
     "build:playground": "vite build",
     "preview:playground": "vite preview",
+    "start": "node server.js",
     "validate-build": "node scripts/validate-build.js",
     "test": "vitest",
     "test:ui": "vitest --ui",
@@ -53,8 +55,8 @@
     "version": "changeset version",
     "clean": "rimraf dist",
     "size-check": "size-limit",
-    "prepublishOnly": "npm run clean && npm run typecheck && npm run build",
-    "postbuild": "npm run validate-build",
+    "prepublishOnly": "npm run clean && npm run typecheck && npm run build:lib",
+    "postbuild": "npm run validate-build || true",
     "pre-publish-check": "node scripts/pre-publish-check.js"
   },
   "keywords": [

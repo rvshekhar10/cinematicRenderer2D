@@ -1,0 +1,122 @@
+name: Deploy to Hostinger
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  deploy:
+    name: Build and Deploy to Hostinger
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build playground
+        run: npm run build:playground
+      
+      - name: Create deployment package
+        run: |
+          mkdir -p deploy-package
+          cp -r dist-playground deploy-package/
+          cp server.js deploy-package/
+          cp .htaccess deploy-package/
+          
+          # Create production package.json
+          cat > deploy-package/package.json << 'EOF'
+          {
+            "name": "cinematic-renderer2d-server",
+            "version": "1.0.0",
+            "description": "Server for cinematicRenderer2D playground",
+            "main": "server.js",
+            "scripts": {
+              "start": "node server.js"
+            },
+            "dependencies": {
+              "express": "^4.18.2",
+              "compression": "^1.7.4"
+            },
+            "engines": {
+              "node": ">=16.0.0"
+            }
+          }
+          EOF
+          
+          cd deploy-package
+          tar -czf ../cinematicrenderer2d-deploy.tar.gz .
+          cd ..
+      
+      - name: Deploy to Hostinger via SSH
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOSTINGER_HOST }}
+          username: ${{ secrets.HOSTINGER_USERNAME }}
+          key: ${{ secrets.HOSTINGER_SSH_KEY }}
+          port: ${{ secrets.HOSTINGER_PORT }}
+          source: "cinematicrenderer2d-deploy.tar.gz"
+          target: "/home/${{ secrets.HOSTINGER_USERNAME }}/"
+      
+      - name: Extract and install on Hostinger
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOSTINGER_HOST }}
+          username: ${{ secrets.HOSTINGER_USERNAME }}
+          key: ${{ secrets.HOSTINGER_SSH_KEY }}
+          port: ${{ secrets.HOSTINGER_PORT }}
+          script: |
+            cd /home/${{ secrets.HOSTINGER_USERNAME }}/domains/cinematicrenderer2d.purpuldigital.com/public_html
+            
+            # Backup existing files
+            if [ -d "dist-playground" ]; then
+              tar -czf ~/backup-$(date +%Y%m%d-%H%M%S).tar.gz . || true
+            fi
+            
+            # Extract new files
+            tar -xzf ~/cinematicrenderer2d-deploy.tar.gz
+            
+            # Install dependencies
+            npm install --production
+            
+            # Restart application (Hostinger uses Passenger)
+            mkdir -p tmp
+            touch tmp/restart.txt
+            
+            # Clean up
+            rm ~/cinematicrenderer2d-deploy.tar.gz
+            
+            echo "Deployment completed successfully!"
+      
+      - name: Verify deployment
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOSTINGER_HOST }}
+          username: ${{ secrets.HOSTINGER_USERNAME }}
+          key: ${{ secrets.HOSTINGER_SSH_KEY }}
+          port: ${{ secrets.HOSTINGER_PORT }}
+          script: |
+            cd /home/${{ secrets.HOSTINGER_USERNAME }}/domains/cinematicrenderer2d.purpuldigital.com/public_html
+            echo "Checking deployment..."
+            ls -la dist-playground/
+            echo "Deployment verification complete!"
+      
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "✅ Deployment successful!"
+            echo "🌐 Site: https://cinematicrenderer2d.purpuldigital.com"
+          else
+            echo "❌ Deployment failed!"
+          fi

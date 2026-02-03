@@ -75,3 +75,10 @@ pids/
 # Temporary folders
 tmp/
 temp/
+
+# Deployment packages
+*.tar.gz
+deploy-package/
+deploy-hostinger/
+hostinger-deploy.tar.gz
+cinematicrenderer2d-deploy.tar.gz
