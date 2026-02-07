@@ -2,6 +2,10 @@
 
 High-performance, framework-agnostic NPM library that renders cinematic experiences from JSON specifications targeting 60-120fps performance across web frameworks.
 
+## 🎮 Interactive Playground
+
+**[Try it Live!](https://cinematicrenderer2d.purpuldigital.com)** - Explore examples and create your own cinematic experiences
+
 ## Features
 
 - 🚀 **High Performance**: Targets 60-120fps with optimized rendering backends and precompiled animations
@@ -22,6 +26,7 @@ High-performance, framework-agnostic NPM library that renders cinematic experien
 - 🌫️ **New Layer Types**: Fog, enhanced vignette, parallax groups, and glow effects
 - 🔄 **State Machine**: Well-defined renderer and scene states with lifecycle management
 - 📦 **Asset Preloader**: Intelligent preloading with caching and priority loading
+- 🔷 **Shape Layers (NEW)**: Native geometric shapes (circles, rectangles, stars, polygons) with full animation support
 
 ## Installation
 
@@ -33,6 +38,8 @@ npm install cinematic-renderer2d
 
 📚 **[Complete Documentation](./docs/index.html)** - Interactive documentation landing page
 
+🎮 **[Live Playground](https://cinematicrenderer2d.purpuldigital.com)** - Try examples and create your own
+
 ### Quick Links
 - 🚀 [Getting Started Guide](./docs/GETTING_STARTED.md) - Installation and quick start
 - 📖 [API Reference](./docs/API.md) - Complete API documentation
@@ -40,7 +47,7 @@ npm install cinematic-renderer2d
 - ⚛️ [React Integration](./docs/REACT_INTEGRATION.md) - Using with React
 - 🅰️ [Angular Integration](./docs/ANGULAR_INTEGRATION.md) - Using with Angular
 - ⚡ [Performance Guide](./docs/PERFORMANCE.md) - Optimization tips
-- 🎮 [Interactive Playground](./playground/index.html) - Try it live!
+- 🎓 [Tutorials](./docs/TUTORIALS.md) - Step-by-step tutorials including Shape Layers
 
 ## Quick Start
 
@@ -388,6 +395,38 @@ interface AnimationTrackSpec {
   }
 }
 ```
+
+#### Shape Layer (NEW) 🔷
+```json
+{
+  "type": "shape",
+  "config": {
+    "shapeType": "circle",
+    "radius": 50,
+    "x": "50%",
+    "y": "50%",
+    "fillColor": "#ff6b6b",
+    "strokeColor": "#ffffff",
+    "strokeWidth": 2,
+    "opacity": 0.8,
+    "rotation": 0,
+    "scaleX": 1,
+    "scaleY": 1
+  }
+}
+```
+
+**Supported Shape Types:**
+- `rectangle` - Configurable width and height
+- `square` - Configurable size
+- `circle` - Configurable radius
+- `ellipse` - Configurable radiusX and radiusY
+- `triangle` - Custom vertices
+- `trapezoid` - Configurable top/bottom widths and height
+- `polygon` - Configurable sides (≥3) and radius
+- `star` - Configurable points (≥3), inner/outer radius
+
+**All shape properties are fully animatable!**
 
 ### Canvas2D Layers
 
@@ -944,7 +983,7 @@ This project follows semantic versioning and uses changesets for release managem
 ### Development Setup
 
 ```bash
-git clone https://github.com/rvshekhar10/cinematic-renderer2d.git
+git clone https://github.com/rvshekhar10/cinematicRenderer2D.git
 cd cinematic-renderer2d
 npm install
 npm run dev
@@ -973,6 +1012,6 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## Support
 
 - 📖 **Documentation**: This README and TypeScript definitions
-- 🐛 **Issues**: [GitHub Issues](https://github.com/rvshekhar10/cinematic-renderer2d/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/rvshekhar10/cinematic-renderer2d/discussions)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/rvshekhar10/cinematicRenderer2D/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/rvshekhar10/cinematicRenderer2D/discussions)
 - 📧 **Email**: support@cinematicrenderer2d.com

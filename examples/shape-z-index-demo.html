@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shape Z-Index and Layering Demo - CinematicRenderer2D</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      overflow: hidden;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      position: relative;
+    }
+
+    #cinematic-container {
+      flex: 1;
+      position: relative;
+      background: #000000;
+    }
+
+    .info-panel {
+      width: 300px;
+      background: rgba(20, 20, 30, 0.95);
+      padding: 20px;
+      overflow-y: auto;
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .info-section {
+      margin-bottom: 24px;
+    }
+
+    .info-section h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #667eea;
+    }
+
+    .info-section p {
+      font-size: 13px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 8px;
+    }
+
+    .info-section ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .info-section li {
+      font-size: 13px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 6px;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .info-section li:before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: #667eea;
+    }
+
+    .controls {
+      background: rgba(20, 20, 30, 0.95);
+      padding: 16px 20px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status {
+      margin-left: auto;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .highlight {
+      background: rgba(102, 126, 234, 0.2);
+      padding: 12px;
+      border-radius: 6px;
+      border-left: 3px solid #667eea;
+      margin-top: 12px;
+    }
+
+    .highlight p {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.9);
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🎨 Shape Z-Index and Layering Demo</h1>
+      <p>Demonstrating z-index sorting, overlapping shapes, and blend modes</p>
+    </div>
+
+    <div class="content">
+      <div id="cinematic-container"></div>
+
+      <div class="info-panel">
+        <div class="info-section">
+          <h3>📋 Demo Sections</h3>
+          <ul>
+            <li><strong>Top Left:</strong> Basic z-index ordering with three overlapping circles</li>
+            <li><strong>Top Center:</strong> Blend modes (multiply) with overlapping circles</li>
+            <li><strong>Top Right:</strong> Complex layering (star → square → triangle)</li>
+            <li><strong>Bottom Left:</strong> Animated rotating rectangles</li>
+            <li><strong>Bottom Center:</strong> RGB circles with screen/overlay blend modes</li>
+            <li><strong>Bottom Right:</strong> Rotating hexagon stack with varying opacity</li>
+          </ul>
+        </div>
+
+        <div class="info-section">
+          <h3>🎯 Requirements Validated</h3>
+          <ul>
+            <li><strong>2.2:</strong> Z-index for layering order</li>
+            <li><strong>6.1:</strong> Multiple shape layers render independently</li>
+            <li><strong>6.2:</strong> Shapes render in correct z-index order</li>
+            <li><strong>6.3:</strong> Overlapping shapes with blend modes</li>
+          </ul>
+        </div>
+
+        <div class="info-section">
+          <h3>🔍 What to Observe</h3>
+          <p>Watch how shapes layer on top of each other based on their z-index values. Notice how blend modes create interesting color interactions where shapes overlap.</p>
+          
+          <div class="highlight">
+            <p><strong>Key Feature:</strong> The yellow circle (z-index: 3) appears on top of the red (z-index: 1) and cyan (z-index: 2) circles, demonstrating proper z-index sorting.</p>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3>🎨 Blend Modes Used</h3>
+          <ul>
+            <li><strong>Normal:</strong> Default rendering</li>
+            <li><strong>Multiply:</strong> Darkens overlapping areas</li>
+            <li><strong>Screen:</strong> Lightens overlapping areas</li>
+            <li><strong>Overlay:</strong> Combines multiply and screen</li>
+          </ul>
+        </div>
+
+        <div class="info-section">
+          <h3>💡 Technical Details</h3>
+          <p>This demo uses the DOMRenderer backend with SVG-based shape rendering. All shapes are sorted by z-index before rendering to ensure correct layering.</p>
+          <p>The Canvas2DRenderer also supports z-index sorting for shape layers.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="play-btn">▶️ Play</button>
+      <button class="btn" id="pause-btn">⏸️ Pause</button>
+      <button class="btn" id="restart-btn">🔄 Restart</button>
+      <span class="status" id="status">Ready</span>
+    </div>
+  </div>
+
+  <script type="module" src="./shape-z-index-demo.ts"></script>
+</body>
+</html>

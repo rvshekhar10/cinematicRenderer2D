@@ -101,7 +101,7 @@ The [playground](../playground/index.html) provides an interactive environment t
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [GitHub repository](https://github.com/rvshekhar10/cinematic-renderer2d) for:
+We welcome contributions! Please see our [GitHub repository](https://github.com/rvshekhar10/cinematicRenderer2D) for:
 - Issue tracking
 - Feature requests
 - Pull request guidelines
@@ -109,8 +109,8 @@ We welcome contributions! Please see our [GitHub repository](https://github.com/
 
 ## 📧 Support
 
-- **Issues**: [GitHub Issues](https://github.com/rvshekhar10/cinematic-renderer2d/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/rvshekhar10/cinematic-renderer2d/discussions)
+- **Issues**: [GitHub Issues](https://github.com/rvshekhar10/cinematicRenderer2D/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/rvshekhar10/cinematicRenderer2D/discussions)
 - **Email**: support@cinematicrenderer2d.com
 
 ## 📄 License

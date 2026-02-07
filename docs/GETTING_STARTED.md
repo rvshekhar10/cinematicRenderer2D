@@ -273,8 +273,8 @@ Check out the `/examples` directory for complete working examples:
 
 ## Support
 
-- 🐛 [Report issues on GitHub](https://github.com/rvshekhar10/cinematic-renderer2d/issues)
-- 💬 [Join discussions](https://github.com/rvshekhar10/cinematic-renderer2d/discussions)
+- 🐛 [Report issues on GitHub](https://github.com/rvshekhar10/cinematicRenderer2D/issues)
+- 💬 [Join discussions](https://github.com/rvshekhar10/cinematicRenderer2D/discussions)
 - 📧 Email: support@cinematicrenderer2d.com
 
 ---

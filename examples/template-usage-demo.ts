@@ -16,7 +16,7 @@ import {
 // Example 1: Using templates with default settings
 function createBasicTemplateSpec(): CinematicSpec {
   return {
-    version: '1.0.0',
+    schemaVersion: '1.0.0',
     metadata: {
       title: 'Basic Template Demo',
       description: 'Using scene templates with default settings',

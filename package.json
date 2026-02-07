@@ -1,6 +1,6 @@
 {
   "name": "cinematic-renderer2d",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "High-performance, framework-agnostic NPM library that renders cinematic experiences from JSON specifications targeting 60-120fps performance",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -72,18 +72,24 @@
     "performance",
     "typescript",
     "framework-agnostic",
-    "json-spec"
+    "json-spec",
+    "shapes",
+    "geometric-shapes",
+    "svg",
+    "visual-effects",
+    "transitions",
+    "camera-system"
   ],
   "author": "Ravi Shekhar",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rvshekhar10/cinematic-renderer2d.git"
+    "url": "https://github.com/rvshekhar10/cinematicRenderer2D.git"
   },
   "bugs": {
-    "url": "https://github.com/rvshekhar10/cinematic-renderer2d/issues"
+    "url": "https://github.com/rvshekhar10/cinematicRenderer2D/issues"
   },
-  "homepage": "https://github.com/rvshekhar10/cinematic-renderer2d#readme",
+  "homepage": "https://cinematicrenderer2d.purpuldigital.com",
   "devDependencies": {
     "@angular/common": "^21.1.2",
     "@angular/core": "^21.1.2",

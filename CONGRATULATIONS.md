@@ -10,7 +10,7 @@
 - **Install Command**: `npm install cinematic-renderer2d`
 - **Version**: 0.1.0
 - **Author**: Ravi Shekhar
-- **Repository**: https://github.com/rvshekhar10/cinematic-renderer2d
+- **Repository**: https://github.com/rvshekhar10/cinematicRenderer2D
 
 ## What Just Happened
 
@@ -36,7 +36,7 @@ npm install cinematic-renderer2d
 
 ### 2. Create a GitHub Release
 
-1. Go to: https://github.com/rvshekhar10/cinematic-renderer2d/releases
+1. Go to: https://github.com/rvshekhar10/cinematicRenderer2D/releases
 2. Click "Create a new release"
 3. Tag: `v0.1.0`
 4. Title: `v0.1.0 - Initial Release`
@@ -86,8 +86,8 @@ renderer.play();
 ## Links
 
 - NPM: https://www.npmjs.com/package/cinematic-renderer2d
-- Repository: https://github.com/rvshekhar10/cinematic-renderer2d
-- Issues: https://github.com/rvshekhar10/cinematic-renderer2d/issues
+- Repository: https://github.com/rvshekhar10/cinematicRenderer2D
+- Issues: https://github.com/rvshekhar10/cinematicRenderer2D/issues
 ```
 
 6. Click "Publish release"
@@ -99,7 +99,7 @@ Add these to the top of your README.md:
 ```markdown
 [![npm version](https://badge.fury.io/js/cinematic-renderer2d.svg)](https://www.npmjs.com/package/cinematic-renderer2d)
 [![npm downloads](https://img.shields.io/npm/dm/cinematic-renderer2d.svg)](https://www.npmjs.com/package/cinematic-renderer2d)
-[![license](https://img.shields.io/npm/l/cinematic-renderer2d.svg)](https://github.com/rvshekhar10/cinematic-renderer2d/blob/main/LICENSE)
+[![license](https://img.shields.io/npm/l/cinematic-renderer2d.svg)](https://github.com/rvshekhar10/cinematicRenderer2D/blob/main/LICENSE)
 ```
 
 ### 4. Share Your Achievement! 📢
@@ -153,7 +153,7 @@ Features:
 
 npm install cinematic-renderer2d
 
-GitHub: https://github.com/rvshekhar10/cinematic-renderer2d
+GitHub: https://github.com/rvshekhar10/cinematicRenderer2D
 NPM: https://www.npmjs.com/package/cinematic-renderer2d
 
 Would love to hear your feedback!

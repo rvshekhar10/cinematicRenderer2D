@@ -1,252 +1,366 @@
 {
-  "version": "1.0.0",
+  "schemaVersion": "1.0.0",
+  "engine": {
+    "targetFps": 60,
+    "quality": "auto",
+    "debug": true
+  },
   "metadata": {
     "title": "Scene Template Demo",
     "description": "Demonstration of pre-built scene templates with customization",
     "author": "cinematicRenderer2D",
     "duration": 53000
   },
-  "assets": {},
+  "assets": [],
   "events": [
     {
-      "id": "sunrise-event",
-      "name": "Sunrise Scene",
-      "startMs": 0,
-      "endMs": 8000,
-      "scenes": [
+      "id": "template-showcase",
+      "name": "Template Showcase",
+      "scenes": ["sunrise-scene", "cosmic-birth-scene", "rain-scene", "divine-aura-scene", "underwater-scene"]
+    }
+  ],
+  "transitions": {
+    "sunrise-scene-to-cosmic-birth-scene": {
+      "type": "crossfade",
+      "duration": 1000
+    },
+    "cosmic-birth-scene-to-rain-scene": {
+      "type": "dissolve",
+      "duration": 1200
+    },
+    "rain-scene-to-divine-aura-scene": {
+      "type": "zoom",
+      "duration": 1000
+    },
+    "divine-aura-scene-to-underwater-scene": {
+      "type": "slide",
+      "duration": 1000,
+      "direction": "down"
+    }
+  },
+  "scenes": [
+    {
+      "id": "sunrise-scene",
+      "name": "Sunrise",
+      "duration": 8000,
+      "transition": "sunrise-scene-to-cosmic-birth-scene",
+      "layers": [
         {
-          "id": "sunrise-scene",
-          "name": "Sunrise",
-          "duration": 8000,
-          "layers": [
+          "id": "sunrise-gradient",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#87CEEB", "#FFD23F", "#FF6B35"],
+            "direction": "vertical"
+          },
+          "animations": [
             {
-              "id": "sunrise-gradient",
-              "type": "gradient",
-              "zIndex": 0,
-              "config": {
-                "type": "linear",
-                "angle": 180,
-                "stops": [
-                  { "offset": 0, "color": "#87CEEB" },
-                  { "offset": 0.4, "color": "#FFD23F" },
-                  { "offset": 1, "color": "#FF6B35" }
-                ]
-              },
-              "animations": [
-                {
-                  "property": "opacity",
-                  "from": 0,
-                  "to": 1,
-                  "startMs": 0,
-                  "endMs": 2000,
-                  "easing": "easeInOut"
-                },
-                {
-                  "property": "opacity",
-                  "from": 1,
-                  "to": 0,
-                  "startMs": 6000,
-                  "endMs": 8000,
-                  "easing": "easeInOut"
-                }
-              ]
-            },
-            {
-              "id": "sunrise-particles",
-              "type": "particles",
-              "zIndex": 1,
-              "config": {
-                "count": 50,
-                "size": { "min": 2, "max": 6 },
-                "color": "#FFD23F",
-                "opacity": 0.3,
-                "speed": 0.5,
-                "direction": 90,
-                "spread": 30,
-                "lifetime": 5000
-              },
-              "animations": [
-                {
-                  "property": "opacity",
-                  "from": 0,
-                  "to": 0.3,
-                  "startMs": 1000,
-                  "endMs": 3000,
-                  "easing": "easeIn"
-                },
-                {
-                  "property": "opacity",
-                  "from": 0.3,
-                  "to": 0,
-                  "startMs": 6000,
-                  "endMs": 8000,
-                  "easing": "easeOut"
-                }
-              ]
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 0,
+              "endMs": 2000,
+              "easing": "ease-in-out"
             }
-          ],
-          "audioTracks": []
+          ]
+        },
+        {
+          "id": "sunrise-particles",
+          "type": "particles",
+          "zIndex": 1,
+          "config": {
+            "count": 50,
+            "size": 4,
+            "color": "#FFD23F",
+            "opacity": 0.3,
+            "speed": 0.5,
+            "type": "circle",
+            "x": "50%",
+            "y": "50%"
+          }
+        },
+        {
+          "id": "sunrise-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "🌅 Sunrise Template",
+            "fontSize": 36,
+            "fontFamily": "SF Pro Display, -apple-system, sans-serif",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "40%",
+            "textShadow": "0 3px 15px rgba(0,0,0,0.6)",
+            "fontWeight": "700"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 1000,
+              "endMs": 2500,
+              "easing": "ease-out"
+            }
+          ]
         }
       ]
     },
     {
-      "id": "cosmic-event",
-      "name": "Cosmic Birth Scene",
-      "startMs": 8000,
-      "endMs": 18000,
-      "scenes": [
+      "id": "cosmic-birth-scene",
+      "name": "Cosmic Birth",
+      "duration": 10000,
+      "transition": "cosmic-birth-scene-to-rain-scene",
+      "layers": [
         {
-          "id": "cosmic-birth-scene",
-          "name": "Cosmic Birth",
-          "duration": 10000,
-          "layers": [
+          "id": "space-background",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#1a0033", "#000000"],
+            "direction": "radial",
+            "centerX": 0.5,
+            "centerY": 0.5
+          }
+        },
+        {
+          "id": "starfield",
+          "type": "starfield",
+          "zIndex": 1,
+          "config": {
+            "count": 100,
+            "speed": 0.1,
+            "opacity": 0.8,
+            "twinkle": true,
+            "minSize": 1,
+            "maxSize": 3
+          }
+        },
+        {
+          "id": "cosmic-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "✨ Cosmic Birth Template",
+            "fontSize": 36,
+            "fontFamily": "SF Pro Display, -apple-system, sans-serif",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "40%",
+            "textShadow": "0 3px 15px rgba(138,43,226,0.8)",
+            "fontWeight": "700"
+          },
+          "animations": [
             {
-              "id": "space-background",
-              "type": "gradient",
-              "zIndex": 0,
-              "config": {
-                "type": "radial",
-                "stops": [
-                  { "offset": 0, "color": "#1a0033" },
-                  { "offset": 1, "color": "#000000" }
-                ]
-              }
-            },
-            {
-              "id": "starfield",
-              "type": "particles",
-              "zIndex": 1,
-              "config": {
-                "count": 100,
-                "size": { "min": 1, "max": 3 },
-                "color": "#ffffff",
-                "opacity": 0.6,
-                "speed": 0.1,
-                "direction": 0,
-                "spread": 360,
-                "lifetime": 10000
-              }
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 1000,
+              "endMs": 2500,
+              "easing": "ease-out"
             }
-          ],
-          "audioTracks": []
+          ]
         }
       ]
     },
     {
-      "id": "rain-event",
-      "name": "Rain Scene",
-      "startMs": 18000,
-      "endMs": 30000,
-      "scenes": [
+      "id": "rain-scene",
+      "name": "Rain",
+      "duration": 12000,
+      "transition": "rain-scene-to-divine-aura-scene",
+      "layers": [
         {
-          "id": "rain-scene",
-          "name": "Rain",
-          "duration": 12000,
-          "layers": [
+          "id": "rain-sky",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#cbd5e0", "#4a5568"],
+            "direction": "vertical"
+          }
+        },
+        {
+          "id": "rain-drops",
+          "type": "particles",
+          "zIndex": 2,
+          "config": {
+            "count": 300,
+            "size": 2,
+            "color": "#ffffff",
+            "opacity": 0.6,
+            "speed": 3.0,
+            "type": "circle",
+            "x": "50%",
+            "y": "0%"
+          }
+        },
+        {
+          "id": "rain-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "🌧️ Rain Template",
+            "fontSize": 36,
+            "fontFamily": "SF Pro Display, -apple-system, sans-serif",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "40%",
+            "textShadow": "0 3px 15px rgba(0,0,0,0.8)",
+            "fontWeight": "700"
+          },
+          "animations": [
             {
-              "id": "rain-sky",
-              "type": "gradient",
-              "zIndex": 0,
-              "config": {
-                "type": "linear",
-                "angle": 180,
-                "stops": [
-                  { "offset": 0, "color": "#cbd5e0" },
-                  { "offset": 1, "color": "#4a5568" }
-                ]
-              }
-            },
-            {
-              "id": "rain-drops",
-              "type": "particles",
-              "zIndex": 2,
-              "config": {
-                "count": 300,
-                "size": { "min": 1, "max": 3 },
-                "color": "#ffffff",
-                "opacity": 0.6,
-                "speed": 3.0,
-                "direction": 180,
-                "spread": 10,
-                "lifetime": 2000
-              }
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 1000,
+              "endMs": 2500,
+              "easing": "ease-out"
             }
-          ],
-          "audioTracks": []
+          ]
         }
       ]
     },
     {
-      "id": "divine-event",
-      "name": "Divine Aura Scene",
-      "startMs": 30000,
-      "endMs": 40000,
-      "scenes": [
+      "id": "divine-aura-scene",
+      "name": "Divine Aura",
+      "duration": 10000,
+      "transition": "divine-aura-scene-to-underwater-scene",
+      "layers": [
         {
-          "id": "divine-aura-scene",
-          "name": "Divine Aura",
-          "duration": 10000,
-          "layers": [
+          "id": "divine-background",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#ffffff", "#fffacd", "#ffd700"],
+            "direction": "radial",
+            "centerX": 0.5,
+            "centerY": 0.5
+          }
+        },
+        {
+          "id": "divine-glow",
+          "type": "glowOrb",
+          "zIndex": 5,
+          "config": {
+            "x": "50%",
+            "y": "50%",
+            "radius": 120,
+            "color": "#ffd700",
+            "intensity": 0.6,
+            "blur": 60
+          },
+          "animations": [
             {
-              "id": "divine-background",
-              "type": "gradient",
-              "zIndex": 0,
-              "config": {
-                "type": "radial",
-                "stops": [
-                  { "offset": 0, "color": "#ffffff" },
-                  { "offset": 0.5, "color": "#fffacd" },
-                  { "offset": 1, "color": "#ffd700" }
-                ]
-              }
+              "property": "intensity",
+              "from": 0.4,
+              "to": 0.8,
+              "startMs": 0,
+              "endMs": 3000,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
             }
-          ],
-          "audioTracks": []
+          ]
+        },
+        {
+          "id": "divine-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "✨ Divine Aura Template",
+            "fontSize": 36,
+            "fontFamily": "SF Pro Display, -apple-system, sans-serif",
+            "color": "#8b4513",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "30%",
+            "textShadow": "0 3px 15px rgba(255,215,0,0.8)",
+            "fontWeight": "700"
+          },
+          "animations": [
+            {
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 1000,
+              "endMs": 2500,
+              "easing": "ease-out"
+            }
+          ]
         }
       ]
     },
     {
-      "id": "underwater-event",
-      "name": "Underwater Scene",
-      "startMs": 40000,
-      "endMs": 53000,
-      "scenes": [
+      "id": "underwater-scene",
+      "name": "Underwater",
+      "duration": 13000,
+      "layers": [
         {
-          "id": "underwater-scene",
-          "name": "Underwater",
-          "duration": 13000,
-          "layers": [
+          "id": "ocean-background",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#0074D9", "#001f3f", "#000814"],
+            "direction": "vertical"
+          }
+        },
+        {
+          "id": "underwater-debris",
+          "type": "particles",
+          "zIndex": 2,
+          "config": {
+            "count": 100,
+            "size": 3,
+            "color": "#7FDBFF",
+            "opacity": 0.4,
+            "speed": 0.2,
+            "type": "circle",
+            "x": "50%",
+            "y": "50%"
+          }
+        },
+        {
+          "id": "underwater-light",
+          "type": "light",
+          "zIndex": 3,
+          "config": {
+            "mode": "radial",
+            "x": "50%",
+            "y": "20%",
+            "radius": 250,
+            "color": "#0074D9",
+            "intensity": 0.5,
+            "blendMode": "screen"
+          }
+        },
+        {
+          "id": "underwater-title",
+          "type": "textBlock",
+          "zIndex": 10,
+          "config": {
+            "text": "🌊 Underwater Template",
+            "fontSize": 36,
+            "fontFamily": "SF Pro Display, -apple-system, sans-serif",
+            "color": "#7FDBFF",
+            "textAlign": "center",
+            "x": "50%",
+            "y": "40%",
+            "textShadow": "0 3px 15px rgba(0,116,217,0.8)",
+            "fontWeight": "700"
+          },
+          "animations": [
             {
-              "id": "ocean-background",
-              "type": "gradient",
-              "zIndex": 0,
-              "config": {
-                "type": "linear",
-                "angle": 180,
-                "stops": [
-                  { "offset": 0, "color": "#0074D9" },
-                  { "offset": 0.5, "color": "#001f3f" },
-                  { "offset": 1, "color": "#000814" }
-                ]
-              }
-            },
-            {
-              "id": "underwater-debris",
-              "type": "particles",
-              "zIndex": 2,
-              "config": {
-                "count": 100,
-                "size": { "min": 1, "max": 4 },
-                "color": "#7FDBFF",
-                "opacity": 0.4,
-                "speed": 0.2,
-                "direction": 90,
-                "spread": 180,
-                "lifetime": 10000
-              }
+              "property": "opacity",
+              "from": 0,
+              "to": 1,
+              "startMs": 1000,
+              "endMs": 2500,
+              "easing": "ease-out"
             }
-          ],
-          "audioTracks": []
+          ]
         }
       ]
     }

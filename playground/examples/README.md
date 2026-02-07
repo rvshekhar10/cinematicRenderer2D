@@ -122,6 +122,18 @@ Pre-built scene templates with customization.
 - **Duration**: ~30 seconds
 - **Best For**: Quick scene creation
 
+### 12. **shape-layer-demo.json** 🔷 NEW!
+Native geometric shape rendering without external assets.
+- **Features Demonstrated**:
+  - Basic shapes (circle, square, star)
+  - Animated shapes (rotation, scaling)
+  - Layered shapes with z-index
+  - Complex shapes (polygon, triangle, ellipse)
+  - Shape transforms and styling
+  - Fill colors, strokes, and opacity
+- **Duration**: ~20 seconds
+- **Best For**: Understanding the shape layer system
+
 ---
 
 ## How to Use
@@ -160,10 +172,11 @@ Pre-built scene templates with customization.
 | Feature | Examples |
 |---------|----------|
 | Complete Showcase | **cinematic-masterpiece.json** ⭐ |
+| Shape Layers | **shape-layer-demo.json** 🔷 |
 | Camera System | ⚠️ Not yet supported in JSON specs (programmatic API only) |
 | Light Effects | cinematic-masterpiece.json, light-effects-demo.json, enhanced-story.json |
 | Transitions | transition-types.json, enhanced-story.json |
-| Animations | animation-features.json, enhanced-story.json |
+| Animations | animation-features.json, enhanced-story.json, shape-layer-demo.json |
 | Audio | audio-showcase.json |
 | Templates | scene-templates-demo.json, template-demo.json |
 | Particles | enhanced-story.json, night-sky-demo.json |

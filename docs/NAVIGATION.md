@@ -123,19 +123,19 @@ When searching documentation:
 - Performance issues? Read [Performance Guide](./PERFORMANCE.md)
 
 ### Technical Support
-- 🐛 [Report bugs on GitHub](https://github.com/rvshekhar10/cinematic-renderer2d/issues)
-- 💬 [Ask questions in Discussions](https://github.com/rvshekhar10/cinematic-renderer2d/discussions)
+- 🐛 [Report bugs on GitHub](https://github.com/rvshekhar10/cinematicRenderer2D/issues)
+- 💬 [Ask questions in Discussions](https://github.com/rvshekhar10/cinematicRenderer2D/discussions)
 - 📧 Email: support@cinematicrenderer2d.com
 
 ## 📚 External Resources
 
 - [NPM Package](https://www.npmjs.com/package/cinematic-renderer2d)
-- [GitHub Repository](https://github.com/rvshekhar10/cinematic-renderer2d)
-- [TypeScript Definitions](https://github.com/rvshekhar10/cinematic-renderer2d/tree/main/src/types)
+- [GitHub Repository](https://github.com/rvshekhar10/cinematicRenderer2D)
+- [TypeScript Definitions](https://github.com/rvshekhar10/cinematicRenderer2D/tree/main/src/types)
 
 ## 🔄 Documentation Updates
 
-This documentation is continuously updated. Check the [GitHub repository](https://github.com/rvshekhar10/cinematic-renderer2d) for the latest version.
+This documentation is continuously updated. Check the [GitHub repository](https://github.com/rvshekhar10/cinematicRenderer2D) for the latest version.
 
 **Last Updated**: February 2026
 

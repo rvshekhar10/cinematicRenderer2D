@@ -34,12 +34,12 @@ Edit `package.json` and update:
   "author": "Your Name <your.email@example.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rvshekhar10/cinematic-renderer2d.git"
+    "url": "https://github.com/rvshekhar10/cinematicRenderer2D.git"
   },
   "bugs": {
-    "url": "https://github.com/rvshekhar10/cinematic-renderer2d/issues"
+    "url": "https://github.com/rvshekhar10/cinematicRenderer2D/issues"
   },
-  "homepage": "https://github.com/rvshekhar10/cinematic-renderer2d#readme"
+  "homepage": "https://github.com/rvshekhar10/cinematicRenderer2D#readme"
 }
 ```
 

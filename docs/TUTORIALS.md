@@ -10,10 +10,11 @@ Comprehensive tutorials to help you master cinematicRenderer2D, from beginner to
 4. [Tutorial 4: Scene Transitions](#tutorial-4-scene-transitions)
 5. [Tutorial 5: Camera Movements](#tutorial-5-camera-movements)
 6. [Tutorial 6: Light Effects](#tutorial-6-light-effects)
-7. [Tutorial 7: Particle Systems](#tutorial-7-particle-systems)
-8. [Tutorial 8: Audio Integration](#tutorial-8-audio-integration)
-9. [Tutorial 9: Performance Optimization](#tutorial-9-performance-optimization)
-10. [Tutorial 10: Building a Complete Experience](#tutorial-10-building-a-complete-experience)
+7. [Tutorial 7: Geometric Shapes](#tutorial-7-geometric-shapes)
+8. [Tutorial 8: Particle Systems](#tutorial-8-particle-systems)
+9. [Tutorial 9: Audio Integration](#tutorial-9-audio-integration)
+10. [Tutorial 10: Performance Optimization](#tutorial-10-performance-optimization)
+11. [Tutorial 11: Building a Complete Experience](#tutorial-11-building-a-complete-experience)
 
 ---
 
@@ -1044,9 +1045,422 @@ Create a scene with:
 
 ---
 
-## Tutorial 7: Particle Systems
+## Tutorial 7: Geometric Shapes
+
+**Goal:** Create and animate geometric shapes without external assets.
+
+**Time:** 15 minutes
+
+**Prerequisites:** Completed Tutorial 1 and 2
+
+### What You'll Learn
+
+- How to create different shape types
+- How to style shapes with colors and strokes
+- How to animate shape properties
+- How to layer multiple shapes
+
+### Step 1: Basic Shape Creation
+
+Let's start by creating a simple circle:
+
+```javascript
+const spec = {
+  schemaVersion: '1.0.0',
+  engine: {
+    targetFps: 60,
+    quality: 'high'
+  },
+  events: [{
+    id: 'shapes-demo',
+    name: 'Shapes Demo',
+    scenes: ['basic-shapes']
+  }],
+  scenes: [{
+    id: 'basic-shapes',
+    name: 'Basic Shapes',
+    duration: 5000,
+    layers: [
+      // Background
+      {
+        id: 'bg',
+        type: 'gradient',
+        zIndex: 0,
+        config: {
+          colors: ['#0f0f1e', '#1a1a2e'],
+          direction: 'to bottom'
+        }
+      },
+      // Circle
+      {
+        id: 'circle',
+        type: 'shape',
+        zIndex: 10,
+        config: {
+          shapeType: 'circle',
+          radius: 50,
+          x: 400,
+          y: 300,
+          fillColor: '#ff6b6b',
+          strokeColor: '#ffffff',
+          strokeWidth: 3
+        }
+      }
+    ]
+  }]
+};
+```
+
+### Step 2: Multiple Shape Types
+
+Add different shapes to create a composition:
+
+```javascript
+layers: [
+  // Background
+  {
+    id: 'bg',
+    type: 'gradient',
+    zIndex: 0,
+    config: {
+      colors: ['#667eea', '#764ba2'],
+      direction: 'to bottom'
+    }
+  },
+  // Circle
+  {
+    id: 'circle',
+    type: 'shape',
+    zIndex: 10,
+    config: {
+      shapeType: 'circle',
+      radius: 50,
+      x: 200,
+      y: 300,
+      fillColor: '#ff6b6b'
+    }
+  },
+  // Square
+  {
+    id: 'square',
+    type: 'shape',
+    zIndex: 10,
+    config: {
+      shapeType: 'square',
+      size: 100,
+      x: 400,
+      y: 300,
+      fillColor: '#4ecdc4'
+    }
+  },
+  // Star
+  {
+    id: 'star',
+    type: 'shape',
+    zIndex: 10,
+    config: {
+      shapeType: 'star',
+      points: 5,
+      innerRadius: 30,
+      outerRadius: 60,
+      x: 600,
+      y: 300,
+      fillColor: '#ffe66d'
+    }
+  }
+]
+```
+
+### Step 3: Animating Shapes
+
+Add rotation animation to the star:
+
+```javascript
+{
+  id: 'star',
+  type: 'shape',
+  zIndex: 10,
+  config: {
+    shapeType: 'star',
+    points: 5,
+    innerRadius: 30,
+    outerRadius: 60,
+    x: 600,
+    y: 300,
+    fillColor: '#ffe66d',
+    rotation: 0
+  },
+  animations: [{
+    property: 'config.rotation',
+    from: 0,
+    to: 360,
+    startMs: 0,
+    endMs: 3000,
+    easing: 'linear',
+    loop: true
+  }]
+}
+```
+
+### Step 4: Pulsing Effect
+
+Create a pulsing circle with scale animation:
+
+```javascript
+{
+  id: 'pulsing-circle',
+  type: 'shape',
+  zIndex: 10,
+  config: {
+    shapeType: 'circle',
+    radius: 50,
+    x: 400,
+    y: 300,
+    fillColor: '#ff6b6b',
+    scaleX: 1,
+    scaleY: 1
+  },
+  animations: [
+    {
+      property: 'config.scaleX',
+      from: 1,
+      to: 1.5,
+      startMs: 0,
+      endMs: 1500,
+      easing: 'ease-in-out',
+      loop: true,
+      yoyo: true
+    },
+    {
+      property: 'config.scaleY',
+      from: 1,
+      to: 1.5,
+      startMs: 0,
+      endMs: 1500,
+      easing: 'ease-in-out',
+      loop: true,
+      yoyo: true
+    }
+  ]
+}
+```
+
+### Step 5: Layering with Z-Index
+
+Create overlapping shapes with different z-index values:
+
+```javascript
+layers: [
+  {
+    id: 'circle-back',
+    type: 'shape',
+    zIndex: 1,
+    config: {
+      shapeType: 'circle',
+      radius: 80,
+      x: 350,
+      y: 300,
+      fillColor: '#ff6b6b',
+      opacity: 0.8
+    }
+  },
+  {
+    id: 'circle-middle',
+    type: 'shape',
+    zIndex: 2,
+    config: {
+      shapeType: 'circle',
+      radius: 80,
+      x: 400,
+      y: 300,
+      fillColor: '#4ecdc4',
+      opacity: 0.8
+    }
+  },
+  {
+    id: 'circle-front',
+    type: 'shape',
+    zIndex: 3,
+    config: {
+      shapeType: 'circle',
+      radius: 80,
+      x: 450,
+      y: 300,
+      fillColor: '#ffe66d',
+      opacity: 0.8
+    }
+  }
+]
+```
+
+### Step 6: Complex Shapes
+
+Use polygon and triangle shapes:
+
+```javascript
+// Hexagon
+{
+  id: 'hexagon',
+  type: 'shape',
+  zIndex: 10,
+  config: {
+    shapeType: 'polygon',
+    sides: 6,
+    radius: 60,
+    x: 300,
+    y: 300,
+    fillColor: '#a8dadc',
+    strokeColor: '#457b9d',
+    strokeWidth: 3
+  }
+}
+
+// Triangle
+{
+  id: 'triangle',
+  type: 'shape',
+  zIndex: 10,
+  config: {
+    shapeType: 'triangle',
+    vertices: [
+      { x: 0, y: -50 },
+      { x: 43, y: 25 },
+      { x: -43, y: 25 }
+    ],
+    x: 500,
+    y: 300,
+    fillColor: '#f1faee',
+    strokeColor: '#e63946',
+    strokeWidth: 3
+  }
+}
+```
+
+### Complete Example
+
+Here's a complete scene with multiple animated shapes:
+
+```javascript
+import { CinematicRenderer2D } from 'cinematic-renderer2d';
+
+const spec = {
+  schemaVersion: '1.0.0',
+  engine: {
+    targetFps: 60,
+    quality: 'high'
+  },
+  events: [{
+    id: 'shapes-showcase',
+    name: 'Shapes Showcase',
+    scenes: ['animated-shapes']
+  }],
+  scenes: [{
+    id: 'animated-shapes',
+    name: 'Animated Shapes',
+    duration: 10000,
+    layers: [
+      {
+        id: 'bg',
+        type: 'gradient',
+        zIndex: 0,
+        config: {
+          colors: ['#667eea', '#764ba2'],
+          direction: 'to bottom'
+        }
+      },
+      {
+        id: 'spinning-square',
+        type: 'shape',
+        zIndex: 10,
+        config: {
+          shapeType: 'square',
+          size: 80,
+          x: 300,
+          y: 300,
+          fillColor: '#4ecdc4',
+          rotation: 0
+        },
+        animations: [{
+          property: 'config.rotation',
+          from: 0,
+          to: 360,
+          startMs: 0,
+          endMs: 3000,
+          easing: 'linear',
+          loop: true
+        }]
+      },
+      {
+        id: 'pulsing-circle',
+        type: 'shape',
+        zIndex: 10,
+        config: {
+          shapeType: 'circle',
+          radius: 50,
+          x: 500,
+          y: 300,
+          fillColor: '#ff6b6b',
+          scaleX: 1,
+          scaleY: 1
+        },
+        animations: [
+          {
+            property: 'config.scaleX',
+            from: 1,
+            to: 1.5,
+            startMs: 0,
+            endMs: 1500,
+            easing: 'ease-in-out',
+            loop: true,
+            yoyo: true
+          },
+          {
+            property: 'config.scaleY',
+            from: 1,
+            to: 1.5,
+            startMs: 0,
+            endMs: 1500,
+            easing: 'ease-in-out',
+            loop: true,
+            yoyo: true
+          }
+        ]
+      }
+    ]
+  }]
+};
+
+const container = document.getElementById('container');
+const renderer = new CinematicRenderer2D({ container, spec, autoplay: true });
+
+renderer.mount().then(() => {
+  console.log('Shapes demo ready!');
+});
+```
+
+### Key Takeaways
+
+1. **Shape Types**: Eight shape types available (rectangle, square, circle, ellipse, triangle, trapezoid, polygon, star)
+2. **Styling**: Use `fillColor`, `strokeColor`, and `strokeWidth` for visual styling
+3. **Transforms**: Apply rotation, scale, and skew transformations
+4. **Animation**: All shape properties are animatable
+5. **Layering**: Use z-index to control rendering order
+6. **Performance**: Shapes render efficiently without external assets
+
+### Next Steps
+
+- Experiment with different shape combinations
+- Try animating colors and opacity
+- Combine shapes with light effects (Tutorial 6)
+- Create complex compositions with multiple layers
+
+---
+
+## Tutorial 8: Particle Systems
 
 **Goal:** Create dynamic particle effects.
+
+**Time:** 20 minutes
 
 **Time:** 25 minutes
 
@@ -1289,7 +1703,7 @@ Create a scene with:
 
 ---
 
-## Tutorial 8: Audio Integration
+## Tutorial 9: Audio Integration
 
 **Goal:** Add synchronized audio to your cinematic.
 
@@ -1470,7 +1884,7 @@ Create a scene with:
 
 ---
 
-## Tutorial 9: Performance Optimization
+## Tutorial 10: Performance Optimization
 
 **Goal:** Optimize your cinematic for smooth performance across devices.
 
@@ -1750,7 +2164,7 @@ Take an existing cinematic and:
 
 ---
 
-## Tutorial 10: Building a Complete Experience
+## Tutorial 11: Building a Complete Experience
 
 **Goal:** Build a complete multi-scene cinematic with all features.
 

@@ -71,7 +71,7 @@ describe('LayerRegistry', () => {
     test('should return correct built-in types categorization', () => {
       const builtInTypes = registry.getBuiltInTypes();
       
-      expect(builtInTypes.dom).toEqual(['gradient', 'image', 'textBlock', 'vignette', 'glowOrb', 'noiseOverlay', 'light', 'parallaxGroup']);
+      expect(builtInTypes.dom).toEqual(['gradient', 'image', 'textBlock', 'vignette', 'glowOrb', 'noiseOverlay', 'light', 'parallaxGroup', 'shape']);
       expect(builtInTypes.canvas2d).toEqual(['particles', 'starfield', 'dust', 'nebulaNoise', 'fog']);
     });
 
@@ -79,6 +79,24 @@ describe('LayerRegistry', () => {
       expect(registry.isBuiltInType('gradient')).toBe(true);
       expect(registry.isBuiltInType('particles')).toBe(true);
       expect(registry.isBuiltInType('customType')).toBe(false);
+    });
+
+    test('should register shape layer type', () => {
+      expect(registry.hasLayerType('shape')).toBe(true);
+      expect(registry.isBuiltInType('shape')).toBe(true);
+    });
+
+    test('should create shape layer instances successfully', () => {
+      const layer = registry.createLayer('shape', 'test-shape', { 
+        shapeType: 'circle',
+        radius: 50,
+        zIndex: 5 
+      });
+      
+      expect(layer).toBeDefined();
+      expect(layer.id).toBe('test-shape');
+      expect(layer.type).toBe('shape');
+      expect(layer.zIndex).toBe(5);
     });
   });
 
@@ -134,7 +152,7 @@ describe('LayerRegistry', () => {
     test('should throw error for unknown layer type', () => {
       expect(() => {
         registry.createLayer('unknownType', 'test-id', {});
-      }).toThrow('Unknown layer type: unknownType. Available types: dust, fog, glowOrb, gradient, image, light, nebulaNoise, noiseOverlay, parallaxGroup, particles, starfield, textBlock, vignette');
+      }).toThrow('Unknown layer type: unknownType. Available types: dust, fog, glowOrb, gradient, image, light, nebulaNoise, noiseOverlay, parallaxGroup, particles, shape, starfield, textBlock, vignette');
     });
 
     test('should create layer with correct properties', () => {

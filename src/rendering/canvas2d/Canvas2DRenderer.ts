@@ -175,7 +175,10 @@ export class Canvas2DRenderer extends RenderBackend {
       ['particles', 'starfield', 'dust', 'nebulaNoise'].includes(layer.type)
     );
     
-    for (const layer of canvas2DLayers) {
+    // Sort layers by zIndex for proper rendering order (Requirement 6.2)
+    const sortedLayers = [...canvas2DLayers].sort((a, b) => a.zIndex - b.zIndex);
+    
+    for (const layer of sortedLayers) {
       this.ctx.save();
       
       // Let the layer render itself

@@ -230,7 +230,7 @@ After fixing, verify these work:
 
 - **Hostinger Support**: https://support.hostinger.com
 - **Node.js Docs**: https://support.hostinger.com/en/articles/5617851-how-to-deploy-node-js-application
-- **GitHub Issues**: https://github.com/rvshekhar10/cinematic-renderer2d/issues
+- **GitHub Issues**: https://github.com/rvshekhar10/cinematicRenderer2D/issues
 
 ---
 

@@ -48,6 +48,11 @@ const EXAMPLES = {
   },
   
   // Basic Examples
+  shape: {
+    name: 'Shape Layer Demo',
+    url: '/examples/shape-layer-demo.json',
+    category: 'basic'
+  },
   simple: {
     name: 'Simple Demo',
     url: '/examples/simple-demo-spec.json',
@@ -121,7 +126,7 @@ class Playground {
     
     this.setupEventListeners();
     this.initializeBackgroundAnimation();
-    this.validateSpec(); // Validate initial spec
+    this.autoLoadAndPlay(); // Auto-load and play default demo
   }
   
   private setupEventListeners(): void {
@@ -232,6 +237,38 @@ class Playground {
       } else {
         icon.innerHTML = '<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>';
       }
+    }
+  }
+  
+  private async autoLoadAndPlay(): Promise<void> {
+    try {
+      // Load the cinematic masterpiece as the default demo
+      const defaultExample = 'masterpiece';
+      
+      // Update dropdown to reflect the loaded example
+      this.examplesDropdown.value = defaultExample;
+      
+      // Load the example
+      await this.loadExample(defaultExample);
+      
+      // Wait a bit for the spec to be loaded and validated
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Auto-create renderer
+      if (this.isValidSpec) {
+        await this.createRenderer();
+        
+        // Wait for renderer to be ready
+        await new Promise(resolve => setTimeout(resolve, 200));
+        
+        // Auto-play
+        if (this.renderer) {
+          this.play();
+        }
+      }
+    } catch (error) {
+      console.error('Auto-load failed:', error);
+      // Silently fail - user can manually load examples
     }
   }
   

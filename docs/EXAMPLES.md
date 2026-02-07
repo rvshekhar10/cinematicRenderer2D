@@ -321,4 +321,4 @@ Have a great example to share? We'd love to include it!
 
 ---
 
-**Need help?** Check out the [API documentation](./API.md) or ask in [GitHub Discussions](https://github.com/rvshekhar10/cinematic-renderer2d/discussions).
+**Need help?** Check out the [API documentation](./API.md) or ask in [GitHub Discussions](https://github.com/rvshekhar10/cinematicRenderer2D/discussions).

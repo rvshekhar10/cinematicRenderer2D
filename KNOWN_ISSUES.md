@@ -73,7 +73,7 @@ None at this time.
 ## Reporting Issues
 
 If you encounter issues while using the library (not tests), please report them:
-- GitHub Issues: https://github.com/rvshekhar10/cinematic-renderer2d/issues
+- GitHub Issues: https://github.com/rvshekhar10/cinematicRenderer2D/issues
 
 ---
 

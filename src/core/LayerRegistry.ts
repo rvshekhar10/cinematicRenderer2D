@@ -19,6 +19,7 @@ import {
   ParallaxGroupLayer,
 } from './layers/BuiltInLayers';
 import { LightLayer } from './layers/LightLayer';
+import { ShapeLayer } from './layers/ShapeLayer';
 
 export type LayerFactory = (id: string, config: Record<string, any>) => ICinematicLayer;
 
@@ -134,7 +135,7 @@ export class LayerRegistry {
    */
   getBuiltInTypes(): { dom: string[]; canvas2d: string[] } {
     return {
-      dom: ['gradient', 'image', 'textBlock', 'vignette', 'glowOrb', 'noiseOverlay', 'light', 'parallaxGroup'],
+      dom: ['gradient', 'image', 'textBlock', 'vignette', 'glowOrb', 'noiseOverlay', 'light', 'parallaxGroup', 'shape'],
       canvas2d: ['particles', 'starfield', 'dust', 'nebulaNoise', 'fog'],
     };
   }
@@ -186,6 +187,7 @@ export class LayerRegistry {
     this.layerTypes.set('noiseOverlay', (id, config) => new NoiseOverlayLayer(id, config));
     this.layerTypes.set('light', (id, config) => new LightLayer(id, config as any));
     this.layerTypes.set('parallaxGroup', (id, config) => new ParallaxGroupLayer(id, config));
+    this.layerTypes.set('shape', (id, config) => new ShapeLayer(id, config as any));
     
     // Canvas2D layer types
     this.layerTypes.set('particles', (id, config) => new ParticlesLayer(id, config));

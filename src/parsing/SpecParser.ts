@@ -47,7 +47,7 @@ const QualityLevelSchema = z.enum(['low', 'medium', 'high', 'ultra', 'auto']);
 const LayerTypeSchema = z.enum([
   'gradient', 'image', 'textBlock', 'vignette', 'glowOrb', 'noiseOverlay',
   'particles', 'starfield', 'dust', 'nebulaNoise', 'webgl-custom',
-  'light', 'fog', 'parallaxGroup'
+  'light', 'fog', 'parallaxGroup', 'shape'
 ]);
 const EasingTypeSchema = z.enum([
   'linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out',

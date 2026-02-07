@@ -329,7 +329,7 @@ git push origin main
 Add to your README.md:
 
 ```markdown
-[![Deploy to GoDaddy](https://github.com/rvshekhar10/cinematic-renderer2d/actions/workflows/deploy-godaddy.yml/badge.svg)](https://github.com/rvshekhar10/cinematic-renderer2d/actions/workflows/deploy-godaddy.yml)
+[![Deploy to GoDaddy](https://github.com/rvshekhar10/cinematicRenderer2D/actions/workflows/deploy-godaddy.yml/badge.svg)](https://github.com/rvshekhar10/cinematicRenderer2D/actions/workflows/deploy-godaddy.yml)
 ```
 
 ## Quick Reference

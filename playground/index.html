@@ -620,6 +620,7 @@
           </optgroup>
           
           <optgroup label="📚 Basic Examples">
+            <option value="shape">Shape Demo</option>
             <option value="simple">Simple Demo</option>
             <option value="story">Story Narration</option>
             <option value="daynight">Day & Night Story</option>
@@ -639,65 +640,7 @@
       <!-- JSON Editor section -->
       <div class="panel-section">
         <h4 class="section-title">JSON Specification</h4>
-        <textarea id="specEditor" class="code-editor" placeholder="Enter your cinematic specification here...">
-{
-  "schemaVersion": "1.0.0",
-  "engine": {
-    "targetFps": 60,
-    "quality": "auto",
-    "debug": true
-  },
-  "events": [
-    {
-      "id": "intro",
-      "name": "Introduction",
-      "scenes": ["scene1"]
-    }
-  ],
-  "scenes": [
-    {
-      "id": "scene1",
-      "name": "Welcome Scene",
-      "duration": 5000,
-      "layers": [
-        {
-          "id": "background",
-          "type": "gradient",
-          "zIndex": 0,
-          "config": {
-            "colors": ["#667eea", "#764ba2"],
-            "direction": "diagonal"
-          }
-        },
-        {
-          "id": "title",
-          "type": "textBlock",
-          "zIndex": 10,
-          "config": {
-            "text": "Welcome to cinematicRenderer2D!",
-            "fontSize": 28,
-            "fontFamily": "SF Pro Display, -apple-system, sans-serif",
-            "color": "#ffffff",
-            "textAlign": "center",
-            "x": "50%",
-            "y": "50%",
-            "textShadow": "0 2px 20px rgba(0,0,0,0.5)"
-          },
-          "animations": [
-            {
-              "property": "opacity",
-              "from": 0,
-              "to": 1,
-              "startMs": 500,
-              "endMs": 2000,
-              "easing": "ease-out"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
+        <textarea id="specEditor" class="code-editor" placeholder="Enter your cinematic specification here...">Put a JSON config here for a cinematic 2D Web Experience in high FPS
         </textarea>
       </div>
 

@@ -72,6 +72,13 @@ export {
 } from './core/layers/BuiltInLayers';
 export { LightLayer } from './core/layers/LightLayer';
 export type { LightLayerConfig } from './core/layers/LightLayer';
+export { ShapeLayer } from './core/layers/ShapeLayer';
+
+// Shape rendering system
+export type { IShapeRenderer, ShapeLayerConfig } from './core/shapes/IShapeRenderer';
+export { DOMShapeRenderer } from './core/shapes/DOMShapeRenderer';
+export { Canvas2DShapeRenderer } from './core/shapes/Canvas2DShapeRenderer';
+export { ShapeGeometry } from './core/shapes/ShapeGeometry';
 
 // Animation system exports
 export { AnimationCompiler } from './animation/AnimationCompiler';

@@ -1,0 +1,373 @@
+{
+  "schemaVersion": "1.0.0",
+  "engine": {
+    "targetFps": 60,
+    "quality": "high"
+  },
+  "events": [{
+    "id": "shape-showcase",
+    "name": "Shape Layer Showcase",
+    "scenes": ["basic-shapes", "animated-shapes", "layered-shapes", "complex-shapes"]
+  }],
+  "scenes": [
+    {
+      "id": "basic-shapes",
+      "name": "Basic Shapes",
+      "duration": 5000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#0f0f1e", "#1a1a2e"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "circle",
+          "type": "shape",
+          "zIndex": 10,
+          "config": {
+            "shapeType": "circle",
+            "radius": 50,
+            "x": 200,
+            "y": 300,
+            "fillColor": "#ff6b6b",
+            "strokeColor": "#ffffff",
+            "strokeWidth": 3
+          }
+        },
+        {
+          "id": "square",
+          "type": "shape",
+          "zIndex": 10,
+          "config": {
+            "shapeType": "square",
+            "size": 100,
+            "x": 400,
+            "y": 300,
+            "fillColor": "#4ecdc4",
+            "strokeColor": "#ffffff",
+            "strokeWidth": 3
+          }
+        },
+        {
+          "id": "star",
+          "type": "shape",
+          "zIndex": 10,
+          "config": {
+            "shapeType": "star",
+            "points": 5,
+            "innerRadius": 30,
+            "outerRadius": 60,
+            "x": 600,
+            "y": 300,
+            "fillColor": "#ffe66d",
+            "strokeColor": "#ffffff",
+            "strokeWidth": 2
+          }
+        },
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 20,
+          "config": {
+            "text": "Basic Shapes",
+            "fontSize": "48px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "10%" },
+            "transform": { "translateX": "-50%" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "animated-shapes",
+      "name": "Animated Shapes",
+      "duration": 5000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#667eea", "#764ba2"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "spinning-square",
+          "type": "shape",
+          "zIndex": 10,
+          "config": {
+            "shapeType": "square",
+            "size": 80,
+            "x": 300,
+            "y": 300,
+            "fillColor": "#4ecdc4",
+            "strokeColor": "#ffffff",
+            "strokeWidth": 2,
+            "rotation": 0
+          },
+          "animations": [
+            {
+              "property": "config.rotation",
+              "from": 0,
+              "to": 360,
+              "startMs": 0,
+              "endMs": 3000,
+              "easing": "linear",
+              "loop": true
+            }
+          ]
+        },
+        {
+          "id": "pulsing-circle",
+          "type": "shape",
+          "zIndex": 10,
+          "config": {
+            "shapeType": "circle",
+            "radius": 50,
+            "x": 500,
+            "y": 300,
+            "fillColor": "#ff6b6b",
+            "scaleX": 1,
+            "scaleY": 1
+          },
+          "animations": [
+            {
+              "property": "config.scaleX",
+              "from": 1,
+              "to": 1.5,
+              "startMs": 0,
+              "endMs": 1500,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            },
+            {
+              "property": "config.scaleY",
+              "from": 1,
+              "to": 1.5,
+              "startMs": 0,
+              "endMs": 1500,
+              "easing": "ease-in-out",
+              "loop": true,
+              "yoyo": true
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 20,
+          "config": {
+            "text": "Animated Shapes",
+            "fontSize": "48px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "10%" },
+            "transform": { "translateX": "-50%" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "layered-shapes",
+      "name": "Layered Shapes",
+      "duration": 5000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#f093fb", "#f5576c"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "circle-back",
+          "type": "shape",
+          "zIndex": 1,
+          "config": {
+            "shapeType": "circle",
+            "radius": 80,
+            "x": 350,
+            "y": 300,
+            "fillColor": "#ff6b6b",
+            "opacity": 0.8
+          }
+        },
+        {
+          "id": "circle-middle",
+          "type": "shape",
+          "zIndex": 2,
+          "config": {
+            "shapeType": "circle",
+            "radius": 80,
+            "x": 400,
+            "y": 300,
+            "fillColor": "#4ecdc4",
+            "opacity": 0.8
+          }
+        },
+        {
+          "id": "circle-front",
+          "type": "shape",
+          "zIndex": 3,
+          "config": {
+            "shapeType": "circle",
+            "radius": 80,
+            "x": 450,
+            "y": 300,
+            "fillColor": "#ffe66d",
+            "opacity": 0.8
+          }
+        },
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 20,
+          "config": {
+            "text": "Layered Shapes (Z-Index)",
+            "fontSize": "48px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "10%" },
+            "transform": { "translateX": "-50%" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "complex-shapes",
+      "name": "Complex Shapes",
+      "duration": 5000,
+      "layers": [
+        {
+          "id": "bg",
+          "type": "gradient",
+          "zIndex": 0,
+          "config": {
+            "colors": ["#4facfe", "#00f2fe"],
+            "direction": "to bottom"
+          }
+        },
+        {
+          "id": "polygon",
+          "type": "shape",
+          "zIndex": 10,
+          "config": {
+            "shapeType": "polygon",
+            "sides": 6,
+            "radius": 60,
+            "x": 250,
+            "y": 300,
+            "fillColor": "#a8dadc",
+            "strokeColor": "#457b9d",
+            "strokeWidth": 3,
+            "rotation": 0
+          },
+          "animations": [
+            {
+              "property": "config.rotation",
+              "from": 0,
+              "to": 360,
+              "startMs": 0,
+              "endMs": 5000,
+              "easing": "linear",
+              "loop": true
+            }
+          ]
+        },
+        {
+          "id": "triangle",
+          "type": "shape",
+          "zIndex": 10,
+          "config": {
+            "shapeType": "triangle",
+            "vertices": [
+              { "x": 0, "y": -50 },
+              { "x": 43, "y": 25 },
+              { "x": -43, "y": 25 }
+            ],
+            "x": 400,
+            "y": 300,
+            "fillColor": "#f1faee",
+            "strokeColor": "#e63946",
+            "strokeWidth": 3
+          }
+        },
+        {
+          "id": "ellipse",
+          "type": "shape",
+          "zIndex": 10,
+          "config": {
+            "shapeType": "ellipse",
+            "radiusX": 80,
+            "radiusY": 40,
+            "x": 550,
+            "y": 300,
+            "fillColor": "#e63946",
+            "opacity": 0.8,
+            "rotation": 0
+          },
+          "animations": [
+            {
+              "property": "config.rotation",
+              "from": 0,
+              "to": 360,
+              "startMs": 0,
+              "endMs": 4000,
+              "easing": "linear",
+              "loop": true
+            }
+          ]
+        },
+        {
+          "id": "title",
+          "type": "textBlock",
+          "zIndex": 20,
+          "config": {
+            "text": "Complex Shapes",
+            "fontSize": "48px",
+            "fontWeight": "bold",
+            "color": "#ffffff",
+            "textAlign": "center",
+            "position": { "x": "50%", "y": "10%" },
+            "transform": { "translateX": "-50%" }
+          }
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "fromScene": "basic-shapes",
+      "toScene": "animated-shapes",
+      "type": "crossfade",
+      "duration": 1000,
+      "easing": "ease-in-out"
+    },
+    {
+      "fromScene": "animated-shapes",
+      "toScene": "layered-shapes",
+      "type": "crossfade",
+      "duration": 1000,
+      "easing": "ease-in-out"
+    },
+    {
+      "fromScene": "layered-shapes",
+      "toScene": "complex-shapes",
+      "type": "crossfade",
+      "duration": 1000,
+      "easing": "ease-in-out"
+    }
+  ]
+}

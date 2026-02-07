@@ -239,6 +239,115 @@ const metrics = renderer.getPerformanceMetrics();
 
 ## New Layer Types
 
+### Shape Layer (NEW)
+
+Geometric shape rendering with full animation support.
+
+```typescript
+interface ShapeLayerConfig {
+  // Shape definition
+  shapeType: 'rectangle' | 'square' | 'circle' | 'ellipse' | 
+             'triangle' | 'trapezoid' | 'polygon' | 'star';
+  
+  // Shape-specific properties
+  width?: number;           // rectangle, trapezoid
+  height?: number;          // rectangle, trapezoid
+  size?: number;            // square
+  radius?: number;          // circle, polygon, star
+  radiusX?: number;         // ellipse
+  radiusY?: number;         // ellipse
+  vertices?: Array<{x: number, y: number}>;  // triangle
+  topWidth?: number;        // trapezoid
+  bottomWidth?: number;     // trapezoid
+  sides?: number;           // polygon
+  points?: number;          // star
+  innerRadius?: number;     // star
+  outerRadius?: number;     // star
+  
+  // Transform properties
+  x?: number | string;      // position (pixels or percentage)
+  y?: number | string;      // position (pixels or percentage)
+  rotation?: number;        // degrees
+  scaleX?: number;          // scale factor
+  scaleY?: number;          // scale factor
+  skewX?: number;           // degrees
+  skewY?: number;           // degrees
+  
+  // Visual properties
+  fillColor?: string;       // CSS color format
+  strokeColor?: string;     // CSS color format
+  strokeWidth?: number;     // pixels
+  opacity?: number;         // 0.0 to 1.0
+  blendMode?: string;       // CSS blend mode
+  
+  // Perspective properties
+  perspective?: number;     // perspective distance
+  rotateX?: number;         // 3D rotation (degrees)
+  rotateY?: number;         // 3D rotation (degrees)
+  rotateZ?: number;         // 3D rotation (degrees)
+  translateZ?: number;      // depth positioning
+  
+  // Camera integration
+  ignoreCameraTransform?: boolean;  // opt-out from camera effects
+}
+
+// Example: Circle
+{
+  "id": "myCircle",
+  "type": "shape",
+  "zIndex": 10,
+  "config": {
+    "shapeType": "circle",
+    "radius": 50,
+    "x": "50%",
+    "y": "50%",
+    "fillColor": "#ff6b6b",
+    "strokeColor": "#ffffff",
+    "strokeWidth": 2,
+    "opacity": 0.8
+  }
+}
+
+// Example: Animated Star
+{
+  "id": "spinningstar",
+  "type": "shape",
+  "zIndex": 10,
+  "config": {
+    "shapeType": "star",
+    "points": 5,
+    "innerRadius": 30,
+    "outerRadius": 60,
+    "x": 400,
+    "y": 300,
+    "fillColor": "#ffe66d",
+    "rotation": 0
+  },
+  "animations": [{
+    "property": "config.rotation",
+    "from": 0,
+    "to": 360,
+    "startMs": 0,
+    "endMs": 3000,
+    "easing": "linear",
+    "loop": true
+  }]
+}
+```
+
+**Supported Shape Types:**
+- `rectangle`: Requires `width` and `height`
+- `square`: Requires `size`
+- `circle`: Requires `radius`
+- `ellipse`: Requires `radiusX` and `radiusY`
+- `triangle`: Requires `vertices` array with 3 points
+- `trapezoid`: Requires `topWidth`, `bottomWidth`, and `height`
+- `polygon`: Requires `sides` (≥3) and `radius`
+- `star`: Requires `points` (≥3), `innerRadius`, and `outerRadius`
+
+**Animatable Properties:**
+All shape properties can be animated including position, rotation, scale, colors, opacity, and stroke width.
+
 ### Light Layer (NEW)
 
 Cinematic lighting effects.
@@ -694,6 +803,7 @@ type LayerType =
   | 'vignette'       // Vignette overlay
   | 'glowOrb'        // Glowing orb effect
   | 'noiseOverlay'   // Noise texture overlay
+  | 'shape'          // Geometric shapes (NEW)
   
   // Canvas2D-based layers
   | 'particles'      // Particle systems

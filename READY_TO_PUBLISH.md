@@ -7,7 +7,7 @@ Your package is now configured and ready to be published to NPM.
 ### ✅ Package Information
 - **Author**: Ravi Shekhar
 - **GitHub**: rvshekhar10
-- **Repository**: https://github.com/rvshekhar10/cinematic-renderer2d
+- **Repository**: https://github.com/rvshekhar10/cinematicRenderer2D
 - **Package Name**: cinematic-renderer2d (available on NPM!)
 
 ### ✅ All Files Updated
@@ -98,7 +98,7 @@ node -e "console.log(require('cinematic-renderer2d'))"
 ```
 
 ### 3. Create GitHub Release
-1. Go to: https://github.com/rvshekhar10/cinematic-renderer2d/releases
+1. Go to: https://github.com/rvshekhar10/cinematicRenderer2D/releases
 2. Click "Create a new release"
 3. Tag: `v0.1.0`
 4. Title: `v0.1.0 - Initial Release`

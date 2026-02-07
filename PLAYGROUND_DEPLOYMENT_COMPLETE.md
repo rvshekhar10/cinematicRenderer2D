@@ -256,7 +256,7 @@ npm run build:playground
 
 ### Project Resources
 - **NPM Package**: https://www.npmjs.com/package/cinematic-renderer2d
-- **GitHub**: https://github.com/rvshekhar10/cinematic-renderer2d
+- **GitHub**: https://github.com/rvshekhar10/cinematicRenderer2D
 
 ---
 
