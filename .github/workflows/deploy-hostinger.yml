@@ -4,19 +4,19 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: # Allows manual trigger from GitHub UI
+      - master
+  workflow_dispatch:
 
 jobs:
-  deploy:
-    name: Build and Deploy to Hostinger
+  build-and-deploy:
     runs-on: ubuntu-latest
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
@@ -27,96 +27,67 @@ jobs:
       - name: Build playground
         run: npm run build:playground
       
-      - name: Create deployment package
+      - name: Add .htaccess
         run: |
-          mkdir -p deploy-package
-          cp -r dist-playground deploy-package/
-          cp server.js deploy-package/
-          cp .htaccess deploy-package/
+          cat > dist-playground/.htaccess << 'EOF'
+          # Enable rewrite engine
+          RewriteEngine On
           
-          # Create production package.json
-          cat > deploy-package/package.json << 'EOF'
-          {
-            "name": "cinematic-renderer2d-server",
-            "version": "1.0.0",
-            "description": "Server for cinematicRenderer2D playground",
-            "main": "server.js",
-            "scripts": {
-              "start": "node server.js"
-            },
-            "dependencies": {
-              "express": "^4.18.2",
-              "compression": "^1.7.4"
-            },
-            "engines": {
-              "node": ">=16.0.0"
-            }
-          }
+          # Handle SPA routing
+          RewriteCond %{REQUEST_FILENAME} !-f
+          RewriteCond %{REQUEST_FILENAME} !-d
+          RewriteCond %{REQUEST_URI} !^/examples/
+          RewriteCond %{REQUEST_URI} !^/assets/
+          RewriteRule ^(.*)$ /index.html [L]
+          
+          # Set proper MIME types
+          AddType application/javascript .js
+          AddType application/json .json
+          AddType text/css .css
+          AddType text/html .html
+          
+          # Enable compression
+          <IfModule mod_deflate.c>
+            AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+          </IfModule>
+          
+          # Enable browser caching
+          <IfModule mod_expires.c>
+            ExpiresActive On
+            ExpiresByType image/jpeg "access plus 1 year"
+            ExpiresByType image/jpg "access plus 1 year"
+            ExpiresByType image/png "access plus 1 year"
+            ExpiresByType video/mp4 "access plus 1 year"
+            ExpiresByType audio/mpeg "access plus 1 year"
+            ExpiresByType application/javascript "access plus 1 month"
+            ExpiresByType text/css "access plus 1 month"
+            ExpiresByType application/json "access plus 1 week"
+            ExpiresByType text/html "access plus 0 seconds"
+          </IfModule>
+          
+          # Security headers
+          <IfModule mod_headers.c>
+            Header always set X-Frame-Options "SAMEORIGIN"
+            Header always set X-XSS-Protection "1; mode=block"
+            Header always set X-Content-Type-Options "nosniff"
+            Header always set Referrer-Policy "strict-origin-when-cross-origin"
+          </IfModule>
+          
+          # Disable directory browsing
+          Options -Indexes
           EOF
-          
-          cd deploy-package
-          tar -czf ../cinematicrenderer2d-deploy.tar.gz .
-          cd ..
       
-      - name: Deploy to Hostinger via SSH
-        uses: appleboy/scp-action@master
+      - name: Deploy to Hostinger via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          host: ${{ secrets.HOSTINGER_HOST }}
-          username: ${{ secrets.HOSTINGER_USERNAME }}
-          key: ${{ secrets.HOSTINGER_SSH_KEY }}
-          port: ${{ secrets.HOSTINGER_PORT }}
-          source: "cinematicrenderer2d-deploy.tar.gz"
-          target: "/home/${{ secrets.HOSTINGER_USERNAME }}/"
-      
-      - name: Extract and install on Hostinger
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOSTINGER_HOST }}
-          username: ${{ secrets.HOSTINGER_USERNAME }}
-          key: ${{ secrets.HOSTINGER_SSH_KEY }}
-          port: ${{ secrets.HOSTINGER_PORT }}
-          script: |
-            cd /home/${{ secrets.HOSTINGER_USERNAME }}/domains/cinematicrenderer2d.purpuldigital.com/public_html
-            
-            # Backup existing files
-            if [ -d "dist-playground" ]; then
-              tar -czf ~/backup-$(date +%Y%m%d-%H%M%S).tar.gz . || true
-            fi
-            
-            # Extract new files
-            tar -xzf ~/cinematicrenderer2d-deploy.tar.gz
-            
-            # Install dependencies
-            npm install --production
-            
-            # Restart application (Hostinger uses Passenger)
-            mkdir -p tmp
-            touch tmp/restart.txt
-            
-            # Clean up
-            rm ~/cinematicrenderer2d-deploy.tar.gz
-            
-            echo "Deployment completed successfully!"
-      
-      - name: Verify deployment
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOSTINGER_HOST }}
-          username: ${{ secrets.HOSTINGER_USERNAME }}
-          key: ${{ secrets.HOSTINGER_SSH_KEY }}
-          port: ${{ secrets.HOSTINGER_PORT }}
-          script: |
-            cd /home/${{ secrets.HOSTINGER_USERNAME }}/domains/cinematicrenderer2d.purpuldigital.com/public_html
-            echo "Checking deployment..."
-            ls -la dist-playground/
-            echo "Deployment verification complete!"
-      
-      - name: Notify deployment status
-        if: always()
-        run: |
-          if [ ${{ job.status }} == 'success' ]; then
-            echo "✅ Deployment successful!"
-            echo "🌐 Site: https://cinematicrenderer2d.purpuldigital.com"
-          else
-            echo "❌ Deployment failed!"
-          fi
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist-playground/
+          server-dir: ./public_html/
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/.DS_Store
