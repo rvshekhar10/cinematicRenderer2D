@@ -1053,28 +1053,289 @@ export class CinematicRenderer2D implements ICinematicRenderer2D {
       newSceneLayers.some(layer => !this._currentSceneLayers.includes(layer));
     
     if (layersChanged) {
-      // CRITICAL: Destroy old scene layers BEFORE mounting new ones (Requirement 1.1)
-      const layersToDestroy = this._currentSceneLayers.filter(layer => !newSceneLayers.includes(layer));
+      // Get transition configuration for this scene change
+      const transitionConfig = this._getTransitionForSceneChange();
       
-      for (const layer of layersToDestroy) {
-        this._destroyLayer(layer);
+      console.log('Scene change detected:', {
+        currentScene: this._currentSceneId,
+        hasTransition: !!transitionConfig,
+        transitionConfig,
+        hasLifecycleManager: !!this._sceneLifecycleManager,
+        willUseTransition: !!(transitionConfig && this._sceneLifecycleManager)
+      });
+      
+      if (transitionConfig && this._sceneLifecycleManager) {
+        console.log('🎬 Using transition:', transitionConfig.type);
+        // Use transition engine for smooth scene change
+        this._executeSceneTransition(newSceneLayers, transitionConfig);
+      } else {
+        console.log('⚡ Direct scene change (no transition)');
+        // No transition - just swap scenes directly
+        // No transition - just swap scenes directly
+        // CRITICAL: Destroy old scene layers BEFORE mounting new ones (Requirement 1.1)
+        const layersToDestroy = this._currentSceneLayers.filter(layer => !newSceneLayers.includes(layer));
+        
+        for (const layer of layersToDestroy) {
+          this._destroyLayer(layer);
+        }
+        
+        // Mount new layers only after old ones are fully destroyed
+        for (const layer of newSceneLayers) {
+          if (!this._currentSceneLayers.includes(layer)) {
+            this._mountLayer(layer);
+          }
+        }
+        
+        this._currentSceneLayers = newSceneLayers;
+        
+        // Emit scene change event with layer counts for debugging
+        this.emit('sceneLayersChanged', {
+          destroyed: layersToDestroy.length,
+          mounted: newSceneLayers.filter(l => !this._currentSceneLayers.includes(l)).length,
+          active: this._currentSceneLayers.length
+        });
       }
-      
-      // Mount new layers only after old ones are fully destroyed
-      for (const layer of newSceneLayers) {
-        if (!this._currentSceneLayers.includes(layer)) {
-          this._mountLayer(layer);
+    }
+  }
+  
+  private _getTransitionForSceneChange(): import('../transitions/TransitionEngine').TransitionConfig | null {
+    // Find the transition configuration for the current scene change
+    const currentEvent = this._spec.events.find(e => e.id === this._currentEventId);
+    
+    console.log('Getting transition for scene change:', {
+      currentEventId: this._currentEventId,
+      currentSceneId: this._currentSceneId,
+      hasEvent: !!currentEvent,
+      hasTransitions: !!currentEvent?.transitions,
+      transitionsCount: currentEvent?.transitions?.length || 0,
+      scenes: currentEvent?.scenes
+    });
+    
+    if (!currentEvent || !currentEvent.transitions || !currentEvent.scenes) return null;
+    
+    // Find the current scene index in the event
+    const currentSceneIndex = currentEvent.scenes.indexOf(this._currentSceneId || '');
+    
+    console.log('Scene index:', currentSceneIndex);
+    
+    if (currentSceneIndex <= 0) return null; // No previous scene or not found
+    
+    // The transition at index i-1 is the transition FROM scene[i-1] TO scene[i]
+    const transitionIndex = currentSceneIndex - 1;
+    if (transitionIndex < 0 || transitionIndex >= currentEvent.transitions.length) return null;
+    
+    const transition = currentEvent.transitions[transitionIndex];
+    if (!transition) return null;
+    
+    console.log('Found transition:', transition);
+    
+    return {
+      type: transition.type === 'fade' ? 'crossfade' : transition.type, // Map 'fade' to 'crossfade'
+      duration: transition.duration,
+      easing: transition.easing || 'ease-in-out',
+      direction: transition.config?.direction,
+      blurAmount: transition.config?.blurAmount
+    };
+  }
+  
+  private _executeSceneTransition(
+    newSceneLayers: ICinematicLayer[],
+    transitionConfig: import('../transitions/TransitionEngine').TransitionConfig
+  ): void {
+    console.log('🎬 Executing transition:', transitionConfig.type);
+    
+    // Create containers for old and new scenes
+    const oldContainer = document.createElement('div');
+    const newContainer = document.createElement('div');
+    
+    // Style containers for transition
+    oldContainer.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;';
+    newContainer.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; opacity: 0;';
+    
+    // Move old scene layers to old container
+    const oldLayerElements: HTMLElement[] = [];
+    for (const layer of this._currentSceneLayers) {
+      const element = this._container.querySelector(`#layer-${layer.id}`) as HTMLElement;
+      if (element) {
+        oldLayerElements.push(element);
+        oldContainer.appendChild(element);
+      }
+    }
+    
+    console.log('Old layers moved:', oldLayerElements.length);
+    
+    // Add old container to main container
+    this._container.appendChild(oldContainer);
+    
+    // Mount new scene layers
+    const newLayerElements: HTMLElement[] = [];
+    for (const layer of newSceneLayers) {
+      if (!this._currentSceneLayers.includes(layer)) {
+        this._mountLayer(layer);
+        const element = this._container.querySelector(`#layer-${layer.id}`) as HTMLElement;
+        if (element) {
+          newLayerElements.push(element);
+          newContainer.appendChild(element);
         }
       }
+    }
+    
+    console.log('New layers mounted:', newLayerElements.length);
+    
+    // Add new container to main container
+    this._container.appendChild(newContainer);
+    
+    // Execute the transition animation
+    this._animateTransition(
+      oldContainer,
+      newContainer,
+      transitionConfig,
+      () => {
+        // Cleanup after transition
+        console.log('Transition complete, cleaning up');
+        
+        // Destroy old layers
+        const layersToDestroy = this._currentSceneLayers.filter(layer => !newSceneLayers.includes(layer));
+        for (const layer of layersToDestroy) {
+          this._destroyLayer(layer);
+        }
+        
+        // Move new layers back to main container
+        for (const element of newLayerElements) {
+          if (element.parentElement === newContainer) {
+            this._container.appendChild(element);
+          }
+        }
+        
+        // Remove temporary containers
+        oldContainer.remove();
+        newContainer.remove();
+        
+        // Update current scene layers
+        this._currentSceneLayers = newSceneLayers;
+        
+        // Emit scene change event
+        this.emit('sceneLayersChanged', {
+          destroyed: layersToDestroy.length,
+          mounted: newSceneLayers.length,
+          active: this._currentSceneLayers.length,
+          transition: transitionConfig.type
+        });
+      }
+    );
+  }
+  
+  private _animateTransition(
+    oldContainer: HTMLElement,
+    newContainer: HTMLElement,
+    config: import('../transitions/TransitionEngine').TransitionConfig,
+    onComplete: () => void
+  ): void {
+    const startTime = performance.now();
+    const duration = config.duration;
+    
+    const animate = () => {
+      const elapsed = performance.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
       
-      this._currentSceneLayers = newSceneLayers;
+      // Apply easing
+      const easedProgress = this._applyEasing(progress, config.easing);
       
-      // Emit scene change event with layer counts for debugging
-      this.emit('sceneLayersChanged', {
-        destroyed: layersToDestroy.length,
-        mounted: newSceneLayers.filter(l => !this._currentSceneLayers.includes(l)).length,
-        active: this._currentSceneLayers.length
-      });
+      // Apply transition based on type
+      switch (config.type) {
+        case 'crossfade':
+          oldContainer.style.opacity = (1 - easedProgress).toString();
+          newContainer.style.opacity = easedProgress.toString();
+          break;
+          
+        case 'slide':
+          const direction = config.direction || 'left';
+          if (direction === 'left') {
+            oldContainer.style.transform = `translateX(${-easedProgress * 100}%)`;
+            newContainer.style.transform = `translateX(${(1 - easedProgress) * 100}%)`;
+          } else if (direction === 'right') {
+            oldContainer.style.transform = `translateX(${easedProgress * 100}%)`;
+            newContainer.style.transform = `translateX(${-(1 - easedProgress) * 100}%)`;
+          } else if (direction === 'up') {
+            oldContainer.style.transform = `translateY(${-easedProgress * 100}%)`;
+            newContainer.style.transform = `translateY(${(1 - easedProgress) * 100}%)`;
+          } else if (direction === 'down') {
+            oldContainer.style.transform = `translateY(${easedProgress * 100}%)`;
+            newContainer.style.transform = `translateY(${-(1 - easedProgress) * 100}%)`;
+          }
+          newContainer.style.opacity = '1';
+          break;
+          
+        case 'zoom':
+          oldContainer.style.transform = `scale(${1 - easedProgress})`;
+          oldContainer.style.opacity = (1 - easedProgress).toString();
+          newContainer.style.transform = `scale(${easedProgress})`;
+          newContainer.style.opacity = easedProgress.toString();
+          break;
+          
+        case 'wipe':
+          const wipeDir = config.direction || 'left';
+          let clipPath = '';
+          if (wipeDir === 'left') {
+            clipPath = `inset(0 ${(1 - easedProgress) * 100}% 0 0)`;
+          } else if (wipeDir === 'right') {
+            clipPath = `inset(0 0 0 ${(1 - easedProgress) * 100}%)`;
+          } else if (wipeDir === 'up') {
+            clipPath = `inset(0 0 ${(1 - easedProgress) * 100}% 0)`;
+          } else if (wipeDir === 'down') {
+            clipPath = `inset(${(1 - easedProgress) * 100}% 0 0 0)`;
+          }
+          newContainer.style.clipPath = clipPath;
+          newContainer.style.opacity = '1';
+          break;
+          
+        case 'dissolve':
+          const pixelSize = Math.floor(easedProgress * 20);
+          if (pixelSize > 0) {
+            oldContainer.style.filter = `blur(${pixelSize}px) contrast(${1 + easedProgress})`;
+          }
+          oldContainer.style.opacity = (1 - easedProgress).toString();
+          newContainer.style.opacity = easedProgress.toString();
+          break;
+          
+        case 'blur':
+          const blurAmount = config.blurAmount || 10;
+          const currentBlur = blurAmount * easedProgress;
+          oldContainer.style.filter = `blur(${currentBlur}px)`;
+          oldContainer.style.opacity = (1 - easedProgress * 0.5).toString();
+          newContainer.style.opacity = easedProgress.toString();
+          break;
+          
+        default:
+          // Fallback to crossfade
+          oldContainer.style.opacity = (1 - easedProgress).toString();
+          newContainer.style.opacity = easedProgress.toString();
+      }
+      
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        onComplete();
+      }
+    };
+    
+    requestAnimationFrame(animate);
+  }
+  
+  private _applyEasing(progress: number, easing: string): number {
+    switch (easing) {
+      case 'linear':
+        return progress;
+      case 'ease-in':
+        return progress * progress;
+      case 'ease-out':
+        return progress * (2 - progress);
+      case 'ease-in-out':
+        return progress < 0.5
+          ? 2 * progress * progress
+          : -1 + (4 - 2 * progress) * progress;
+      default:
+        return progress;
     }
   }
   

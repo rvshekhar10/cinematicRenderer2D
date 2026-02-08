@@ -445,9 +445,9 @@ export class AudioSystem {
     
     // Handle context state changes
     this._audioContext.addEventListener('statechange', () => {
-      if (this._audioContext!.state === 'suspended') {
+      if (this._audioContext && this._audioContext.state === 'suspended') {
         this._emit('context-suspended');
-      } else if (this._audioContext!.state === 'running') {
+      } else if (this._audioContext && this._audioContext.state === 'running') {
         this._emit('context-resumed');
       }
     });
